@@ -1,7 +1,7 @@
 #ifndef INC_DHT11_H_
 #define INC_DHT11_H_
 #include "stm32f1xx_hal.h"
-
+#include "printf.h"
 
 void DHT11_IO_OUT();
 void DHT11_IO_IN();

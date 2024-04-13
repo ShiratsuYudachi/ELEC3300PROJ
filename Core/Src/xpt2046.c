@@ -348,135 +348,135 @@ static uint8_t XPT2046_Calculate_CalibrationFactor(
 
 }
 
-// uint8_t XPT2046_Touch_Calibrate(void) {
-// #if 1
-// 	uint8_t i;
+uint8_t XPT2046_Touch_Calibrate(void) {
+#if 1
+	uint8_t i;
 
-// 	char cStr[10];
+	char cStr[10];
 
-// 	uint16_t usScreenWidth, usScreenHeigth;
-// 	uint16_t usTest_x = 0, usTest_y = 0, usGap_x = 0, usGap_y = 0;
+	uint16_t usScreenWidth, usScreenHeigth;
+	uint16_t usTest_x = 0, usTest_y = 0, usGap_x = 0, usGap_y = 0;
 
-// 	char *pStr = 0;
+	char *pStr = 0;
 
-// 	strType_XPT2046_Coordinate strCrossCoordinate[4], strScreenSample[4];
+	strType_XPT2046_Coordinate strCrossCoordinate[4], strScreenSample[4];
 
-// 	strType_XPT2046_Calibration CalibrationFactor;
+	strType_XPT2046_Calibration CalibrationFactor;
 
-// #if ( macXPT2046_Coordinate_GramScan == 1 ) || ( macXPT2046_Coordinate_GramScan == 4 )
-// 	usScreenWidth = LCD_Default_Max_Width;
-// 	usScreenHeigth = LCD_Default_Max_Heigth;
+#if ( macXPT2046_Coordinate_GramScan == 1 ) || ( macXPT2046_Coordinate_GramScan == 4 )
+	usScreenWidth = LCD_Default_Max_Width;
+	usScreenHeigth = LCD_Default_Max_Heigth;
 
-// #elif ( macXPT2046_Coordinate_GramScan == 2 ) || ( macXPT2046_Coordinate_GramScan == 3 )
-// 	    usScreenWidth = LCD_Default_Max_Heigth;
-// 	    usScreenHeigth = LCD_Default_Max_Width;
+#elif ( macXPT2046_Coordinate_GramScan == 2 ) || ( macXPT2046_Coordinate_GramScan == 3 )
+	    usScreenWidth = LCD_Default_Max_Heigth;
+	    usScreenHeigth = LCD_Default_Max_Width;
 	
-// 	  #endif
+	  #endif
 
-// 	strCrossCoordinate[0].x = usScreenWidth >> 2;
-// 	strCrossCoordinate[0].y = usScreenHeigth >> 2;
+	strCrossCoordinate[0].x = usScreenWidth >> 2;
+	strCrossCoordinate[0].y = usScreenHeigth >> 2;
 
-// 	strCrossCoordinate[1].x = strCrossCoordinate[0].x;
-// 	strCrossCoordinate[1].y = (usScreenHeigth * 3) >> 2;
+	strCrossCoordinate[1].x = strCrossCoordinate[0].x;
+	strCrossCoordinate[1].y = (usScreenHeigth * 3) >> 2;
 
-// 	strCrossCoordinate[2].x = (usScreenWidth * 3) >> 2;
-// 	strCrossCoordinate[2].y = strCrossCoordinate[1].y;
+	strCrossCoordinate[2].x = (usScreenWidth * 3) >> 2;
+	strCrossCoordinate[2].y = strCrossCoordinate[1].y;
 
-// 	strCrossCoordinate[3].x = strCrossCoordinate[2].x;
-// 	strCrossCoordinate[3].y = strCrossCoordinate[0].y;
+	strCrossCoordinate[3].x = strCrossCoordinate[2].x;
+	strCrossCoordinate[3].y = strCrossCoordinate[0].y;
 
-// 	LCD_GramScan(1);
+	LCD_GramScan(1);
 
-// 	for (i = 0; i < 4; i++) {
-// 		LCD_Clear(0, 0, usScreenWidth, usScreenHeigth);
+	for (i = 0; i < 4; i++) {
+		LCD_Clear(0, 0, usScreenWidth, usScreenHeigth);
 
-// 		pStr = "Touch Calibrate ......";
-// 		LCD_DrawString_Color(
-// 				(usScreenWidth - (strlen(pStr) - 7) * WIDTH_EN_CHAR) >> 1,
-// 				usScreenHeigth >> 1, pStr, BACKGROUND, RED);
+		pStr = "Touch Calibrate ......";
+		LCD_DrawString_Color(
+				(usScreenWidth - (strlen(pStr) - 7) * WIDTH_EN_CHAR) >> 1,
+				usScreenHeigth >> 1, pStr, BACKGROUND, RED);
 
-// 		/*
-// 		sprintf(cStr, "%d", i + 1);
-// 		LCD_DrawString_Color(usScreenWidth >> 1,
-// 				(usScreenHeigth >> 1) - HEIGHT_EN_CHAR, cStr, BACKGROUND, RED);
-// 		*/
-// 		XPT2046_DelayUS(100000);
+		/*
+		sprintf(cStr, "%d", i + 1);
+		LCD_DrawString_Color(usScreenWidth >> 1,
+				(usScreenHeigth >> 1) - HEIGHT_EN_CHAR, cStr, BACKGROUND, RED);
+		*/
+		XPT2046_DelayUS(100000);
 
-// 		LCD_DrawCross(strCrossCoordinate[i].x, strCrossCoordinate[i].y);
+		LCD_DrawCross(strCrossCoordinate[i].x, strCrossCoordinate[i].y);
 
-// 		while (!XPT2046_ReadAdc_Smooth_XY(&strScreenSample[i]))
-// 			;
+		while (!XPT2046_ReadAdc_Smooth_XY(&strScreenSample[i]))
+			;
 
-// 	}
+	}
 
-// 	XPT2046_Calculate_CalibrationFactor(strCrossCoordinate, strScreenSample,
-// 			&CalibrationFactor);
+	XPT2046_Calculate_CalibrationFactor(strCrossCoordinate, strScreenSample,
+			&CalibrationFactor);
 
-// 	if (CalibrationFactor.Divider == 0)
-// 		goto Failure;
+	if (CalibrationFactor.Divider == 0)
+		goto Failure;
 
-// 	usTest_x = ((CalibrationFactor.An * strScreenSample[3].x)
-// 			+ (CalibrationFactor.Bn * strScreenSample[3].y)
-// 			+ CalibrationFactor.Cn) / CalibrationFactor.Divider;
-// 	usTest_y = ((CalibrationFactor.Dn * strScreenSample[3].x)
-// 			+ (CalibrationFactor.En * strScreenSample[3].y)
-// 			+ CalibrationFactor.Fn) / CalibrationFactor.Divider;
+	usTest_x = ((CalibrationFactor.An * strScreenSample[3].x)
+			+ (CalibrationFactor.Bn * strScreenSample[3].y)
+			+ CalibrationFactor.Cn) / CalibrationFactor.Divider;
+	usTest_y = ((CalibrationFactor.Dn * strScreenSample[3].x)
+			+ (CalibrationFactor.En * strScreenSample[3].y)
+			+ CalibrationFactor.Fn) / CalibrationFactor.Divider;
 
-// 	usGap_x =
-// 			(usTest_x > strCrossCoordinate[3].x) ?
-// 					(usTest_x - strCrossCoordinate[3].x) :
-// 					(strCrossCoordinate[3].x - usTest_x);
-// 	usGap_y =
-// 			(usTest_y > strCrossCoordinate[3].y) ?
-// 					(usTest_y - strCrossCoordinate[3].y) :
-// 					(strCrossCoordinate[3].y - usTest_y);
+	usGap_x =
+			(usTest_x > strCrossCoordinate[3].x) ?
+					(usTest_x - strCrossCoordinate[3].x) :
+					(strCrossCoordinate[3].x - usTest_x);
+	usGap_y =
+			(usTest_y > strCrossCoordinate[3].y) ?
+					(usTest_y - strCrossCoordinate[3].y) :
+					(strCrossCoordinate[3].y - usTest_y);
 
-// 	if ((usGap_x > 10) || (usGap_y > 10))
-// 		goto Failure;
+	if ((usGap_x > 10) || (usGap_y > 10))
+		goto Failure;
 
-// 	strXPT2046_TouchPara.dX_X = (CalibrationFactor.An * 1.0)
-// 			/ CalibrationFactor.Divider;
-// 	strXPT2046_TouchPara.dX_Y = (CalibrationFactor.Bn * 1.0)
-// 			/ CalibrationFactor.Divider;
-// 	strXPT2046_TouchPara.dX = (CalibrationFactor.Cn * 1.0)
-// 			/ CalibrationFactor.Divider;
+	strXPT2046_TouchPara.dX_X = (CalibrationFactor.An * 1.0)
+			/ CalibrationFactor.Divider;
+	strXPT2046_TouchPara.dX_Y = (CalibrationFactor.Bn * 1.0)
+			/ CalibrationFactor.Divider;
+	strXPT2046_TouchPara.dX = (CalibrationFactor.Cn * 1.0)
+			/ CalibrationFactor.Divider;
 
-// 	strXPT2046_TouchPara.dY_X = (CalibrationFactor.Dn * 1.0)
-// 			/ CalibrationFactor.Divider;
-// 	strXPT2046_TouchPara.dY_Y = (CalibrationFactor.En * 1.0)
-// 			/ CalibrationFactor.Divider;
-// 	strXPT2046_TouchPara.dY = (CalibrationFactor.Fn * 1.0)
-// 			/ CalibrationFactor.Divider;
+	strXPT2046_TouchPara.dY_X = (CalibrationFactor.Dn * 1.0)
+			/ CalibrationFactor.Divider;
+	strXPT2046_TouchPara.dY_Y = (CalibrationFactor.En * 1.0)
+			/ CalibrationFactor.Divider;
+	strXPT2046_TouchPara.dY = (CalibrationFactor.Fn * 1.0)
+			/ CalibrationFactor.Divider;
 
-// #endif
+#endif
 
-// 	LCD_Clear(0, 0, usScreenWidth, usScreenHeigth);
+	LCD_Clear(0, 0, usScreenWidth, usScreenHeigth);
 
-// 	pStr = "Welcome !";
-// 	LCD_DrawString_Color((usScreenWidth - strlen(pStr) * WIDTH_EN_CHAR) >> 1,
-// 			usScreenHeigth >> 1, pStr, BACKGROUND, RED);
+	pStr = "Welcome !";
+	LCD_DrawString_Color((usScreenWidth - strlen(pStr) * WIDTH_EN_CHAR) >> 1,
+			usScreenHeigth >> 1, pStr, BACKGROUND, RED);
 
-// 	XPT2046_DelayUS(200000);
+	XPT2046_DelayUS(200000);
 
-// 	return 1;
+	return 1;
 
-// 	Failure:
+	Failure:
 
-// 	LCD_Clear(0, 0, usScreenWidth, usScreenHeigth);
+	LCD_Clear(0, 0, usScreenWidth, usScreenHeigth);
 
-// 	pStr = "Calibrate fail";
-// 	LCD_DrawString_Color((usScreenWidth - strlen(pStr) * WIDTH_EN_CHAR) >> 1,
-// 			usScreenHeigth >> 1, pStr, BACKGROUND, RED);
+	pStr = "Calibrate fail";
+	LCD_DrawString_Color((usScreenWidth - strlen(pStr) * WIDTH_EN_CHAR) >> 1,
+			usScreenHeigth >> 1, pStr, BACKGROUND, RED);
 
-// 	pStr = "try again";
-// 	LCD_DrawString_Color((usScreenWidth - strlen(pStr) * WIDTH_EN_CHAR) >> 1,
-// 			(usScreenHeigth >> 1) + HEIGHT_EN_CHAR, pStr, BACKGROUND, RED);
+	pStr = "try again";
+	LCD_DrawString_Color((usScreenWidth - strlen(pStr) * WIDTH_EN_CHAR) >> 1,
+			(usScreenHeigth >> 1) + HEIGHT_EN_CHAR, pStr, BACKGROUND, RED);
 
-// 	XPT2046_DelayUS(1000000);
+	XPT2046_DelayUS(1000000);
 
-// 	return 0;
+	return 0;
 
-// }
+}
 
 uint8_t XPT2046_Get_TouchedPoint(strType_XPT2046_Coordinate *pDisplayCoordinate,
 		strType_XPT2046_TouchPara *pTouchPara) {

@@ -1,0 +1,6 @@
+../Core/Inc/SERVO42C.hpp:22:20:static uint8_t SERVO42C::getCHK(uint8_t*, uint8_t)	24	static
+../Core/Inc/SERVO42C.hpp:31:5:SERVO42C::SERVO42C(uint8_t, UART_HandleTypeDef*)	24	static
+../Core/Inc/SERVO42C.hpp:36:10:void SERVO42C::step(uint8_t, uint8_t, uint32_t)	40	static
+../Core/Inc/SERVO42C.hpp:47:10:void SERVO42C::stepClockwise(uint8_t)	16	static
+../Core/Inc/SERVO42C.hpp:50:10:void SERVO42C::stepCounterClockwise(uint8_t)	16	static
+../Core/Src/interface.cpp:7:6:void myfunc()	32	static
