@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 //#include "interface.hpp"
 #include "lcd.h"
+#include "xpt2046.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,6 +58,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+strType_XPT2046_Coordinate Coordinate = {0}; //Coordinate of LCD
 
 /* USER CODE END 0 */
 
@@ -99,10 +101,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   LCD_INIT();
   LCD_DrawString(50,20,"Hello World");
+  // while( ! XPT2046_Touch_Calibrate () );
   myfunc();
   
   while (1)
   {
+    
+    XPT2046_Get_TouchedPoint(&Coordinate,
+	  			&strXPT2046_TouchPara);
+    char str[4] = {};
+    sprintf(str, "%d", Coordinate.x);
+    LCD_DrawString(0,0,str);
+    HAL_Delay(10);
     
     /* USER CODE END WHILE */
 

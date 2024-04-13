@@ -64,6 +64,8 @@
         "compare": "cpp",
         "concepts": "cpp",
         "algorithm": "cpp",
-        "lcd.h": "c"
+        "lcd.h": "c",
+        "span": "c",
+        "lcdtp.h": "c"
     },
 }
