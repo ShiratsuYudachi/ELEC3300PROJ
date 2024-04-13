@@ -100,12 +100,10 @@ int main(void)
   LCD_INIT();
   LCD_DrawString(50,20,"Hello World");
   myfunc();
-  uint32_t data;
+  
   while (1)
   {
-    if(HAL_UART_Receive(&huart2, &data, 1, 0) == HAL_OK){
-      HAL_UART_Transmit(&huart2, &data, 1, 0);
-    }
+    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

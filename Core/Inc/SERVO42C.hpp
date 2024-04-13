@@ -44,11 +44,11 @@ public:
         instruction[7] = getCHK(instruction, 8);
         HAL_UART_Transmit(pUART, instruction, 8, 100);
     }
-    void step1(uint8_t stepCount){
-        step(1, stepSpeed, stepCount);
-    }
-    void step0(uint8_t stepCount){
+    void stepClockwise(uint8_t stepCount){
         step(0, stepSpeed, stepCount);
+    }
+    void stepCounterClockwise(uint8_t stepCount){
+        step(1, stepSpeed, stepCount);
     }
 };
 
