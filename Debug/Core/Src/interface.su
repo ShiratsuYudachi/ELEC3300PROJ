@@ -12,4 +12,11 @@
 ../Core/Inc/EasyUI.hpp:128:10:virtual void Slider::render()	16	static
 ../Core/Inc/EasyUI.hpp:139:14:uint16_t Slider::wrapY(u_int16_t)	16	static
 ../Core/Inc/EasyUI.hpp:148:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
-../Core/Src/interface.cpp:9:6:void myfunc()	160	static
+../Core/Inc/EasyUI.hpp:176:5:TouchPad::TouchPad(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Inc/EasyUI.hpp:188:10:virtual void TouchPad::render()	16	static
+../Core/Inc/EasyUI.hpp:198:10:void TouchPad::clearDot()	16	static
+../Core/Inc/EasyUI.hpp:203:10:void TouchPad::renderDot()	16	static
+../Core/Inc/EasyUI.hpp:208:14:uint16_t TouchPad::wrapX(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:215:15:u_int16_t TouchPad::wrapY(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:222:10:virtual void TouchPad::update(u_int16_t, u_int16_t)	24	static
+../Core/Src/interface.cpp:9:6:void myfunc()	184	static

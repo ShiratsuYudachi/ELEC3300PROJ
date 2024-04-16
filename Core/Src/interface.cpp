@@ -9,11 +9,13 @@
 void myfunc(){
   SERVO42C servo(0xe0, &huart2);
 
-  Button testButton(150, 50, "Test");
-  testButton.render();
 
-  Slider testSlider(150,120,100);
-  testSlider.render();
+  Button testButton(150, 50, "Test");
+  Slider testSlider(200,120,100);
+  TouchPad testTouchPad(0, 120);
+
+  
+
 
   char str[20];
   strType_XPT2046_Coordinate touch;

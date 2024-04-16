@@ -161,3 +161,79 @@ public:
     }
 };
 
+class TouchPad : public UIElement
+{
+private:
+    uint16_t color;
+    uint16_t dotRadius = 10;
+
+public:
+    uint16_t dotX;
+    uint16_t dotY;
+    uint16_t lastDotX = 0;
+    uint16_t lastDotY = 0;
+
+    TouchPad(uint16_t x, uint16_t y, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+    : UIElement(x, y, width, height){
+        this->x = x;
+        this->y = y;
+        this->width = width;
+        this->height = height;
+        this->color = color;
+        dotX = width/2;
+        dotY = height/2;
+    }
+
+
+    void render() override
+    {
+        // render background
+        LCD_OpenWindow(x, y, width, height);
+        LCD_FillColor(width*height, color);
+
+        // render dot
+        renderDot();
+    }
+
+    void clearDot(){
+        LCD_OpenWindow(x, y, width, height);
+        LCD_FillColor(width*height, color);
+    }
+
+    void renderDot(){
+        LCD_OpenWindow(x+dotX, y+dotY, dotRadius, dotRadius);
+        LCD_FillColor(dotRadius*dotRadius, RED);
+    }
+
+    uint16_t wrapX(u_int16_t x){
+        if (x>500) return dotX; // x=2048 if not touched
+        if (x < this->x) return this->x;
+        if (x > this->x+width-dotRadius) return this->x+width-dotRadius;
+        return x;
+    }
+
+    u_int16_t wrapY(u_int16_t y){
+        if (y>500) return dotY; // y=2048 if not touched
+        if (y < this->y) return this->y;
+        if (y > this->y+height-dotRadius) return this->y+height-dotRadius;
+        return y;
+    }
+
+    void update(u_int16_t x, u_int16_t y) override
+    {
+        if (x>500 || y>500) return;
+        if (x < this->x || x > this->x+width || y < this->y || y > this->y+height) return;
+        int _dotX = wrapX(x)-this->x;
+        int _dotY = wrapY(y)-this->y;
+        if (lastDotX != _dotX || lastDotY != _dotY){
+            clearDot();
+            dotX = _dotX;
+            dotY = _dotY;
+            renderDot();
+            lastDotX = dotX;
+            lastDotY = dotY;
+        }
+    }
+
+};
+    

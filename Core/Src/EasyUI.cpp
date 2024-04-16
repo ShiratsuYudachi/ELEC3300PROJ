@@ -4,6 +4,13 @@ UIElement* UIElement::allElements[MAX_UI_ELEMENTS] = {};
 uint8_t UIElement::elementNum = 0;
 
 void UIElement::updateAllElements(){
+    static bool firstCall = false;
+    if (!firstCall){
+        for (int i=0; i<elementNum; i++){
+            allElements[i]->render();
+        }
+        firstCall = true;
+    }
     strType_XPT2046_Coordinate touch;
     XPT2046_Get_TouchedPoint(&touch, &strXPT2046_TouchPara);
     #if SHOW_LOCATION
