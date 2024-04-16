@@ -20,9 +20,9 @@ public:
 
     static void updateAllElements();
 
-protected:
     uint16_t x, y;
     uint16_t width, height;
+protected:
     UIElement(uint16_t x, uint16_t y, uint16_t width, uint16_t height){
         this->x = x;
         this->y = y;
@@ -46,9 +46,9 @@ private:
     char text[TEXT_CHAR_NUM];
 public:
     bool isPressed = false;
-    void (*onPressed)();
+    void (*onPressed)(Button* self, int x, int y);
 
-    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], void (*onPressed)() = nullptr, uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
+    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], void (*onPressed)(Button*, int ,int) = nullptr, uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
     : UIElement(x, y, width, height)
     {
         this->initialColor = color;
@@ -79,7 +79,7 @@ public:
             color = YELLOW;
             if (!isPressed){
                 isPressed = true;
-                if (onPressed) onPressed();
+                if (onPressed) onPressed(this,x,y);
             }
         }
         else{
@@ -93,4 +93,71 @@ public:
     }
 };
 
+class Slider : public UIElement
+{
+private:
+    uint16_t barColor;
+    float value;
+    uint16_t maxValue;
+
+    uint16_t draggerRadius = 20;
+    bool isDragging = false;
+
+    uint16_t draggerX;
+    uint16_t draggerY;
+
+public:
+
+    Slider(
+        uint16_t x,
+        uint16_t y,
+        uint16_t maxValue = 0,
+        uint16_t width = 10,
+        uint16_t height = 130,
+        uint16_t barColor = CYAN
+    ): UIElement(x, y, width, height)
+    {
+        this->maxValue = maxValue;
+        this->barColor = barColor;
+        draggerX = x + width/2;
+        draggerY = y + height/2;
+
+    }
+    
+
+    void render() override
+    {
+        // render bar
+        LCD_OpenWindow(x, y, width, height);
+        LCD_FillColor(width*height, barColor);
+
+        // render dragger
+        LCD_OpenWindow(x,draggerY,width,draggerRadius);
+        LCD_FillColor(width*draggerRadius, RED);
+    }
+
+    uint16_t wrapY(u_int16_t y){
+        if (y>500) return draggerY; // y=2048 if not touched
+        if (y < this->y) return this->y;
+        if (y > this->y+height-draggerRadius) return this->y+height-draggerRadius;
+        return y;
+    }
+
+
+    
+    void update(u_int16_t x, u_int16_t y) override
+    {
+        bool isDraggerTouched;
+        if (isDragging){
+            draggerY = wrapY(y);
+            render();
+            isDraggerTouched = x>=draggerX-3*draggerRadius && x<=draggerX+3*draggerRadius && y>=draggerY-draggerRadius && y<=draggerY+draggerRadius;
+        }
+        else{
+            isDraggerTouched = x>=draggerX-draggerRadius && x<=draggerX+draggerRadius && y>=draggerY-draggerRadius && y<=draggerY+draggerRadius;
+        }
+        isDragging = isDraggerTouched;
+        value = (draggerY - this->y) * maxValue / height;
+    }
+};
 

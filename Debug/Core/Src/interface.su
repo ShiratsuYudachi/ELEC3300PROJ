@@ -5,7 +5,11 @@
 ../Core/Inc/SERVO42C.hpp:50:10:void SERVO42C::stepCounterClockwise(uint8_t)	16	static
 ../Core/Inc/EasyUI.hpp:26:5:UIElement::UIElement(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
 ../Core/Inc/EasyUI.hpp:33:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
-../Core/Inc/EasyUI.hpp:51:5:Button::Button(uint16_t, uint16_t, char*, void (*)(), uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Inc/EasyUI.hpp:51:5:Button::Button(uint16_t, uint16_t, char*, void (*)(Button*, int, int), uint16_t, uint16_t, uint16_t, uint16_t)	40	static
 ../Core/Inc/EasyUI.hpp:61:10:virtual void Button::render()	32	static
 ../Core/Inc/EasyUI.hpp:76:10:virtual void Button::update(u_int16_t, u_int16_t)	16	static
-../Core/Src/interface.cpp:9:6:void myfunc()	128	static
+../Core/Inc/EasyUI.hpp:111:5:Slider::Slider(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Inc/EasyUI.hpp:128:10:virtual void Slider::render()	16	static
+../Core/Inc/EasyUI.hpp:139:14:uint16_t Slider::wrapY(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:148:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
+../Core/Src/interface.cpp:9:6:void myfunc()	160	static

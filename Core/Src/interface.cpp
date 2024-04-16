@@ -9,8 +9,12 @@
 void myfunc(){
   SERVO42C servo(0xe0, &huart2);
 
-  Button testButton(150, 100, "Test");
+  Button testButton(150, 50, "Test");
   testButton.render();
+
+  Slider testSlider(150,120,100);
+  testSlider.render();
+
   char str[20];
   strType_XPT2046_Coordinate touch;
   LCD_DrawString(0, 0, "Hello World");
@@ -37,7 +41,7 @@ void myfunc(){
 
 
     uint8_t data[3] = {};
-    HAL_UART_Receive(&huart2, data, 3, 500) == HAL_OK;
+    // HAL_UART_Receive(&huart2, data, 3, 500) == HAL_OK;
     char str[3] = {};
     sprintf(str, "%02X", data[0]);
     

@@ -1,5 +1,5 @@
 #include "EasyUI.hpp"
-#define SHOW_LOCATION 0 
+#define SHOW_LOCATION 1
 UIElement* UIElement::allElements[MAX_UI_ELEMENTS] = {};
 uint8_t UIElement::elementNum = 0;
 
