@@ -158,7 +158,7 @@ int main(void)
 	DEBUG_USART_Config();
 	
 	//Calibration of TouchPad
-	while( ! XPT2046_Touch_Calibrate () );
+	// while( ! XPT2046_Touch_Calibrate () );
 	
 
 	/*

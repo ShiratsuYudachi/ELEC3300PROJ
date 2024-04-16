@@ -1,5 +1,5 @@
-Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
- ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
+Core/Src/EasyUI.o: ../Core/Src/EasyUI.cpp ../Core/Inc/EasyUI.hpp \
+ ../Core/Inc/lcdtp.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
@@ -28,11 +28,9 @@ Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/interface.hpp ../Core/Inc/usart.h ../Core/Inc/EasyUI.hpp \
- ../Core/Inc/lcdtp.h ../Core/Inc/dht11.h ../Core/Inc/printf.h \
- ../Core/Inc/xpt2046.h
-../Core/Inc/SERVO42C.hpp:
-../Core/Inc/main.h:
+ ../Core/Inc/dht11.h ../Core/Inc/printf.h ../Core/Inc/xpt2046.h
+../Core/Inc/EasyUI.hpp:
+../Core/Inc/lcdtp.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
@@ -62,10 +60,6 @@ Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-../Core/Inc/interface.hpp:
-../Core/Inc/usart.h:
-../Core/Inc/EasyUI.hpp:
-../Core/Inc/lcdtp.h:
 ../Core/Inc/dht11.h:
 ../Core/Inc/printf.h:
 ../Core/Inc/xpt2046.h:
