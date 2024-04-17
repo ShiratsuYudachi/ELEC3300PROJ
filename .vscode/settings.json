@@ -1,6 +1,12 @@
 {
     "files.associations": {
         "cstdint": "cpp",
-        "compare": "cpp"
+        "compare": "cpp",
+        "array": "cpp",
+        "span": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp",
+        "image": "cpp"
     }
 }

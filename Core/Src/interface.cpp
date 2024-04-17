@@ -2,24 +2,31 @@
 #include "interface.hpp"
 #include "usart.h"
 #include "EasyUI.hpp"
+#include "utils.hpp"
 
 #include <stdio.h>
 
 
+SERVO42C xServo(0xe0, &huart2);
+SERVO42C yServo(0xe1, &huart2);
+SERVO42C zServo(0xe2, &huart2);
+void onTestButtonPress(Button* button, int x, int y){
+  xServo.receiveEncoder();
+  printToLCD("x Encoder"+String(xServo.getEncoder()), 1);
+}
+
 void myfunc(){
-  SERVO42C servo(0xe0, &huart2);
-
-
-  Button testButton(150, 50, "Test");
+  // create UI
+  Button testButton(150, 50, "Test",onTestButtonPress);
   Slider testSlider(200,120,100);
   TouchPad testTouchPad(0, 120);
 
   
 
 
-  char str[20];
+  
   strType_XPT2046_Coordinate touch;
-  LCD_DrawString(0, 0, "Hello World");
+  printToLCD("Hello World", 0);
   
 
   
@@ -32,13 +39,15 @@ void myfunc(){
 
     // sprintf(str, "x=%d, y=%d", touch.x, touch.y);
     // LCD_DrawString(0, 0, str);
+    
+
 
     
     if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET){
-      servo.stepCounterClockwise(10);
+      xServo.stepCounterClockwise(10);
     }
     if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET){
-      servo.stepClockwise(10);
+      xServo.stepClockwise(10);
     }
 
 

@@ -196,8 +196,8 @@ public:
     }
 
     void clearDot(){
-        LCD_OpenWindow(x, y, width, height);
-        LCD_FillColor(width*height, color);
+        LCD_OpenWindow(x+dotX, y+dotY, dotRadius, dotRadius);
+        LCD_FillColor(dotRadius*dotRadius, color);
     }
 
     void renderDot(){
