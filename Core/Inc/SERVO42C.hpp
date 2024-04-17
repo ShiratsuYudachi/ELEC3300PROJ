@@ -90,7 +90,7 @@ public:
     }
 
     // position : difference of degrees from zero position
-    float getPosition(){
+    float getPosition(){ // to test
         if (enableAbsolutePosControl){
             float position = 0;
             position = (encoder - zeroEncoder + (encoderCarry - zeroEncoderCarry)*0xFFFF)/(float)0xFFFF*360;
@@ -99,7 +99,7 @@ public:
     }
 
     // position: 0~0xFFFF
-    void setPosition(int16_t position){
+    void setPosition(int16_t position){ // to test
         if (enableAbsolutePosControl){
             float currentPosition = getPosition();
             float error = position - currentPosition;
@@ -164,7 +164,7 @@ public:
         encoderCarry = data[1]<<24 | data[2]<<16 | data[3]<<8 | data[4];
     }
 
-    void receiveErrorAngle(){ // To test
+    void receiveErrorAngle(){ // todo
         uint8_t instruction[3] = {};
         instruction[0] = address;
         instruction[1] = 0x39;
@@ -178,7 +178,7 @@ public:
         }
     }
 
-    void receiveShaftProtectionState(){
+    void receiveShaftProtectionState(){ //todo
         uint8_t instruction[3] = {};
         instruction[0] = address;
         instruction[1] = 0x3E;
