@@ -26,7 +26,7 @@ void myfunc(){
 
   
   strType_XPT2046_Coordinate touch;
-  printToLCD("Hello World", 0);
+  printToLCD("Hello World", 1s);
   
 
   
