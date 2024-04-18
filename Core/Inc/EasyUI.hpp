@@ -1,4 +1,5 @@
-extern "C"{
+extern "C"
+{
 #include "lcdtp.h"
 #include "xpt2046.h"
 }
@@ -8,11 +9,10 @@ extern "C"{
 #define TEXT_CHAR_NUM 16
 #define MAX_UI_ELEMENTS 32
 
-
 class UIElement
 {
 public:
-    static UIElement* allElements[MAX_UI_ELEMENTS];
+    static UIElement *allElements[MAX_UI_ELEMENTS];
     static uint8_t elementNum;
 
     virtual void render() = 0;
@@ -22,19 +22,21 @@ public:
 
     uint16_t x, y;
     uint16_t width, height;
+
 protected:
-    UIElement(uint16_t x, uint16_t y, uint16_t width, uint16_t height){
+    UIElement(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+    {
         this->x = x;
         this->y = y;
         this->width = width;
         this->height = height;
         allElements[elementNum++] = this;
     }
-    bool checkTouch(uint16_t x, uint16_t y){
-        return x>=this->x && x<=this->x+width && y>=this->y && y<=this->y+height;
+    bool checkTouch(uint16_t x, uint16_t y)
+    {
+        return x >= this->x && x <= this->x + width && y >= this->y && y <= this->y + height;
     }
 };
-
 
 class Button : public UIElement
 {
@@ -44,12 +46,13 @@ private:
     uint16_t color;
     uint16_t textColor;
     char text[TEXT_CHAR_NUM];
+
 public:
     bool isPressed = false;
-    void (*onPressed)(Button* self, int x, int y);
+    void (*onPressed)(Button *self, int x, int y);
 
-    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], void (*onPressed)(Button*, int ,int) = nullptr, uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
-    : UIElement(x, y, width, height)
+    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], void (*onPressed)(Button *, int, int) = nullptr, uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
+        : UIElement(x, y, width, height)
     {
         this->initialColor = color;
         this->color = color;
@@ -66,27 +69,33 @@ public:
         //     LCD_DrawLine(x, i, x+width, i, color);
         // }
         LCD_OpenWindow(x, y, width, height);
-        LCD_FillColor(width*height, color);
+        LCD_FillColor(width * height, color);
 
         // render text
-        LCD_DrawString_Color(x+width/3, y+height/3, text, color, textColor);
+        LCD_DrawString_Color(x + width / 3, y + height / 3, text, color, textColor);
     }
 
-    
     void update(u_int16_t x, u_int16_t y) override
     {
-        if (checkTouch(x, y)){
+        if (checkTouch(x, y))
+        {
             color = YELLOW;
-            if (!isPressed){
+            //if (!isPressed)
+            //{ // only trigger once
                 isPressed = true;
-                if (onPressed) onPressed(this,x,y);
-            }
+                render();
+                last_color = color;
+                if (onPressed)
+                    onPressed(this, x, y);
+            //}
         }
-        else{
+        else
+        {
             color = initialColor;
             isPressed = false;
         }
-        if (last_color != color){
+        if (last_color != color)
+        {
             render();
             last_color = color;
         }
@@ -107,54 +116,54 @@ private:
     uint16_t draggerY;
 
 public:
-
     Slider(
         uint16_t x,
         uint16_t y,
         uint16_t maxValue = 0,
         uint16_t width = 10,
         uint16_t height = 130,
-        uint16_t barColor = CYAN
-    ): UIElement(x, y, width, height)
+        uint16_t barColor = CYAN) : UIElement(x, y, width, height)
     {
         this->maxValue = maxValue;
         this->barColor = barColor;
-        draggerX = x + width/2;
-        draggerY = y + height/2;
-
+        draggerX = x + width / 2;
+        draggerY = y + height / 2;
     }
-    
 
     void render() override
     {
         // render bar
         LCD_OpenWindow(x, y, width, height);
-        LCD_FillColor(width*height, barColor);
+        LCD_FillColor(width * height, barColor);
 
         // render dragger
-        LCD_OpenWindow(x,draggerY,width,draggerRadius);
-        LCD_FillColor(width*draggerRadius, RED);
+        LCD_OpenWindow(x, draggerY, width, draggerRadius);
+        LCD_FillColor(width * draggerRadius, RED);
     }
 
-    uint16_t wrapY(u_int16_t y){
-        if (y>500) return draggerY; // y=2048 if not touched
-        if (y < this->y) return this->y;
-        if (y > this->y+height-draggerRadius) return this->y+height-draggerRadius;
+    uint16_t wrapY(u_int16_t y)
+    {
+        if (y > 500)
+            return draggerY; // y=2048 if not touched
+        if (y < this->y)
+            return this->y;
+        if (y > this->y + height - draggerRadius)
+            return this->y + height - draggerRadius;
         return y;
     }
 
-
-    
     void update(u_int16_t x, u_int16_t y) override
     {
         bool isDraggerTouched;
-        if (isDragging){
+        if (isDragging)
+        {
             draggerY = wrapY(y);
             render();
-            isDraggerTouched = x>=draggerX-3*draggerRadius && x<=draggerX+3*draggerRadius && y>=draggerY-draggerRadius && y<=draggerY+draggerRadius;
+            isDraggerTouched = x >= draggerX - 3 * draggerRadius && x <= draggerX + 3 * draggerRadius && y >= draggerY - draggerRadius && y <= draggerY + draggerRadius;
         }
-        else{
-            isDraggerTouched = x>=draggerX-draggerRadius && x<=draggerX+draggerRadius && y>=draggerY-draggerRadius && y<=draggerY+draggerRadius;
+        else
+        {
+            isDraggerTouched = x >= draggerX - draggerRadius && x <= draggerX + draggerRadius && y >= draggerY - draggerRadius && y <= draggerY + draggerRadius;
         }
         isDragging = isDraggerTouched;
         value = (draggerY - this->y) * maxValue / height;
@@ -174,58 +183,71 @@ public:
     uint16_t lastDotY = 0;
 
     TouchPad(uint16_t x, uint16_t y, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
-    : UIElement(x, y, width, height){
+        : UIElement(x, y, width, height)
+    {
         this->x = x;
         this->y = y;
         this->width = width;
         this->height = height;
         this->color = color;
-        dotX = width/2;
-        dotY = height/2;
+        dotX = width / 2;
+        dotY = height / 2;
     }
-
 
     void render() override
     {
         // render background
         LCD_OpenWindow(x, y, width, height);
-        LCD_FillColor(width*height, color);
+        LCD_FillColor(width * height, color);
 
         // render dot
         renderDot();
     }
 
-    void clearDot(){
-        LCD_OpenWindow(x+dotX, y+dotY, dotRadius, dotRadius);
-        LCD_FillColor(dotRadius*dotRadius, color);
+    void clearDot()
+    {
+        LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
+        LCD_FillColor(dotRadius * dotRadius, color);
     }
 
-    void renderDot(){
-        LCD_OpenWindow(x+dotX, y+dotY, dotRadius, dotRadius);
-        LCD_FillColor(dotRadius*dotRadius, RED);
+    void renderDot()
+    {
+        LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
+        LCD_FillColor(dotRadius * dotRadius, RED);
     }
 
-    uint16_t wrapX(u_int16_t x){
-        if (x>500) return dotX; // x=2048 if not touched
-        if (x < this->x) return this->x;
-        if (x > this->x+width-dotRadius) return this->x+width-dotRadius;
+    uint16_t wrapX(u_int16_t x)
+    {
+        if (x > 500)
+            return dotX; // x=2048 if not touched
+        if (x < this->x)
+            return this->x;
+        if (x > this->x + width - dotRadius)
+            return this->x + width - dotRadius;
         return x;
     }
 
-    u_int16_t wrapY(u_int16_t y){
-        if (y>500) return dotY; // y=2048 if not touched
-        if (y < this->y) return this->y;
-        if (y > this->y+height-dotRadius) return this->y+height-dotRadius;
+    u_int16_t wrapY(u_int16_t y)
+    {
+        if (y > 500)
+            return dotY; // y=2048 if not touched
+        if (y < this->y)
+            return this->y;
+        if (y > this->y + height - dotRadius)
+            return this->y + height - dotRadius;
         return y;
     }
 
     void update(u_int16_t x, u_int16_t y) override
     {
-        if (x>500 || y>500) return;
-        if (x < this->x || x > this->x+width || y < this->y || y > this->y+height) return;
-        int _dotX = wrapX(x)-this->x;
-        int _dotY = wrapY(y)-this->y;
-        if (lastDotX != _dotX || lastDotY != _dotY){
+        if (x > 500 || y > 500)
+            return;
+        if (x < this->x || x > this->x + width || y < this->y || y > this->y + height)
+            return;
+        int _dotX = wrapX(x) - this->x;
+        int _dotY = wrapY(y) - this->y;
+        if (lastDotX != _dotX || lastDotY != _dotY)
+        {
             clearDot();
             dotX = _dotX;
             dotY = _dotY;
@@ -234,6 +256,4 @@ public:
             lastDotY = dotY;
         }
     }
-
 };
-    

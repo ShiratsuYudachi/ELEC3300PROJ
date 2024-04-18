@@ -8,23 +8,25 @@
 ../Core/Inc/SERVO42C.hpp:130:10:void SERVO42C::stepCounterClockwise(uint8_t)	16	static
 ../Core/Inc/SERVO42C.hpp:152:10:bool SERVO42C::receiveEncoder()	64	static
 ../Core/Inc/SERVO42C.hpp:194:14:uint16_t SERVO42C::getEncoder()	16	static
-../Core/Inc/EasyUI.hpp:26:5:UIElement::UIElement(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-../Core/Inc/EasyUI.hpp:33:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
-../Core/Inc/EasyUI.hpp:51:5:Button::Button(uint16_t, uint16_t, char*, void (*)(Button*, int, int), uint16_t, uint16_t, uint16_t, uint16_t)	40	static
-../Core/Inc/EasyUI.hpp:61:10:virtual void Button::render()	32	static
-../Core/Inc/EasyUI.hpp:76:10:virtual void Button::update(u_int16_t, u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:111:5:Slider::Slider(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
-../Core/Inc/EasyUI.hpp:128:10:virtual void Slider::render()	16	static
-../Core/Inc/EasyUI.hpp:139:14:uint16_t Slider::wrapY(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:148:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
-../Core/Inc/EasyUI.hpp:176:5:TouchPad::TouchPad(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
-../Core/Inc/EasyUI.hpp:188:10:virtual void TouchPad::render()	16	static
-../Core/Inc/EasyUI.hpp:198:10:void TouchPad::clearDot()	16	static
-../Core/Inc/EasyUI.hpp:203:10:void TouchPad::renderDot()	16	static
-../Core/Inc/EasyUI.hpp:208:14:uint16_t TouchPad::wrapX(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:215:15:u_int16_t TouchPad::wrapY(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:222:10:virtual void TouchPad::update(u_int16_t, u_int16_t)	24	static
-../Core/Src/interface.cpp:13:6:void onTestButtonPress(Button*, int, int)	96	static
-../Core/Src/interface.cpp:18:6:void myfunc()	184	static
-../Core/Src/interface.cpp:64:1:void __static_initialization_and_destruction_0(int, int)	16	static
-../Core/Src/interface.cpp:64:1:cpp)	8	static
+../Core/Inc/EasyUI.hpp:27:5:UIElement::UIElement(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+../Core/Inc/EasyUI.hpp:35:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
+../Core/Inc/EasyUI.hpp:54:5:Button::Button(uint16_t, uint16_t, char*, void (*)(Button*, int, int), uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Inc/EasyUI.hpp:64:10:virtual void Button::render()	32	static
+../Core/Inc/EasyUI.hpp:78:10:virtual void Button::update(u_int16_t, u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:119:5:Slider::Slider(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Inc/EasyUI.hpp:133:10:virtual void Slider::render()	16	static
+../Core/Inc/EasyUI.hpp:144:14:uint16_t Slider::wrapY(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:155:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
+../Core/Inc/EasyUI.hpp:185:5:TouchPad::TouchPad(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
+../Core/Inc/EasyUI.hpp:197:10:virtual void TouchPad::render()	16	static
+../Core/Inc/EasyUI.hpp:207:10:void TouchPad::clearDot()	16	static
+../Core/Inc/EasyUI.hpp:213:10:void TouchPad::renderDot()	16	static
+../Core/Inc/EasyUI.hpp:219:14:uint16_t TouchPad::wrapX(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:230:15:u_int16_t TouchPad::wrapY(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:241:10:virtual void TouchPad::update(u_int16_t, u_int16_t)	24	static
+../Core/Src/interface.cpp:12:6:void onTestButtonPress(Button*, int, int)	96	static
+../Core/Src/interface.cpp:18:6:void CW(Button*, int, int)	24	static
+../Core/Src/interface.cpp:23:6:void CCW(Button*, int, int)	24	static
+../Core/Src/interface.cpp:28:6:void myfunc()	272	static
+../Core/Src/interface.cpp:60:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/Src/interface.cpp:60:1:cpp)	8	static
