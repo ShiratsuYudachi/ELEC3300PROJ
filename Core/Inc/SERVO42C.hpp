@@ -65,7 +65,7 @@ private:
             return data;
         }else{
             // printToLCD("Check fail", 3);
-            // printToLCD(String(data,9), 7);
+            //printToLCD(String(data,9), 7);
             return nullptr;
         }
     }
@@ -158,7 +158,7 @@ public:
             instruction[2] = getCRC(instruction, 2);
             HAL_UART_Transmit(pUART, instruction, 3, 50);
             data = receiveUART(8);
-            debugLog("fetching encoder");
+            debugLog("Fetching encoder");
         }
         encoder = data[5]<<8 | data[6];
         encoderCarry = data[1]<<24 | data[2]<<16 | data[3]<<8 | data[4];

@@ -80,13 +80,13 @@ public:
         if (checkTouch(x, y))
         {
             color = YELLOW;
-            //if (!isPressed)
+            // if (!isPressed)
             //{ // only trigger once
-                isPressed = true;
-                render();
-                last_color = color;
-                if (onPressed)
-                    onPressed(this, x, y);
+            isPressed = true;
+            render();
+            last_color = color;
+            if (onPressed)
+                onPressed(this, x, y);
             //}
         }
         else
@@ -181,8 +181,9 @@ public:
     uint16_t dotY;
     uint16_t lastDotX = 0;
     uint16_t lastDotY = 0;
+    void (*onPressed)(TouchPad *, int, int) = nullptr;
 
-    TouchPad(uint16_t x, uint16_t y, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+    TouchPad(uint16_t x, uint16_t y, void (*onPressed)(TouchPad *, int, int) = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
         : UIElement(x, y, width, height)
     {
         this->x = x;
@@ -192,6 +193,7 @@ public:
         this->color = color;
         dotX = width / 2;
         dotY = height / 2;
+        this->onPressed = onPressed;
     }
 
     void render() override
@@ -240,10 +242,13 @@ public:
 
     void update(u_int16_t x, u_int16_t y) override
     {
+        // if the touchpad is not touched, do nothing
         if (x > 500 || y > 500)
             return;
         if (x < this->x || x > this->x + width || y < this->y || y > this->y + height)
             return;
+
+        
         int _dotX = wrapX(x) - this->x;
         int _dotY = wrapY(y) - this->y;
         if (lastDotX != _dotX || lastDotY != _dotY)
@@ -254,6 +259,10 @@ public:
             renderDot();
             lastDotX = dotX;
             lastDotY = dotY;
-        }
+        } // render only when the coordinate changes
+
+        // execute the function
+        if (onPressed)
+            onPressed(this, dotX, dotY);
     }
 };

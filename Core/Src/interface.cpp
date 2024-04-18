@@ -25,6 +25,23 @@ void CCW(Button *button, int x, int y)
   xServo.stepCounterClockwise(10);
 }
 
+void MoveXY(TouchPad *touchPad, int x, int y)
+{
+  uint8_t xdir = 1, ydir = 1;
+  if (x-touchPad->width/2 < 0)
+  {
+    xdir = 0;
+  }
+  if (y-touchPad->height/2 < 0)
+  {
+    ydir = 0;
+  }
+  int a = (x-touchPad->width/2);
+  a < 0 ? a = -a : a = a;
+  uint8_t xSpeed = a/(touchPad->height/2)*7;
+  xServo.step(xdir, xSpeed, 10);
+}
+
 void myfunc()
 {
   // create UI
@@ -32,7 +49,7 @@ void myfunc()
   Button CWButton(30, 50, "CW", CW, 40, 40);
   Button CCWButton(100, 50, "CCW", CCW, 40, 40);
   Slider testSlider(200, 120, 100);
-  TouchPad testTouchPad(0, 120);
+  TouchPad testTouchPad(0, 120, MoveXY);
 
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World", 0);
