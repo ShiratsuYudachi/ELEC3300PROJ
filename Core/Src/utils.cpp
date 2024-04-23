@@ -26,6 +26,6 @@ void printArray(const uint8_t* arr, int len, int row){
     }
 }
 
-void debugLog(const String& string){
-    printToLCD(string, 18);
+void debugLog(const String& string, uint16_t row){
+    printToLCD(string, row);
 }

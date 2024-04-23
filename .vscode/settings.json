@@ -8,6 +8,7 @@
         "string_view": "cpp",
         "vector": "cpp",
         "image": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "types": "cpp"
     }
 }

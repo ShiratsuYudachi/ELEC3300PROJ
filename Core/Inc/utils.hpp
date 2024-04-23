@@ -84,7 +84,7 @@ public:
 String operator+(const char* s, const String& str);
 
 void printToLCD(const String& string, uint16_t row = 1);
-void debugLog(const String& string);
+void debugLog(const String& string, uint16_t row = 18);
 
 void printArray(const uint8_t* arr, int len, int row = 1);
 

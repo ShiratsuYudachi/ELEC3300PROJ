@@ -289,4 +289,14 @@ public:
         if (onPressed)
             onPressed(this, dotX, dotY);
     }
+
+    float getXRatio()
+    {
+        return (float)dotX / width;
+    }
+
+    float getYRatio()
+    {
+        return (float)dotY / height;
+    }
 };

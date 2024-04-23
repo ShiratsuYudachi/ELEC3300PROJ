@@ -95,7 +95,7 @@ public:
     // once the motor stops turnning, it reaches the zero position
     // WARN: this will block the program until the motor stops
     void alignAbsolutePosition(int direction = 0){
-        setMaxTorque(500);
+        setMaxTorque(750);
         HAL_Delay(500);
         spin(direction, 100);
         
@@ -110,7 +110,7 @@ public:
                 break;
             }
             lastEncoder = encoder;
-            HAL_Delay(2000);
+            HAL_Delay(300);
         }
         
         printToLCD("Stage 2",0);

@@ -56,6 +56,8 @@ void myfunc()
     // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());
     // printToLCD(str, 2);
     yServo.setPosition(testSlider.getValue());
+    debugLog(String(testTouchPad.getXRatio()*400),19);
+    xServo.setPosition(testTouchPad.getXRatio()*400);
   };
   test3Button.onPressed = [](){
     yServo.receiveEncoder();
