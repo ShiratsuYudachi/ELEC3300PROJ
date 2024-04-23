@@ -5,6 +5,7 @@ extern "C"
 }
 #include <cstring>
 #include <stdint.h>
+#include "utils.hpp"
 
 #define TEXT_CHAR_NUM 16
 #define MAX_UI_ELEMENTS 32
@@ -49,16 +50,32 @@ private:
 
 public:
     bool isPressed = false;
-    void (*onPressed)(Button *self, int x, int y);
+    void (*onPressed)() = nullptr;
+    void (*whilePressing)() = nullptr;
+    void (*onReleased)() = nullptr;
 
-    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], void (*onPressed)(Button *, int, int) = nullptr, uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
+    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
         : UIElement(x, y, width, height)
     {
         this->initialColor = color;
         this->color = color;
         this->textColor = textColor;
         strcpy(this->text, text);
+    }
+
+    void setOnPressed(void (*onPressed)())
+    {
         this->onPressed = onPressed;
+    }
+    
+    void setWhilePressing(void (*whilePressing)())
+    {
+        this->whilePressing = whilePressing;
+    }
+
+    void setOnReleased(void (*onReleased)())
+    {
+        this->onReleased = onReleased;
     }
 
     void render() override
@@ -83,10 +100,8 @@ public:
             // if (!isPressed)
             //{ // only trigger once
             isPressed = true;
-            render();
-            last_color = color;
-            if (onPressed)
-                onPressed(this, x, y);
+            if (whilePressing)
+                whilePressing();
             //}
         }
         else
@@ -96,6 +111,11 @@ public:
         }
         if (last_color != color)
         {
+            if (isPressed && onPressed){
+                onPressed();
+            }
+            if (!isPressed && onReleased)
+                onReleased();
             render();
             last_color = color;
         }
@@ -167,6 +187,10 @@ public:
         }
         isDragging = isDraggerTouched;
         value = (draggerY - this->y) * maxValue / height;
+    }
+    float getValue()
+    {
+        return value;
     }
 };
 

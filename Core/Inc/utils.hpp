@@ -2,7 +2,7 @@
 #include <cstdio>
 #ifndef INC_UTILS_HPP_
 #define INC_UTILS_HPP_
-#define STRING_LEN 32
+#define STRING_LEN 64
 
 class String{
 public:
@@ -22,17 +22,25 @@ public:
     String(int n){
         len = sprintf(str, "%d", n);
     }
+    String(uint8_t n): String((int)n){}
+    String(uint16_t n): String((int)n){}
+    String(uint32_t n): String((int)n){}
     String(float f){
-        len = sprintf(str, "%f", f);
+        len = sprintf(str, "%.2f", f);
     }
-    String(double d){
-        len = sprintf(str, "%f", d);
+    String(double f) : String((float)f){
     }
     String(uint8_t* arr, int len){
         // byte array to hex string
         for (int i=0; i<len; i++){
             sprintf(str+i*3, "%02X ", arr[i]);
         }
+    }
+
+    static String toHexStr(int n){
+        char str[STRING_LEN];
+        sprintf(str, "%X", n);
+        return String(str);
     }
 
     String& operator=(const char* s){

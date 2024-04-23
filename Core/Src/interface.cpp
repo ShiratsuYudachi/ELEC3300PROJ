@@ -6,24 +6,11 @@
 
 #include <stdio.h>
 
+
+
 SERVO42C xServo(0xe0, &huart2);
 SERVO42C yServo(0xe1, &huart2);
 SERVO42C zServo(0xe2, &huart2);
-void onTestButtonPress(Button *button, int x, int y)
-{
-  xServo.receiveEncoder();
-  printToLCD("x Encoder" + String(xServo.getEncoder()), 1);
-}
-
-void CW(Button *button, int x, int y)
-{
-  xServo.stepClockwise(10);
-}
-
-void CCW(Button *button, int x, int y)
-{
-  xServo.stepCounterClockwise(10);
-}
 
 void MoveXY(TouchPad *touchPad, int x, int y)
 {
@@ -42,20 +29,60 @@ void MoveXY(TouchPad *touchPad, int x, int y)
   xServo.step(xdir, xSpeed, 10);
 }
 
+
 void myfunc()
 {
+  
+
   // create UI
-  Button testButton(170, 50, "Read", onTestButtonPress, 40, 40);
-  Button CWButton(30, 50, "CW", CW, 40, 40);
-  Button CCWButton(100, 50, "CCW", CCW, 40, 40);
+  Button testButton(170, 50, "YStep", 40, 40);
+  Button test2Button(170, 0, "SetPos", 40, 40);
+  Button CCWButton(30, 50, "YCCW", 40, 40);
+  Button CWButton(100, 50, "YCW", 40, 40);
+  Button test3Button(120, 0, "GetPos", 40, 40);
   Slider testSlider(200, 120, 100);
-  TouchPad testTouchPad(0, 120, MoveXY);
+  TouchPad testTouchPad(0, 120);
+  
+  CWButton.onPressed = [](){yServo.spinClockwise(50);};
+  CWButton.onReleased = [](){yServo.spinClockwise(0);};
+  CCWButton.onPressed = [](){yServo.spinCounterClockwise(50);};
+  CCWButton.onReleased = [](){yServo.spinCounterClockwise(0);};
+  testButton.onPressed = [](){
+    yServo.stepClockwise(6400);
+    // xServo.receiveEncoder();
+    // printToLCD("x Encoder" + String(xServo.getEncoder()), 1);
+  };
+  test2Button.onPressed = [](){
+    // xServo.receiveErrorAngle();
+    // char str[20];
+    // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());
+    // printToLCD(str, 2);
+    yServo.setPosition(60);
+  };
+  test3Button.onPressed = [](){
+    yServo.receiveEncoder();
+    char str[20];
+    sprintf(str, "yPos=%.2f", yServo.getPosition());
+    printToLCD(str, 2);
+  };
+
+  
 
   strType_XPT2046_Coordinate touch;
-  printToLCD("Hello World", 0);
+  printToLCD("Hello World 1", 1);
+  
+  // xServo.stop();
 
+  // xServo.spinCounterClockwise(100);
+
+  yServo.alignAbsolutePosition(0);
+  xServo.alignAbsolutePosition(0);
+  
+  
   while (1)
   {
+    // yServo.receiveEncoder();
+      
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -64,10 +91,10 @@ void myfunc()
     // sprintf(str, "x=%d, y=%d", touch.x, touch.y);
     // LCD_DrawString(0, 0, str);
 
-    uint8_t data[3] = {};
+    // uint8_t data[3] = {};
     // HAL_UART_Receive(&huart2, data, 3, 500) == HAL_OK;
-    char str[3] = {};
-    sprintf(str, "%02X", data[0]);
+    // char str[3] = {};
+    // sprintf(str, "%02X", data[0]);
 
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
     UIElement::updateAllElements();

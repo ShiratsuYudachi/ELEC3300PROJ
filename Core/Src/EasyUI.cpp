@@ -23,11 +23,11 @@ void UIElement::updateAllElements()
     // Refresh the coordinate only when touched
     if ((touch.x < 230 || touch.y < 300) && (touch.x > 0 && touch.y > 0))
     {
-        if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)
-        {
-            sprintf(str, "x=%03d, y=%03d", touch.x, touch.y);
+        // if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)
+        // {
+            sprintf(str, "x=%d, y=%d", touch.x, touch.y);
             printToLCD(str, 0);
-        }
+        // }
     }
 #endif
     for (int i = 0; i < elementNum; i++)
