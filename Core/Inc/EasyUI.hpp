@@ -163,7 +163,7 @@ public:
 
     uint16_t wrapY(u_int16_t y)
     {
-        if (y > 500)
+        if (y > 500 || y==0)
             return draggerY; // y=2048 if not touched
         if (y < this->y)
             return this->y;
@@ -179,7 +179,7 @@ public:
         {
             draggerY = wrapY(y);
             render();
-            isDraggerTouched = x >= draggerX - 3 * draggerRadius && x <= draggerX + 3 * draggerRadius && y >= draggerY - draggerRadius && y <= draggerY + draggerRadius;
+            isDraggerTouched = x >= draggerX - 6 * draggerRadius && x <= draggerX + 6 * draggerRadius && y >= draggerY - 6*draggerRadius && y <= draggerY + 6*draggerRadius;
         }
         else
         {

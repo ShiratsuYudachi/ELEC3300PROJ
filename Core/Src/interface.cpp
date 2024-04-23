@@ -12,6 +12,15 @@ SERVO42C xServo(0xe0, &huart2);
 SERVO42C yServo(0xe1, &huart2);
 SERVO42C zServo(0xe2, &huart2);
 
+// create UI
+Button testButton(170, 50, "YStep", 40, 40);
+Button test2Button(170, 0, "SetPos", 40, 40);
+Button CCWButton(30, 50, "YCCW", 40, 40);
+Button CWButton(100, 50, "YCW", 40, 40);
+Button test3Button(120, 0, "GetPos", 40, 40);
+Slider testSlider(200, 120, 100);
+TouchPad testTouchPad(0, 120);
+
 void MoveXY(TouchPad *touchPad, int x, int y)
 {
   uint8_t xdir = 1, ydir = 1;
@@ -32,17 +41,6 @@ void MoveXY(TouchPad *touchPad, int x, int y)
 
 void myfunc()
 {
-  
-
-  // create UI
-  Button testButton(170, 50, "YStep", 40, 40);
-  Button test2Button(170, 0, "SetPos", 40, 40);
-  Button CCWButton(30, 50, "YCCW", 40, 40);
-  Button CWButton(100, 50, "YCW", 40, 40);
-  Button test3Button(120, 0, "GetPos", 40, 40);
-  Slider testSlider(200, 120, 100);
-  TouchPad testTouchPad(0, 120);
-  
   CWButton.onPressed = [](){yServo.spinClockwise(50);};
   CWButton.onReleased = [](){yServo.spinClockwise(0);};
   CCWButton.onPressed = [](){yServo.spinCounterClockwise(50);};
@@ -57,7 +55,7 @@ void myfunc()
     // char str[20];
     // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());
     // printToLCD(str, 2);
-    yServo.setPosition(60);
+    yServo.setPosition(testSlider.getValue());
   };
   test3Button.onPressed = [](){
     yServo.receiveEncoder();
