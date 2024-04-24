@@ -1,8 +1,13 @@
 #include <cstring>
 #include <cstdio>
+#include <stdint.h>
 #ifndef INC_UTILS_HPP_
 #define INC_UTILS_HPP_
 #define STRING_LEN 64
+
+
+#define ABS(x) ((x) > 0 ? (x) : -(x))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 class String{
 public:

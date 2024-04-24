@@ -11,6 +11,8 @@
 #include "utils.hpp"
 
 class SERVO42C {
+    friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
+    friend void setPosition3d(float x, float y, float z);
 private:
     UART_HandleTypeDef* pUART;
     uint8_t address;
@@ -27,10 +29,11 @@ private:
 
     
     // configs
-    uint8_t stepSpeed = 80;
+    uint8_t stepSpeed = 50;
     uint8_t stepDivision = 32;
     float stepAngle = 1.8; // degree, depends on motor type, the version we are using is 1.8
-    float mmPerLap = 2.5; // mm, depends on the mechanical structure of 丝杆
+    float mmPerLap = 2; // mm, depends on the mechanical structure of 丝杆
+    float speedMultiplier = 0.8; // used in step3d
     
 
     
@@ -88,6 +91,40 @@ private:
         }
         return data;
     }
+    
+    
+    float getRPMof(uint8_t speed){
+        float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
+        return (speed * 30000)/(stepDivision * divisionCoefficient);
+    }
+    float getSpeedParamOfRPM(float rpm){
+        float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
+        return rpm * stepDivision * divisionCoefficient / 30000;
+    }
+    
+    float getLinearSpeedOf(uint8_t speed){
+        return getRPMof(speed) * mmPerLap / 60; // mm/s
+    }
+
+    uint8_t getSpeedParamOfLinearSpeed(float linearSpeed){
+        float rpm = linearSpeed * 60 / mmPerLap;
+        return getSpeedParamOfRPM(rpm);
+    }
+    
+    float getDistanceOf(uint32_t stepCount){
+        return stepCount/(float)stepDivision * stepAngle/360 * mmPerLap;
+    }
+
+    uint32_t getStepCountFromTargetPosition(float targetPosition, uint8_t& direction){
+        float currentPosition = getPosition();
+        float error = targetPosition - currentPosition;
+        direction = error>0?1:0;
+        error = error>0?error:-error;
+        uint32_t stepCount = error/(mmPerLap) * (360/stepAngle)*stepDivision;
+        return stepCount;
+    }
+
+    
 public:
     SERVO42C(uint8_t address, UART_HandleTypeDef* pUART) : address(address), pUART(pUART){}
 
@@ -114,9 +151,10 @@ public:
         }
         
         printToLCD("Stage 2",0);
-        setMaxTorque(1000);
+        setMaxTorque(1199);
+        HAL_Delay(200);
+        step(!direction, 3, 1000);
         HAL_Delay(500);
-        step(!direction, 3, 100);
         zeroEncoder = encoder;
         zeroEncoderCarry = encoderCarry;
         enableAbsolutePosControl = true;
@@ -134,11 +172,8 @@ public:
     
     void setPosition(float position){ // to test
         receiveEncoder();
-        float currentPosition = getPosition();
-        float error = position - currentPosition;
-        uint8_t direction = error>0?1:0;
-        error = error>0?error:-error;
-        uint32_t stepCount = error/(mmPerLap) * (360/stepAngle)*stepDivision;
+        uint8_t direction = 0;
+        uint32_t stepCount = getStepCountFromTargetPosition(position, direction);
         step(direction, stepSpeed, stepCount);
     }
 
@@ -150,21 +185,41 @@ public:
         instruction[0] = address;
         instruction[1] = 0xfd;
         instruction[2] = (direction<<7)|(speed & 0x7F);
-        debugLog(String(stepCount));
         for (int i=0; i<4; i++){
             instruction[6-i] = (stepCount & (0xFF << 8*i))>>8*i;
         }
         instruction[7] = getCRC(instruction, 8);
-        HAL_Delay(200);
-        debugLog(String(instruction, 8));
+        debugLog(String(instruction, 8)+" c:"+String(stepCount));
         HAL_UART_Transmit(pUART, instruction, 8, 100);
     }
+
+    // step with block
+    void step_b(uint8_t direction, uint8_t speed, uint32_t stepCount){
+        uint8_t instruction[8] = {};
+        instruction[0] = address;
+        instruction[1] = 0xfd;
+        instruction[2] = (direction<<7)|(speed & 0x7F);
+        for (int i=0; i<4; i++){
+            instruction[6-i] = (stepCount & (0xFF << 8*i))>>8*i;
+        }
+        instruction[7] = getCRC(instruction, 8);
+        debugLog(String(instruction, 8)+"c"+String(stepCount));
+        HAL_UART_Transmit(pUART, instruction, 8, 100);
+        debugLog("step command sent",19);
+        uint8_t* data = receiveUART(3);
+        debugLog("step started",19);
+        data = receiveUART(3);
+        debugLog("step finished",19);
+    }
+
     void stepClockwise(uint32_t stepCount){
         step(0, stepSpeed, stepCount);
     }
     void stepCounterClockwise(uint32_t stepCount){
         step(1, stepSpeed, stepCount);
     }
+
+    
 
     // speed: 0~0x7f i.e. 0~127
     void spin(uint8_t direction, uint8_t speed){
@@ -275,6 +330,14 @@ public:
 
 
 };
+
+extern SERVO42C xServo;
+extern SERVO42C yServo;
+extern SERVO42C zServo;
+
+void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
+
+void setPosition3d(float x, float y, float z);
 
 
 

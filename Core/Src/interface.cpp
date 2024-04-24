@@ -6,12 +6,6 @@
 
 #include <stdio.h>
 
-
-
-SERVO42C xServo(0xe0, &huart2);
-SERVO42C yServo(0xe1, &huart2);
-SERVO42C zServo(0xe2, &huart2);
-
 // create UI
 Button testButton(170, 50, "YStep", 40, 40);
 Button test2Button(170, 0, "SetPos", 40, 40);
@@ -55,9 +49,10 @@ void myfunc()
     // char str[20];
     // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());
     // printToLCD(str, 2);
-    yServo.setPosition(testSlider.getValue());
-    debugLog(String(testTouchPad.getXRatio()*400),19);
-    xServo.setPosition(testTouchPad.getXRatio()*400);
+    // yServo.setPosition(testSlider.getValue());
+    // debugLog(String(testTouchPad.getXRatio()*264),19);
+    // xServo.setPosition(testTouchPad.getXRatio()*264);
+    setPosition3d(testTouchPad.getXRatio()*264, testTouchPad.getYRatio()*146, 0);
   };
   test3Button.onPressed = [](){
     yServo.receiveEncoder();
