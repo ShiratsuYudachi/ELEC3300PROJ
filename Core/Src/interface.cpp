@@ -16,8 +16,8 @@ Button test3Button(120, 0, "GetPos", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
 
-// PulseMotor xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4);
-uint32_t PulseDMABuff[2560];
+PulseMotor xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4);
+// uint32_t PulseDMABuff[2560];
 
 
 
@@ -51,10 +51,11 @@ void myfunc()
   CCWButton.onPressed = [](){yServo.spinCounterClockwise(50);};
   CCWButton.onReleased = [](){yServo.spinCounterClockwise(0);};
   testButton.onPressed = [](){
-    // xPulseMotor.pulse(200);
-    PulseDMABuff[200] = 0;
-    __HAL_TIM_SET_PRESCALER(&htim3, 1000-1);
-    HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)PulseDMABuff, 201);
+    xPulseMotor.setFrequency(200);
+    xPulseMotor.pulse(200);
+    // PulseDMABuff[200] = 0;
+    // __HAL_TIM_SET_PRESCALER(&htim3, 1000-1);
+    // HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)PulseDMABuff, 201);
     // xServo.receiveEncoder();
     // printToLCD("x Encoder" + String(xServo.getEncoder()), 1);
   };

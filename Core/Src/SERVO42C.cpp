@@ -1,7 +1,7 @@
 #include "SERVO42C.hpp"
 #include "usart.h"
 
-// uint32_t PulseDMABuff[2560]; // the max number of steps can be perfomed once
+uint32_t PulseDMABuff[2560]; // the max number of steps can be perfomed once
 
 SERVO42C xServo(0xe0, &huart2);
 SERVO42C yServo(0xe1, &huart2);
