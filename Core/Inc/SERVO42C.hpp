@@ -14,179 +14,213 @@
 
 #define DMA_BUFFER_SIZE 10240 // max move distance onece is length/100
 
+extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE];
 
-extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE]; 
-
-class PulseMotor{
+class PulseMotor
+{
 private:
-    TIM_HandleTypeDef* pTim;
+    TIM_HandleTypeDef *pTim;
     uint32_t timChannel;
-    GPIO_TypeDef* pGPIO;
+    GPIO_TypeDef *pGPIO;
     uint16_t GPIO_Pin;
-    uint32_t prescaler = 1000-1;
+    uint32_t prescaler = 1000 - 1;
 
     const uint32_t inputFrequency = 72e6;
-    const uint16_t CounterPeriod = 72-1;
+    const uint16_t CounterPeriod = 72 - 1;
 
 protected:
     int32_t stepSum = 0;
 
 public:
-    PulseMotor(TIM_HandleTypeDef* pTim, uint32_t timChannel, GPIO_TypeDef* pGPIO, uint16_t GPIO_Pin) {
+    PulseMotor(TIM_HandleTypeDef *pTim, uint32_t timChannel, GPIO_TypeDef *pGPIO, uint16_t GPIO_Pin)
+    {
         this->pTim = pTim;
         this->timChannel = timChannel;
         this->pGPIO = pGPIO;
         this->GPIO_Pin = GPIO_Pin;
     }
 
-    uint16_t getFrequency(){
-        return inputFrequency/(prescaler+1)/(CounterPeriod+1);
+    uint16_t getFrequency()
+    {
+        return inputFrequency / (prescaler + 1) / (CounterPeriod + 1);
     }
-    
+
     // pulse sending frequency
-    void setFrequency(uint16_t frequency){
-        prescaler = inputFrequency/(CounterPeriod+1)/frequency -1;
+    void setFrequency(uint16_t frequency)
+    {
+        prescaler = inputFrequency / (CounterPeriod + 1) / frequency - 1;
         __HAL_TIM_SET_PRESCALER(pTim, prescaler);
     }
 
     // direction: 0 or 1
-    void setDirection(uint8_t direction){
+    void setDirection(uint8_t direction)
+    {
         HAL_GPIO_WritePin(pGPIO, GPIO_Pin, direction ? GPIO_PIN_SET : GPIO_PIN_RESET);
     }
 
-    void pulse(uint16_t pulseNum){
+    void pulse(uint16_t pulseNum)
+    {
         PulseDMABuff[pulseNum] = 0;
-        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t*)PulseDMABuff, pulseNum+1);
+        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum + 1);
         // TODO: callback中把0改回去
     }
 
-    void spinStart(){
+    void spinStart()
+    {
         __HAL_TIM_SET_COMPARE(pTim, timChannel, 36);
         HAL_TIM_PWM_Start(pTim, timChannel);
     }
-    void spinStop(){
+    void spinStop()
+    {
         HAL_TIM_PWM_Stop(pTim, timChannel);
     }
 
-    void pulse_wait(uint16_t pulseNum){
+    void pulse_wait(uint16_t pulseNum)
+    {
         pulse(pulseNum);
-        HAL_Delay((float)pulseNum/getFrequency()*1000);
+        HAL_Delay((float)pulseNum / getFrequency() * 1000);
     }
 
-    void step(uint8_t direction, uint32_t stepNum){
-        if (stepNum>DMA_BUFFER_SIZE){
+    void step(uint8_t direction, uint32_t stepNum)
+    {
+        if (stepNum > DMA_BUFFER_SIZE)
+        {
             printToLCD("StepNum too large", 18);
             return;
         }
-        stepSum += direction?stepNum:-stepNum;
+        stepSum += direction ? stepNum : -stepNum;
         setDirection(direction);
         pulse(stepNum);
     }
-    void step_wait(uint8_t direction, uint32_t stepNum){
-        stepSum += direction?stepNum:-stepNum;
+    void step_wait(uint8_t direction, uint32_t stepNum)
+    {
+        stepSum += direction ? stepNum : -stepNum;
         setDirection(direction);
         pulse_wait(stepNum);
     }
 
+    // This function can go any number of steps
+    void step_inf(uint8_t direction, uint32_t stepNum)
+    {
+        setDirection(direction);
+        while (stepNum > 0)
+        {
+            uint16_t pulseNum = stepNum < DMA_BUFFER_SIZE ? stepNum : DMA_BUFFER_SIZE;
+            stepNum -= pulseNum;
+            pulse(pulseNum);
+            HAL_Delay((float)pulseNum / getFrequency() * 1000); // Problem! This will block the program! Not applicable for multi-motor control!
+        }
+    }
 };
 
-
-
-class SERVO42C_Pulse : public PulseMotor{
+class SERVO42C_Pulse : public PulseMotor
+{
     friend void setPosition3d(float x, float y, float z);
     friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
+
 protected:
-    
     // configs
     const int maxDistance = 0; // 264 for x, 146 for z, 适用于用电机驱动丝杆
     uint8_t stepDivision = 1;
     float stepAngle = 1.8; // degree, depends on motor type, the version we are using is 1.8
-    float mmPerLap = 2; // mm, depends on the mechanical structure of 丝杆
+    float mmPerLap = 2;    // mm, depends on the mechanical structure of 丝杆
 
-    uint32_t getStepCountFromTargetPosition(float targetPosition, uint8_t& direction){
+    uint32_t getStepCountFromTargetPosition(float targetPosition, uint8_t &direction)
+    {
         float currentPosition = getPosition();
         float error = targetPosition - currentPosition;
-        direction = error>0?1:0;
-        error = error>0?error:-error;
-        uint32_t stepCount = error/(mmPerLap) * (360/stepAngle)*stepDivision;
+        direction = error > 0 ? 1 : 0;
+        error = error > 0 ? error : -error;
+        uint32_t stepCount = error / (mmPerLap) * (360 / stepAngle) * stepDivision;
         return stepCount;
     }
 
-    float getRPMof(uint8_t speed){
-        float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
-        return (speed * 30000)/(stepDivision * divisionCoefficient);
+    float getRPMof(uint8_t speed)
+    {
+        float divisionCoefficient = ABS(stepAngle - 1.8) > 0.01 ? 400 : 200;
+        return (speed * 30000) / (stepDivision * divisionCoefficient);
     }
-    float getSpeedParamOfRPM(float rpm){
-        float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
+    float getSpeedParamOfRPM(float rpm)
+    {
+        float divisionCoefficient = ABS(stepAngle - 1.8) > 0.01 ? 400 : 200;
         return rpm * stepDivision * divisionCoefficient / 30000;
     }
-    
-    float getLinearSpeedOf(uint8_t speed){
+
+    float getLinearSpeedOf(uint8_t speed)
+    {
         return getRPMof(speed) * mmPerLap / 60; // mm/s
     }
 
-    uint8_t getSpeedParamOfLinearSpeed(float linearSpeed){
+    uint8_t getSpeedParamOfLinearSpeed(float linearSpeed)
+    {
         float rpm = linearSpeed * 60 / mmPerLap;
         return getSpeedParamOfRPM(rpm);
     }
-    
-    float stepcountToDistance(uint32_t stepCount){
-        return stepCount/(float)stepDivision * stepAngle/360 * mmPerLap;
+
+    float stepcountToDistance(uint32_t stepCount)
+    {
+        return stepCount / (float)stepDivision * stepAngle / 360 * mmPerLap;
     }
-    float frequencyToSpeed(uint16_t frequency){
+    float frequencyToSpeed(uint16_t frequency)
+    {
         // frequency是每秒脉冲数，speed是每秒毫米数
         // 所以需要返回一秒内走过的distance，一秒内的step数就是frequency
         return stepcountToDistance(frequency);
     }
 
-    float speedToFrequency(float speed){
+    float speedToFrequency(float speed)
+    {
         float rps = speed / mmPerLap;
-        return rps * 360/stepAngle * stepDivision;
+        return rps * 360 / stepAngle * stepDivision;
     }
 
 public:
-    SERVO42C_Pulse(TIM_HandleTypeDef* pTim, uint32_t timChannel, GPIO_TypeDef* pGPIO, uint16_t GPIO_Pin) : PulseMotor(pTim, timChannel, pGPIO, GPIO_Pin){}
-    
+    SERVO42C_Pulse(TIM_HandleTypeDef *pTim, uint32_t timChannel, GPIO_TypeDef *pGPIO, uint16_t GPIO_Pin) : PulseMotor(pTim, timChannel, pGPIO, GPIO_Pin) {}
+
     // position: distance in mm from zero position
     // zero position: where the motor is set
-    float getPosition(){
-        return (float)stepSum/stepDivision * stepAngle/360 * mmPerLap;
+    float getPosition()
+    {
+        return (float)stepSum / stepDivision * stepAngle / 360 * mmPerLap;
     }
-    void setPosition(float position){
+    void setPosition(float position)
+    {
         uint8_t direction = 0;
         uint32_t stepCount = getStepCountFromTargetPosition(position, direction);
         step(direction, stepCount);
     }
 
-
-    float getSpeed(){
+    float getSpeed()
+    {
         return frequencyToSpeed(getFrequency());
     }
-    void setSpeed(float speed){
+    void setSpeed(float speed)
+    {
         setFrequency(speedToFrequency(speed));
     }
 
     // reset zero position by turning the motor CW/CCW(0/1)
     // once the motor stops turnning, it reaches the zero position
     // WARN: this will block the program until the motor stops
-    void alignAbsolutePosition(){
-        if (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin)==GPIO_PIN_SET){
+    void alignAbsolutePosition()
+    {
+        if (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin) == GPIO_PIN_SET)
+        {
             setFrequency(1000);
-            printToLCD("Waiting Limit Switch",0);
-            while (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin)==GPIO_PIN_SET){
-                step_wait(0,20);
+            printToLCD("Waiting Limit Switch", 0);
+            while (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin) == GPIO_PIN_SET)
+            {
+                step_wait(0, 20);
             }
-        };        
-        printToLCD("Aligned!",0);
+        };
+        printToLCD("Aligned!", 0);
         stepSum = 0;
     }
-
 };
 
 extern SERVO42C_Pulse xPulseMotor; // tim, tim channel, dir gpio, dir gpio pin
 extern SERVO42C_Pulse yPulseMotor;
 extern SERVO42C_Pulse zPulseMotor;
-
 
 // class SERVO42C_UART : public SERVO42C_Pulse{
 //     friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
@@ -207,8 +241,6 @@ extern SERVO42C_Pulse zPulseMotor;
 
 //     // configs
 //     uint8_t stepSpeed = 50;
-
-    
 
 //     static uint8_t getCRC(uint8_t instruction[], uint8_t len){
 //         uint16_t result = 0;
@@ -263,11 +295,7 @@ extern SERVO42C_Pulse zPulseMotor;
 //         }
 //         return data;
 //     }
-    
-    
 
-
-    
 // public:
 //     SERVO42C_UART(uint8_t address, UART_HandleTypeDef* pUART, bool useLimitSwitch = false) : address(address), pUART(pUART), useLimitSwitch(useLimitSwitch){}
 
@@ -281,7 +309,6 @@ extern SERVO42C_Pulse zPulseMotor;
 //         // return -1;
 //     }
 
-    
 //     void setPosition(float position){ // to test
 //         receiveEncoder();
 //         uint8_t direction = 0;
@@ -335,8 +362,6 @@ extern SERVO42C_Pulse zPulseMotor;
 //         step_UART(1, stepSpeed, stepCount);
 //     }
 
-    
-
 //     // speed: 0~0x7f i.e. 0~127
 //     void spin(uint8_t direction, uint8_t speed){
 //         uint8_t instruction[4] = {};
@@ -371,7 +396,6 @@ extern SERVO42C_Pulse zPulseMotor;
 //         instruction[4] = getCRC(instruction, 4);
 //         HAL_UART_Transmit(pUART, instruction, 5, 100);
 //     }
-    
 
 //     bool receiveEncoder(int retryCount = 3){
 //         // send instruction to request encoder
@@ -407,7 +431,7 @@ extern SERVO42C_Pulse zPulseMotor;
 
 //         errorAngleRaw = data[1]<<8 | data[2];
 //         errorAngle = errorAngleRaw/(float)0xFFFF*360;
-        
+
 //     }
 
 //     void receiveShaftProtectionState(){ //todo
@@ -438,12 +462,6 @@ extern SERVO42C_Pulse zPulseMotor;
 //     bool getShaftProtectionState(){
 //         return isShaftProtected;
 //     }
-    
-
-
-
-
-
 
 // };
 
@@ -454,7 +472,5 @@ extern SERVO42C_Pulse zPulseMotor;
 void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
 
 void setPosition3d(float x, float y, float z);
-
-
 
 #endif /* INC_MOTOR_H_ */
