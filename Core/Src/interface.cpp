@@ -16,27 +16,8 @@ Button test3Button(120, 0, "GetPos", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
 
-PulseMotor xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4);
+SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4);
 // uint32_t PulseDMABuff[2560];
-
-
-
-void MoveXY(TouchPad *touchPad, int x, int y)
-{
-  uint8_t xdir = 1, ydir = 1;
-  if (x-touchPad->width/2 < 0)
-  {
-    xdir = 0;
-  }
-  if (y-touchPad->height/2 < 0)
-  {
-    ydir = 0;
-  }
-  int a = (x-touchPad->width/2);
-  a < 0 ? a = -a : a = a;
-  uint8_t xSpeed = a/(touchPad->height/2)*7;
-  xServo.step_UART(xdir, xSpeed, 10);
-}
 
 
 void myfunc()
@@ -46,13 +27,29 @@ void myfunc()
     PulseDMABuff[i] = 36;
   }
 
-  CWButton.onPressed = [](){yServo.spinClockwise(50);};
-  CWButton.onReleased = [](){yServo.spinClockwise(0);};
-  CCWButton.onPressed = [](){yServo.spinCounterClockwise(50);};
-  CCWButton.onReleased = [](){yServo.spinCounterClockwise(0);};
+  // config: AAC set to max, 1042
+  xPulseMotor.setFrequency(2200);
+
+  CWButton.onPressed = [](){
+    xPulseMotor.setDirection(0);
+    xPulseMotor.spinStart();
+  };
+  CWButton.onReleased = [](){
+    xPulseMotor.spinStop();
+  };
+  CCWButton.onPressed = [](){
+    xPulseMotor.setDirection(1);
+    xPulseMotor.spinStart();
+  };
+  CCWButton.onReleased = [](){
+    xPulseMotor.spinStop();
+  };
+  
+  
+  
+
   testButton.onPressed = [](){
-    xPulseMotor.setFrequency(200);
-    xPulseMotor.pulse(200);
+    xPulseMotor.setPosition(15.0); //TEST
     // PulseDMABuff[200] = 0;
     // __HAL_TIM_SET_PRESCALER(&htim3, 1000-1);
     // HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)PulseDMABuff, 201);
@@ -67,12 +64,12 @@ void myfunc()
     // yServo.setPosition(testSlider.getValue());
     // debugLog(String(testTouchPad.getXRatio()*264),19);
     // xServo.setPosition(testTouchPad.getXRatio()*264);
-    setPosition3d(testTouchPad.getXRatio()*264, testTouchPad.getYRatio()*146, 0);
+    // setPosition3d(testTouchPad.getXRatio()*264, testTouchPad.getYRatio()*146, 0);
   };
   test3Button.onPressed = [](){
-    yServo.receiveEncoder();
+    // yServo.receiveEncoder();
     char str[20];
-    sprintf(str, "yPos=%.2f", yServo.getPosition());
+    // sprintf(str, "yPos=%.2f", yServo.getPosition());
     printToLCD(str, 2);
   };
 
