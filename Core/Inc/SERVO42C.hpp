@@ -14,7 +14,7 @@
 
 #define DMA_BUFFER_SIZE 2560 // max move distance onece is length/100
 
-extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1];
+extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE];
 
 class PulseMotor
 {
@@ -60,9 +60,7 @@ public:
 
     void pulse(uint16_t pulseNum)
     {
-        PulseDMABuff[pulseNum] = 0;
-        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum + 1);
-        // TODO: callback中把0改回去
+        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum);
     }
 
     void spinStart()

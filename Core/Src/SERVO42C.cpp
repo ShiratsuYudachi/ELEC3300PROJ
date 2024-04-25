@@ -1,7 +1,7 @@
 #include "SERVO42C.hpp"
 // #include "usart.h"
 
-uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1]; // the max number of steps can be perfomed once
+uint32_t PulseDMABuff[DMA_BUFFER_SIZE]; // the max number of steps can be perfomed once
 
 
 SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4); // tim, tim channel, dir gpio, dir gpio pin
