@@ -64,6 +64,8 @@ void Error_Handler(void);
 #define K2_Pin GPIO_PIN_13
 #define K2_GPIO_Port GPIOC
 #define K2_EXTI_IRQn EXTI15_10_IRQn
+#define SWITCH_X_Pin GPIO_PIN_5
+#define SWITCH_X_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -9,6 +9,59 @@
 #define INC_MOTOR_H_
 #include "main.h"
 #include "utils.hpp"
+#include "main.h"
+#include "tim.h"
+
+
+// extern uint32_t PulseDMABuff[2560];
+
+// class PulseMotor{
+//     TIM_HandleTypeDef* pTim;
+//     uint32_t timChannel;
+//     GPIO_TypeDef* pGPIO;
+//     uint16_t GPIO_Pin;
+
+
+//     uint32_t prescaler = 1000-1;
+
+
+    
+//     const uint16_t inputFrequency = 72e6;
+//     const uint16_t CounterPeriod = 72-1;
+
+// public:
+//     PulseMotor(TIM_HandleTypeDef* pTim, uint32_t timChannel, GPIO_TypeDef* pGPIO, uint16_t GPIO_Pin) : pTim(pTim), timChannel(timChannel), pGPIO(pGPIO), GPIO_Pin(GPIO_Pin){
+//         __HAL_TIM_SET_PRESCALER(pTim, prescaler);
+//     }
+
+//     uint16_t getFrequency(){
+//         return inputFrequency/(prescaler+1)/(CounterPeriod+1);
+//     }
+
+//     void setFrequency(uint16_t frequency){
+//         prescaler = inputFrequency/(CounterPeriod+1)/frequency -1;
+//         __HAL_TIM_SET_PRESCALER(pTim, prescaler);
+//     }
+
+//     // direction: 0 or 1
+//     void setDirection(uint8_t direction){
+//         HAL_GPIO_WritePin(pGPIO, GPIO_Pin, direction ? GPIO_PIN_SET : GPIO_PIN_RESET);
+//     }
+
+//     void pulse(uint16_t pulseNum){
+//         PulseDMABuff[pulseNum] = 0;
+//         HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t*)PulseDMABuff, pulseNum+1);
+//         // TODO: callback中把0改回去
+//     }
+
+//     void pulse_wait(uint16_t pulseNum){
+//         pulse(pulseNum);
+//         HAL_Delay((float)pulseNum/getFrequency()*1000);
+//     }
+
+// private:
+
+// };
 
 class SERVO42C {
     friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
@@ -27,13 +80,15 @@ private:
     bool isShaftProtected = false;
     bool enableAbsolutePosControl = false; // only allow pos control after zero position aligned
 
-    
+    bool useLimitSwitch = false;
+
     // configs
     uint8_t stepSpeed = 50;
     uint8_t stepDivision = 32;
     float stepAngle = 1.8; // degree, depends on motor type, the version we are using is 1.8
     float mmPerLap = 2; // mm, depends on the mechanical structure of 丝杆
     float speedMultiplier = 0.8; // used in step3d
+    
     
 
     
@@ -49,7 +104,7 @@ private:
     // WARNING: remember to check for nullptr, which means receive failed
     uint8_t* receiveUART(uint8_t len){
         static uint8_t data[16] = {};
-        HAL_UART_Receive(pUART, data, len+1, 50);
+        HAL_UART_Receive(pUART, data, len+1, 70);
         uint8_t offset = 0;
         if (data[0] == address){
             offset = 0;
@@ -126,35 +181,47 @@ private:
 
     
 public:
-    SERVO42C(uint8_t address, UART_HandleTypeDef* pUART) : address(address), pUART(pUART){}
+    SERVO42C(uint8_t address, UART_HandleTypeDef* pUART, bool useLimitSwitch = false) : address(address), pUART(pUART), useLimitSwitch(useLimitSwitch){}
 
     // reset zero position by turning the motor CW/CCW(0/1)
     // once the motor stops turnning, it reaches the zero position
     // WARN: this will block the program until the motor stops
     void alignAbsolutePosition(int direction = 0){
-        setMaxTorque(750);
-        HAL_Delay(500);
-        spin(direction, 100);
-        
-        uint16_t lastEncoder = 65535;
-        printToLCD("Stage 1",0);
-        while (true){
-            bool received = receiveEncoder();
-            int16_t absDifference = encoder - lastEncoder;
-            absDifference = absDifference>0?absDifference:-absDifference;
-            printToLCD("Last: "+String(lastEncoder)+", Now: "+String(encoder),1);
-            if (received && absDifference<100){
+        do{
+            if (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin)==GPIO_PIN_RESET){
                 break;
+            };
+            setMaxTorque(500);
+            HAL_Delay(500);
+            spin(direction, 100);
+            uint16_t lastEncoder = 65535;
+            printToLCD("Stage 1",0);
+            while (true){
+                if (useLimitSwitch){
+                    printToLCD("Waiting Limit Switch",1);
+                    if (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin)==GPIO_PIN_RESET){
+                        break;
+                    };
+                    HAL_Delay(10);
+                }else{
+                    bool received = receiveEncoder();
+                    int16_t absDifference = encoder - lastEncoder;
+                    absDifference = absDifference>0?absDifference:-absDifference;
+                    printToLCD("Last: "+String(lastEncoder)+", Now: "+String(encoder),1);
+                    if (received && absDifference<100){
+                        break;
+                    }
+                    lastEncoder = encoder;
+                    HAL_Delay(300);
+                }
             }
-            lastEncoder = encoder;
-            HAL_Delay(300);
-        }
-        
-        printToLCD("Stage 2",0);
-        setMaxTorque(1199);
-        HAL_Delay(200);
-        step(!direction, 3, 1000);
-        HAL_Delay(500);
+            printToLCD("Stage 2",0);
+            step_UART(!direction, 3, 200);
+            setMaxTorque(1199);
+            HAL_Delay(50);
+            step_UART(!direction, 3, 200);
+            HAL_Delay(500);
+        }while(false);
         zeroEncoder = encoder;
         zeroEncoderCarry = encoderCarry;
         enableAbsolutePosControl = true;
@@ -162,6 +229,7 @@ public:
 
     // position : distance from zero position
     float getPosition(){ // to test
+        receiveEncoder();
         // if (enableAbsolutePosControl){
         float position = 0;
         position = ((encoder - zeroEncoder)/(float)0xFFFF+ (encoderCarry - zeroEncoderCarry))*mmPerLap;
@@ -174,13 +242,17 @@ public:
         receiveEncoder();
         uint8_t direction = 0;
         uint32_t stepCount = getStepCountFromTargetPosition(position, direction);
-        step(direction, stepSpeed, stepCount);
+        step_UART(direction, stepSpeed, stepCount);
+    }
+
+    void step(float position){
+
     }
 
     // direction : 1 or 0
     // speed: 0~7
     // stepCount: each stepCount/stepDivision for 1.8 deg, currently stepDivision=1
-    void step(uint8_t direction, uint8_t speed, uint32_t stepCount){
+    void step_UART(uint8_t direction, uint8_t speed, uint32_t stepCount){
         uint8_t instruction[8] = {};
         instruction[0] = address;
         instruction[1] = 0xfd;
@@ -194,7 +266,7 @@ public:
     }
 
     // step with block
-    void step_b(uint8_t direction, uint8_t speed, uint32_t stepCount){
+    void step_UART_b(uint8_t direction, uint8_t speed, uint32_t stepCount){
         uint8_t instruction[8] = {};
         instruction[0] = address;
         instruction[1] = 0xfd;
@@ -212,11 +284,11 @@ public:
         debugLog("step finished",19);
     }
 
-    void stepClockwise(uint32_t stepCount){
-        step(0, stepSpeed, stepCount);
+    void stepClockwise_UART(uint32_t stepCount){
+        step_UART(0, stepSpeed, stepCount);
     }
-    void stepCounterClockwise(uint32_t stepCount){
-        step(1, stepSpeed, stepCount);
+    void stepCounterClockwise_UART(uint32_t stepCount){
+        step_UART(1, stepSpeed, stepCount);
     }
 
     

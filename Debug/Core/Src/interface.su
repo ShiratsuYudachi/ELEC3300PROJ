@@ -1,23 +1,19 @@
 ../Core/Inc/utils.hpp:16:5:String::String()	16	static
 ../Core/Inc/utils.hpp:19:5:String::String(const char*)	16	static
 ../Core/Inc/utils.hpp:27:5:String::String(int)	16	static
-../Core/Inc/utils.hpp:31:5:String::String(uint16_t)	16	static
 ../Core/Inc/utils.hpp:32:5:String::String(uint32_t)	16	static
 ../Core/Inc/utils.hpp:38:5:String::String(uint8_t*, int)	32	static
 ../Core/Inc/utils.hpp:61:12:String String::operator+(const char*)	32	static
 ../Core/Inc/utils.hpp:68:12:String String::operator+(const String&)	24	static
-../Core/Inc/SERVO42C.hpp:41:20:static uint8_t SERVO42C::getCRC(uint8_t*, uint8_t)	24	static
-../Core/Inc/SERVO42C.hpp:50:14:uint8_t* SERVO42C::receiveUART(uint8_t)	32	static
-../Core/Inc/SERVO42C.hpp:80:14:uint8_t* SERVO42C::receiveUART(uint8_t, uint16_t)	24	static
-../Core/Inc/SERVO42C.hpp:134:10:void SERVO42C::alignAbsolutePosition(int)	504	static
-../Core/Inc/SERVO42C.hpp:164:11:float SERVO42C::getPosition()	32	static
-../Core/Inc/SERVO42C.hpp:183:10:void SERVO42C::step(uint8_t, uint8_t, uint32_t)	320	static
-../Core/Inc/SERVO42C.hpp:215:10:void SERVO42C::stepClockwise(uint32_t)	16	static
-../Core/Inc/SERVO42C.hpp:225:10:void SERVO42C::spin(uint8_t, uint8_t)	24	static
-../Core/Inc/SERVO42C.hpp:233:10:void SERVO42C::spinClockwise(uint8_t)	16	static
-../Core/Inc/SERVO42C.hpp:236:10:void SERVO42C::spinCounterClockwise(uint8_t)	16	static
-../Core/Inc/SERVO42C.hpp:249:10:void SERVO42C::setMaxTorque(uint16_t)	24	static
-../Core/Inc/SERVO42C.hpp:260:10:bool SERVO42C::receiveEncoder(int)	24	static
+../Core/Inc/SERVO42C.hpp:96:20:static uint8_t SERVO42C::getCRC(uint8_t*, uint8_t)	24	static
+../Core/Inc/SERVO42C.hpp:105:14:uint8_t* SERVO42C::receiveUART(uint8_t)	32	static
+../Core/Inc/SERVO42C.hpp:135:14:uint8_t* SERVO42C::receiveUART(uint8_t, uint16_t)	24	static
+../Core/Inc/SERVO42C.hpp:231:11:float SERVO42C::getPosition()	32	static
+../Core/Inc/SERVO42C.hpp:255:10:void SERVO42C::step_UART(uint8_t, uint8_t, uint32_t)	320	static
+../Core/Inc/SERVO42C.hpp:297:10:void SERVO42C::spin(uint8_t, uint8_t)	24	static
+../Core/Inc/SERVO42C.hpp:305:10:void SERVO42C::spinClockwise(uint8_t)	16	static
+../Core/Inc/SERVO42C.hpp:308:10:void SERVO42C::spinCounterClockwise(uint8_t)	16	static
+../Core/Inc/SERVO42C.hpp:332:10:bool SERVO42C::receiveEncoder(int)	24	static
 ../Core/Inc/EasyUI.hpp:28:5:UIElement::UIElement(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
 ../Core/Inc/EasyUI.hpp:36:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
 ../Core/Inc/EasyUI.hpp:57:5:Button::Button(uint16_t, uint16_t, char*, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
@@ -36,28 +32,28 @@
 ../Core/Inc/EasyUI.hpp:267:10:virtual void TouchPad::update(u_int16_t, u_int16_t)	24	static
 ../Core/Inc/EasyUI.hpp:293:11:float TouchPad::getXRatio()	24	static
 ../Core/Inc/EasyUI.hpp:298:11:float TouchPad::getYRatio()	24	static
-../Core/Src/interface.cpp:18:6:void MoveXY(TouchPad*, int, int)	40	static
-../Core/Src/interface.cpp:38:24:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:38:24:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:38:24:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:39:25:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:39:25:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:39:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:40:25:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:40:25:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:40:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:41:26:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:41:26:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:41:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:42:26:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:42:26:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:42:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:47:27:myfunc()::<lambda()>	24	static
-../Core/Src/interface.cpp:47:27:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:47:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:57:27:myfunc()::<lambda()>	104	static
-../Core/Src/interface.cpp:57:27:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:57:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:36:6:void myfunc()	112	static
-../Core/Src/interface.cpp:99:1:void __static_initialization_and_destruction_0(int, int)	32	static
-../Core/Src/interface.cpp:99:1:cpp)	8	static
+../Core/Src/interface.cpp:24:6:void MoveXY(TouchPad*, int, int)	40	static
+../Core/Src/interface.cpp:49:24:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:49:24:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:49:24:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:50:25:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:50:25:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:50:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:51:25:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:51:25:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:51:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:52:26:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:52:26:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:52:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:53:26:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:53:26:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:53:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:61:27:myfunc()::<lambda()>	24	static
+../Core/Src/interface.cpp:61:27:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:61:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:71:27:myfunc()::<lambda()>	104	static
+../Core/Src/interface.cpp:71:27:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:71:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:42:6:void myfunc()	112	static
+../Core/Src/interface.cpp:118:1:void __static_initialization_and_destruction_0(int, int)	32	static
+../Core/Src/interface.cpp:118:1:cpp)	8	static

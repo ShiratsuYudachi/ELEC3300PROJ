@@ -1,6 +1,8 @@
 #include "SERVO42C.hpp"
 #include "usart.h"
 
+// uint32_t PulseDMABuff[2560]; // the max number of steps can be perfomed once
+
 SERVO42C xServo(0xe0, &huart2);
 SERVO42C yServo(0xe1, &huart2);
 SERVO42C zServo(0xe2, &huart2);
@@ -26,13 +28,14 @@ void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir
     float speedParamY = yServo.getSpeedParamOfLinearSpeed(linearSpeedY);
     float speedParamZ = zServo.getSpeedParamOfLinearSpeed(linearSpeedZ);
 
-    xServo.step(xDir, speedParamX, xStepCount);
-    yServo.step(yDir, speedParamY, yStepCount);
-    zServo.step(zDir, speedParamZ, zStepCount);
+    xServo.step_UART(xDir, speedParamX, xStepCount);
+    yServo.step_UART(yDir, speedParamY, yStepCount);
+    zServo.step_UART(zDir, speedParamZ, zStepCount);
 }
 
 void setPosition3d(float x, float y, float z){
     uint8_t xDir = 0;
+
     uint32_t xStepCount =  xServo.getStepCountFromTargetPosition(x, xDir);
     uint8_t yDir = 0;
     uint32_t yStepCount =  yServo.getStepCountFromTargetPosition(y, yDir);

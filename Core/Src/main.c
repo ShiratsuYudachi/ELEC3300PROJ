@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "rtc.h"
 #include "tim.h"
 #include "usart.h"
@@ -131,6 +132,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_FSMC_Init();
   MX_USART1_UART_Init();
   MX_TIM2_Init();
@@ -170,6 +172,7 @@ int main(void)
 	timer_min(1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 10);
+  // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   myfunc();
 
   /* USER CODE END 2 */

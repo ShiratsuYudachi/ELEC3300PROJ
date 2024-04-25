@@ -3,6 +3,7 @@
 #include "usart.h"
 #include "EasyUI.hpp"
 #include "utils.hpp"
+#include "main.h"
 
 #include <stdio.h>
 
@@ -14,6 +15,11 @@ Button CWButton(100, 50, "YCW", 40, 40);
 Button test3Button(120, 0, "GetPos", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
+
+// PulseMotor xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4);
+uint32_t PulseDMABuff[2560];
+
+
 
 void MoveXY(TouchPad *touchPad, int x, int y)
 {
@@ -29,18 +35,26 @@ void MoveXY(TouchPad *touchPad, int x, int y)
   int a = (x-touchPad->width/2);
   a < 0 ? a = -a : a = a;
   uint8_t xSpeed = a/(touchPad->height/2)*7;
-  xServo.step(xdir, xSpeed, 10);
+  xServo.step_UART(xdir, xSpeed, 10);
 }
 
 
 void myfunc()
 {
+  for (int i = 0; i < 2560; i++)
+  {
+    PulseDMABuff[i] = 36;
+  }
+
   CWButton.onPressed = [](){yServo.spinClockwise(50);};
   CWButton.onReleased = [](){yServo.spinClockwise(0);};
   CCWButton.onPressed = [](){yServo.spinCounterClockwise(50);};
   CCWButton.onReleased = [](){yServo.spinCounterClockwise(0);};
   testButton.onPressed = [](){
-    yServo.stepClockwise(6400);
+    // xPulseMotor.pulse(200);
+    PulseDMABuff[200] = 0;
+    __HAL_TIM_SET_PRESCALER(&htim3, 1000-1);
+    HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)PulseDMABuff, 201);
     // xServo.receiveEncoder();
     // printToLCD("x Encoder" + String(xServo.getEncoder()), 1);
   };
@@ -70,8 +84,13 @@ void myfunc()
 
   // xServo.spinCounterClockwise(100);
 
-  yServo.alignAbsolutePosition(0);
-  xServo.alignAbsolutePosition(0);
+  // printToLCD("Aligning Motor X", 1);
+  // xServo.alignAbsolutePosition(0);
+  // printToLCD("Aligning Motor Y", 1);
+  // yServo.alignAbsolutePosition(0);
+  // printToLCD("Aligning Motor Z", 1);
+  // zServo.alignAbsolutePosition(0);
+  
   
   
   while (1)
