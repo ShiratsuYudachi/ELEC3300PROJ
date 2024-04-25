@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 // create UI
-Button testButton(170, 50, "YStep", 40, 40);
+Button switchButton(170, 50, "Motor?", 40, 40);
 Button test2Button(170, 0, "SetPos", 40, 40);
 Button CCWButton(30, 50, "YCCW", 40, 40);
 Button CWButton(100, 50, "YCW", 40, 40);
@@ -16,45 +16,80 @@ Button test3Button(120, 0, "GetPos", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
 
-SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4);
+SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4); // tim, tim channel, dir gpio, dir gpio pin
+SERVO42C_Pulse yPulseMotor(&htim4, TIM_CHANNEL_1, GPIOB, GPIO_PIN_7);
+SERVO42C_Pulse zPulseMotor(&htim8, TIM_CHANNEL_1, GPIOA, GPIO_PIN_7);
+
 // uint32_t PulseDMABuff[2560];
 
 
+SERVO42C_Pulse* pTargetMotor = &xPulseMotor;
+void printTargetMotor(){
+  char str[20];
+  if (pTargetMotor == &xPulseMotor)
+  {
+    sprintf(str, "Target: X");
+  }
+  else if (pTargetMotor == &yPulseMotor)
+  {
+    sprintf(str, "Target: Y");
+  }
+  else
+  {
+    sprintf(str, "Target: Z");
+  }
+  printToLCD(str, 2);
+
+}
 void myfunc()
 {
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+
   for (int i = 0; i < 2560; i++)
   {
     PulseDMABuff[i] = 36;
   }
+  
 
   // config: AAC set to max, 1042
   xPulseMotor.setFrequency(2200);
+  yPulseMotor.setFrequency(2200);
+  zPulseMotor.setFrequency(2200);
+  printTargetMotor();
+
+  
 
   CWButton.onPressed = [](){
-    xPulseMotor.setDirection(0);
-    xPulseMotor.spinStart();
+    pTargetMotor->setDirection(0);
+    pTargetMotor->spinStart();
   };
   CWButton.onReleased = [](){
-    xPulseMotor.spinStop();
+    pTargetMotor->spinStop();
   };
   CCWButton.onPressed = [](){
-    xPulseMotor.setDirection(1);
-    xPulseMotor.spinStart();
+    pTargetMotor->setDirection(1);
+    pTargetMotor->spinStart();
+    
   };
   CCWButton.onReleased = [](){
-    xPulseMotor.spinStop();
+    pTargetMotor->spinStop();
   };
   
-  
-  
-
-  testButton.onPressed = [](){
-    xPulseMotor.setPosition(15.0); //TEST
-    // PulseDMABuff[200] = 0;
-    // __HAL_TIM_SET_PRESCALER(&htim3, 1000-1);
-    // HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*)PulseDMABuff, 201);
-    // xServo.receiveEncoder();
-    // printToLCD("x Encoder" + String(xServo.getEncoder()), 1);
+  switchButton.onPressed = [](){
+    if (pTargetMotor == &xPulseMotor)
+    {
+      pTargetMotor = &yPulseMotor;
+    }
+    else if (pTargetMotor == &yPulseMotor)
+    {
+      pTargetMotor = &zPulseMotor;
+    }
+    else
+    {
+      pTargetMotor = &xPulseMotor;
+    }
+    printTargetMotor();
   };
   test2Button.onPressed = [](){
     // xServo.receiveErrorAngle();
