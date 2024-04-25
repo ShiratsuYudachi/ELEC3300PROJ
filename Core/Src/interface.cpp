@@ -87,20 +87,15 @@ void myfunc()
     printTargetMotor();
   };
   test2Button.onPressed = [](){
-    // xPulseMotor.setPosition(100);
-    step3d(10000, 1, 2000, 1, 5000, 1);
-    // xServo.receiveErrorAngle();
-    // char str[20];
-    // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());
-    // printToLCD(str, 2);
-    // yServo.setPosition(testSlider.getValue());
-    // debugLog(String(testTouchPad.getXRatio()*264),19);
-    // xServo.setPosition(testTouchPad.getXRatio()*264);
-    // setPosition3d(testTouchPad.getXRatio()*264, testTouchPad.getYRatio()*146, 0);
+    
+    // setPosition3d(testTouchPad.getXRatio()*100, testTouchPad.getYRatio()*100, testSlider.getValue()*100);
+    xPulseMotor.step_inf(1,15000);
+    
   };
   test3Button.onPressed = [](){
     pTargetMotor->step(1,200);
   };
+
 
   
 

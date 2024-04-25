@@ -12,9 +12,9 @@
 #include "main.h"
 #include "tim.h"
 
-#define DMA_BUFFER_SIZE 10240 // max move distance onece is length/100
+#define DMA_BUFFER_SIZE 2560 // max move distance onece is length/100
 
-extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE];
+extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1];
 
 class PulseMotor
 {
@@ -106,9 +106,10 @@ public:
         while (stepNum > 0)
         {
             uint16_t pulseNum = stepNum < DMA_BUFFER_SIZE ? stepNum : DMA_BUFFER_SIZE;
+            stepSum+= direction ? pulseNum : -pulseNum;
             stepNum -= pulseNum;
             pulse(pulseNum);
-            HAL_Delay((float)pulseNum / getFrequency() * 1000); // Problem! This will block the program! Not applicable for multi-motor control!
+            HAL_Delay((float)pulseNum / getFrequency() * 1000+5); // Problem! This will block the program! Not applicable for multi-motor control!
         }
     }
 };
