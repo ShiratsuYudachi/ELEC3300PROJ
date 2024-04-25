@@ -190,7 +190,7 @@ public:
     }
     float getValue()
     {
-        return value;
+        return value/maxValue;
     }
 };
 

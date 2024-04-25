@@ -12,8 +12,10 @@
 #include "main.h"
 #include "tim.h"
 
+#define DMA_BUFFER_SIZE 10240 // max move distance onece is length/100
 
-extern uint32_t PulseDMABuff[2560];
+
+extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE]; 
 
 class PulseMotor{
     TIM_HandleTypeDef* pTim;
@@ -58,6 +60,7 @@ public:
     }
 
     void spinStart(){
+        __HAL_TIM_SET_COMPARE(pTim, timChannel, 36);
         HAL_TIM_PWM_Start(pTim, timChannel);
     }
     void spinStop(){

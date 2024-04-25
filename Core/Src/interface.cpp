@@ -12,7 +12,7 @@ Button switchButton(170, 50, "Motor?", 40, 40);
 Button test2Button(170, 0, "SetPos", 40, 40);
 Button CCWButton(30, 50, "YCCW", 40, 40);
 Button CWButton(100, 50, "YCW", 40, 40);
-Button test3Button(120, 0, "GetPos", 40, 40);
+Button test3Button(120, 0, "step", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
 
@@ -43,19 +43,17 @@ void printTargetMotor(){
 }
 void myfunc()
 {
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
 
-  for (int i = 0; i < 2560; i++)
+  for (int i = 0; i < DMA_BUFFER_SIZE; i++)
   {
     PulseDMABuff[i] = 36;
   }
   
 
-  // config: AAC set to max, 1042
-  xPulseMotor.setFrequency(2200);
-  yPulseMotor.setFrequency(2200);
-  zPulseMotor.setFrequency(2200);
+  // config: AAC set to max, 1042, max freq 2200
+  xPulseMotor.setFrequency(1000);
+  yPulseMotor.setFrequency(1000);
+  zPulseMotor.setFrequency(1000);
   printTargetMotor();
 
   
@@ -92,6 +90,7 @@ void myfunc()
     printTargetMotor();
   };
   test2Button.onPressed = [](){
+    xPulseMotor.setPosition(100);
     // xServo.receiveErrorAngle();
     // char str[20];
     // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());
@@ -102,10 +101,7 @@ void myfunc()
     // setPosition3d(testTouchPad.getXRatio()*264, testTouchPad.getYRatio()*146, 0);
   };
   test3Button.onPressed = [](){
-    // yServo.receiveEncoder();
-    char str[20];
-    // sprintf(str, "yPos=%.2f", yServo.getPosition());
-    printToLCD(str, 2);
+    pTargetMotor->step(1,200);
   };
 
   
@@ -128,6 +124,10 @@ void myfunc()
   
   while (1)
   {
+    char str[20];
+    sprintf(str, "x=%.1f y=%.1f z=%.1f",xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
+    printToLCD(str, 1);
+    
     // yServo.receiveEncoder();
       
     /* USER CODE END WHILE */
