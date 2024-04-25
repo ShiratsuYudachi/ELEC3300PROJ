@@ -16,9 +16,6 @@ Button test3Button(120, 0, "step", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
 
-SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4); // tim, tim channel, dir gpio, dir gpio pin
-SERVO42C_Pulse yPulseMotor(&htim4, TIM_CHANNEL_1, GPIOB, GPIO_PIN_7);
-SERVO42C_Pulse zPulseMotor(&htim8, TIM_CHANNEL_1, GPIOA, GPIO_PIN_7);
 
 // uint32_t PulseDMABuff[2560];
 
@@ -90,7 +87,8 @@ void myfunc()
     printTargetMotor();
   };
   test2Button.onPressed = [](){
-    xPulseMotor.setPosition(100);
+    // xPulseMotor.setPosition(100);
+    step3d(10000, 1, 2000, 1, 5000, 1);
     // xServo.receiveErrorAngle();
     // char str[20];
     // sprintf(str, "ErrorAngle: %.3f", xServo.getErrorAngle());

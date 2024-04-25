@@ -18,6 +18,7 @@
 extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE]; 
 
 class PulseMotor{
+private:
     TIM_HandleTypeDef* pTim;
     uint32_t timChannel;
     GPIO_TypeDef* pGPIO;
@@ -73,6 +74,10 @@ public:
     }
 
     void step(uint8_t direction, uint32_t stepNum){
+        if (stepNum>DMA_BUFFER_SIZE){
+            printToLCD("StepNum too large", 18);
+            return;
+        }
         stepSum += direction?stepNum:-stepNum;
         setDirection(direction);
         pulse(stepNum);
@@ -85,8 +90,11 @@ public:
 
 };
 
+
+
 class SERVO42C_Pulse : public PulseMotor{
     friend void setPosition3d(float x, float y, float z);
+    friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
 protected:
     
     // configs
@@ -104,18 +112,58 @@ protected:
         return stepCount;
     }
 
+    float getRPMof(uint8_t speed){
+        float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
+        return (speed * 30000)/(stepDivision * divisionCoefficient);
+    }
+    float getSpeedParamOfRPM(float rpm){
+        float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
+        return rpm * stepDivision * divisionCoefficient / 30000;
+    }
+    
+    float getLinearSpeedOf(uint8_t speed){
+        return getRPMof(speed) * mmPerLap / 60; // mm/s
+    }
+
+    uint8_t getSpeedParamOfLinearSpeed(float linearSpeed){
+        float rpm = linearSpeed * 60 / mmPerLap;
+        return getSpeedParamOfRPM(rpm);
+    }
+    
+    float stepcountToDistance(uint32_t stepCount){
+        return stepCount/(float)stepDivision * stepAngle/360 * mmPerLap;
+    }
+    float frequencyToSpeed(uint16_t frequency){
+        // frequency是每秒脉冲数，speed是每秒毫米数
+        // 所以需要返回一秒内走过的distance，一秒内的step数就是frequency
+        return stepcountToDistance(frequency);
+    }
+
+    float speedToFrequency(float speed){
+        float rps = speed / mmPerLap;
+        return rps * 360/stepAngle * stepDivision;
+    }
+
 public:
     SERVO42C_Pulse(TIM_HandleTypeDef* pTim, uint32_t timChannel, GPIO_TypeDef* pGPIO, uint16_t GPIO_Pin) : PulseMotor(pTim, timChannel, pGPIO, GPIO_Pin){}
+    
+    // position: distance in mm from zero position
+    // zero position: where the motor is set
     float getPosition(){
         return (float)stepSum/stepDivision * stepAngle/360 * mmPerLap;
     }
-
-    // position: distance in mm from zero position
-    // zero position: where the motor is set
     void setPosition(float position){
         uint8_t direction = 0;
         uint32_t stepCount = getStepCountFromTargetPosition(position, direction);
         step(direction, stepCount);
+    }
+
+
+    float getSpeed(){
+        return frequencyToSpeed(getFrequency());
+    }
+    void setSpeed(float speed){
+        setFrequency(speedToFrequency(speed));
     }
 
     // reset zero position by turning the motor CW/CCW(0/1)
@@ -134,6 +182,10 @@ public:
     }
 
 };
+
+extern SERVO42C_Pulse xPulseMotor; // tim, tim channel, dir gpio, dir gpio pin
+extern SERVO42C_Pulse yPulseMotor;
+extern SERVO42C_Pulse zPulseMotor;
 
 
 // class SERVO42C_UART : public SERVO42C_Pulse{
@@ -213,27 +265,7 @@ public:
 //     }
     
     
-//     float getRPMof(uint8_t speed){
-//         float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
-//         return (speed * 30000)/(stepDivision * divisionCoefficient);
-//     }
-//     float getSpeedParamOfRPM(float rpm){
-//         float divisionCoefficient = ABS(stepAngle-1.8)>0.01?400:200;
-//         return rpm * stepDivision * divisionCoefficient / 30000;
-//     }
-    
-//     float getLinearSpeedOf(uint8_t speed){
-//         return getRPMof(speed) * mmPerLap / 60; // mm/s
-//     }
 
-//     uint8_t getSpeedParamOfLinearSpeed(float linearSpeed){
-//         float rpm = linearSpeed * 60 / mmPerLap;
-//         return getSpeedParamOfRPM(rpm);
-//     }
-    
-//     float getDistanceOf(uint32_t stepCount){
-//         return stepCount/(float)stepDivision * stepAngle/360 * mmPerLap;
-//     }
 
     
 // public:
@@ -419,9 +451,9 @@ public:
 // extern SERVO42C_UART yServo;
 // extern SERVO42C_UART zServo;
 
-// void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
+void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
 
-// void setPosition3d(float x, float y, float z);
+void setPosition3d(float x, float y, float z);
 
 
 
