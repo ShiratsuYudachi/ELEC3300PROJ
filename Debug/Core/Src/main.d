@@ -31,8 +31,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/dma.h ../Core/Inc/rtc.h \
  ../Core/Inc/tim.h ../Core/Inc/usart.h ../Core/Inc/gpio.h \
  ../Core/Inc/fsmc.h ../Core/Inc/lcdtp.h ../Core/Inc/dht11.h \
- ../Core/Inc/printf.h ../Core/Inc/xpt2046.h ../Core/Inc/UI.h \
- ../Core/Inc/xpt2046.h ../Core/Inc/UI_buttons.h ../Core/Inc/printf.h \
+ ../Core/Inc/printf.h ../Core/Inc/xpt2046.h ../Core/Inc/printf.h \
  ../Core/Inc/interface.hpp
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -76,8 +75,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/dht11.h:
 ../Core/Inc/printf.h:
 ../Core/Inc/xpt2046.h:
-../Core/Inc/UI.h:
-../Core/Inc/xpt2046.h:
-../Core/Inc/UI_buttons.h:
 ../Core/Inc/printf.h:
 ../Core/Inc/interface.hpp:

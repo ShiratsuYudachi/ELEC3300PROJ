@@ -32,8 +32,6 @@
 /* USER CODE BEGIN Includes */
 #include "lcdtp.h"
 #include "xpt2046.h"
-#include "UI.h"
-#include "UI_buttons.h"
 #include "printf.h"
 #include "interface.hpp"
 /* USER CODE END Includes */

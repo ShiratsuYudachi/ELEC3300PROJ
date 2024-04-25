@@ -12,9 +12,9 @@
 #include "main.h"
 #include "tim.h"
 
-#define DMA_BUFFER_SIZE 2560 // max move distance onece is length/100
+#define DMA_BUFFER_SIZE 10240 // max move distance onece is length/100
 
-extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE];
+extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1];
 
 class PulseMotor
 {
@@ -60,7 +60,8 @@ public:
 
     void pulse(uint16_t pulseNum)
     {
-        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum);
+        PulseDMABuff[pulseNum] = 0;
+        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum+1);
     }
 
     void spinStart()
@@ -114,8 +115,8 @@ public:
 
 class SERVO42C_Pulse : public PulseMotor
 {
-    friend void setPosition3d(float x, float y, float z);
-    friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
+    friend void setPosition3d(float x, float y, float z, float speed);
+    friend void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir, float speed);
 
 protected:
     // configs
@@ -468,8 +469,8 @@ extern SERVO42C_Pulse zPulseMotor;
 // extern SERVO42C_UART yServo;
 // extern SERVO42C_UART zServo;
 
-void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir);
+void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir, uint32_t zStepCount, uint8_t zDir, float speed);
 
-void setPosition3d(float x, float y, float z);
+void setPosition3d(float x, float y, float z, float speed = 15);
 
 #endif /* INC_MOTOR_H_ */

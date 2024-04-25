@@ -10,9 +10,10 @@
 // create UI
 Button switchButton(170, 50, "Motor?", 40, 40);
 Button test2Button(170, 0, "SetPos", 40, 40);
-Button CCWButton(30, 50, "YCCW", 40, 40);
-Button CWButton(100, 50, "YCW", 40, 40);
-Button test3Button(120, 0, "step", 40, 40);
+Button CCWButton(10, 50, "YCCW", 40, 40);
+Button CWButton(65, 50, "YCW", 40, 40);
+Button test3Button(120, 50, "START", 40, 40);
+Button resetButton(120, 0, "REST", 40, 40);
 Slider testSlider(200, 120, 100);
 TouchPad testTouchPad(0, 120);
 
@@ -93,7 +94,20 @@ void myfunc()
     
   };
   test3Button.onPressed = [](){
-    pTargetMotor->step(1,200);
+    float speed = 15;
+    setPosition3d(0, 0, 0, speed);
+    setPosition3d(50, 50, 0, speed);
+    setPosition3d(0, 50, 0, speed);
+    setPosition3d(50, 0, 0, speed);
+    setPosition3d(0, 0, 0, speed);
+  };
+  resetButton.onPressed = [](){
+    xPulseMotor.setDirection(0);
+    xPulseMotor.spinStart();
+    yPulseMotor.setDirection(0);
+    yPulseMotor.spinStart();
+    // zPulseMotor.setDirection(0);
+    // zPulseMotor.spinStart();
   };
 
 
