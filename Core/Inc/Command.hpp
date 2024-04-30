@@ -33,10 +33,18 @@ public:
     }
 
     void execute(){
-        if (type == SET_POSITION){
+        switch (type)
+        {
+        case SET_POSITION:
             setPosition3d(x, y, z, currentSpeed);
-        }else if (type == SET_SPEED){
+            break;
+        case SET_SPEED:
             currentSpeed = speed;
+            break;
+        case 
+        default:
         }
+        
+
     }
 };

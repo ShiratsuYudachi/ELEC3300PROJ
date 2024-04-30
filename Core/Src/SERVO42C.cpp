@@ -32,7 +32,7 @@ void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir
     yPulseMotor.step(yDir, yStepCount);
     zPulseMotor.step(zDir, zStepCount);
 
-    HAL_Delay(timeConsumed * 1000 * 1.2);
+    HAL_Delay(timeConsumed * 1000 * 1.2 + 10);
 }
 
 void setPosition3d(float x, float y, float z, float speed){
@@ -43,5 +43,4 @@ void setPosition3d(float x, float y, float z, float speed){
     uint8_t zDir = 0;
     uint32_t zStepCount =  zPulseMotor.getStepCountFromTargetPosition(z, zDir);
     step3d(xStepCount, xDir, yStepCount, yDir, zStepCount, zDir, speed);
-    // todo, block thread until done
 }

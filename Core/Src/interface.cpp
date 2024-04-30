@@ -4,6 +4,7 @@
 #include "EasyUI.hpp"
 #include "utils.hpp"
 #include "main.h"
+#include "gcode.h"
 
 #include <stdio.h>
 
@@ -23,7 +24,7 @@ TouchPad testTouchPad(0, 120);
 
 SERVO42C_Pulse* pTargetMotor = &xPulseMotor;
 void printTargetMotor(){
-  char str[20];
+  char str[32];
   if (pTargetMotor == &xPulseMotor)
   {
     sprintf(str, "Target: X");
@@ -38,6 +39,11 @@ void printTargetMotor(){
   }
   printToLCD(str, 2);
 
+}
+void printPosition(){
+  char str[32];
+    sprintf(str, "x=%.1f y=%.1f z=%.1f",xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
+    printToLCD(str, 1);
 }
 void myfunc()
 {
@@ -94,12 +100,28 @@ void myfunc()
     
   };
   test3Button.onPressed = [](){
-    float speed = 15;
-    setPosition3d(0, 0, 0, speed);
-    setPosition3d(50, 50, 0, speed);
-    setPosition3d(0, 50, 0, speed);
-    setPosition3d(50, 0, 0, speed);
-    setPosition3d(0, 0, 0, speed);
+    // 奇怪沙漏
+    // setPosition3d(0, 0, 0, speed);
+    // setPosition3d(50, 50, 0, speed);
+    // setPosition3d(0, 50, 0, speed);
+    // setPosition3d(50, 0, 0, speed);
+    // setPosition3d(0, 0, 0, speed);
+
+    // H
+    // setPosition3d(0, 0, 0, speed);
+    // setPosition3d(0, -50, 0, speed);
+    // setPosition3d(0, -50, 10, speed);
+    // setPosition3d(0, -25, 10, speed);
+    // setPosition3d(0, -25, 0, speed);
+    // setPosition3d(25, -25, 0, speed);
+    // setPosition3d(25, -25, 10, speed);
+    // setPosition3d(25, 0, 10, speed);
+    // setPosition3d(25, 0, 0, speed);
+    // setPosition3d(25, -50, 0, speed);
+    for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
+      setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0);
+      printPosition();
+    }
   };
   resetButton.onPressed = [](){
     xPulseMotor.setDirection(0);
@@ -131,12 +153,8 @@ void myfunc()
   
   while (1)
   {
-    char str[20];
-    sprintf(str, "x=%.1f y=%.1f z=%.1f",xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
-    printToLCD(str, 1);
-    
     // yServo.receiveEncoder();
-      
+    printPosition();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

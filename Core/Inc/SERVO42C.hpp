@@ -14,6 +14,7 @@
 
 #define DMA_BUFFER_SIZE 10240 // max move distance onece is length/100
 
+
 extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1];
 
 class PulseMotor
@@ -77,11 +78,15 @@ public:
     void pulse_wait(uint16_t pulseNum)
     {
         pulse(pulseNum);
-        HAL_Delay((float)pulseNum / getFrequency() * 1000);
+        HAL_Delay((float)pulseNum / getFrequency() * 1000 + 10);
     }
 
     void step(uint8_t direction, uint32_t stepNum)
-    {
+    {   
+        if (stepNum == 0)
+        {
+            return;
+        }
         if (stepNum > DMA_BUFFER_SIZE)
         {
             printToLCD("StepNum too large", 18);
@@ -91,6 +96,8 @@ public:
         setDirection(direction);
         pulse(stepNum);
     }
+
+    
     void step_wait(uint8_t direction, uint32_t stepNum)
     {
         stepSum += direction ? stepNum : -stepNum;
@@ -196,7 +203,8 @@ public:
     }
     void setSpeed(float speed)
     {
-        setFrequency(speedToFrequency(speed));
+        if (speed > 0.001)
+            setFrequency(speedToFrequency(speed));
     }
 
     // reset zero position by turning the motor CW/CCW(0/1)
