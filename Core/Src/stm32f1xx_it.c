@@ -28,6 +28,8 @@
 #include "bsp_usart.h"
 #include "rtc.h"
 #include "tim.h"
+#include "SERVO42C_IT.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -258,6 +260,7 @@ void DMA1_Channel1_IRQHandler(void)
   HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 0);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+  yStepCompleted = 1;
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_tim4_ch1);
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
@@ -274,6 +277,7 @@ void DMA1_Channel6_IRQHandler(void)
   HAL_TIM_PWM_Stop_DMA(&htim3, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  xStepCompleted = 1;
 
   /* USER CODE END DMA1_Channel6_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_tim3_ch1_trig);
@@ -385,6 +389,7 @@ void DMA2_Channel3_IRQHandler(void)
   HAL_TIM_PWM_Stop_DMA(&htim8, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  zStepCompleted = 1;
   /* USER CODE END DMA2_Channel3_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_tim8_ch1);
   /* USER CODE BEGIN DMA2_Channel3_IRQn 1 */

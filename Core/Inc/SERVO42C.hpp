@@ -15,7 +15,7 @@
 #define DMA_BUFFER_SIZE 7000 // max move distance onece is length/100
 
 
-extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1];
+extern const uint32_t PulseDMABuff[DMA_BUFFER_SIZE];
 
 class PulseMotor
 {
@@ -183,6 +183,7 @@ protected:
     }
 
 public:
+    bool stepCompleted = false;
     float stepcountToDistance(uint32_t stepCount)
     {
         return stepCount / (float)stepDivision * stepAngle / 360 * mmPerLap;

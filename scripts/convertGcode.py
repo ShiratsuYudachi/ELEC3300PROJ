@@ -1,26 +1,30 @@
 import os
+import numpy as np
 
 path = os.popen('pwd').read().strip()+'/'
 
 is2D = True if input('Is this a 2D file? (y/n): ') == 'y' else False
-Xscale = 0.4#10.0
-Yscale = 0.4#2.0
-Zscale = 1.0
+Xscale = 1#10.0
+Yscale = 1#2.0
+Zscale = 2
 
-import numpy as np
+F_MAX = 600
+
+
 generatedArray = []
 
 lastG = -1
 lastX = 0
 lastY = 0
 lastZ = 0
-lastF = 800
+lastF = F_MAX
+
 
 G = -1
 X = 0
 Y = 0
 Z = 0
-F = 900
+F = F_MAX
 
 def matchFirstFloat(line) -> str:
     matched = ''
@@ -37,6 +41,7 @@ def parseLine(line):
     global Y
     global Z
     global F
+    global F_MAX
     global lastG
     global lastX
     global lastY
@@ -57,7 +62,7 @@ def parseLine(line):
         Z = float(matchFirstFloat(line.split('Z')[-1])) * Zscale
     if ('F' in line):
         lastF = F
-        F = float(matchFirstFloat(line.split('F')[-1]))
+        F = min(float(matchFirstFloat(line.split('F')[-1])), F_MAX)
 
 
 with open(path+'scripts/test.gcode', 'r') as f:
@@ -66,8 +71,8 @@ with open(path+'scripts/test.gcode', 'r') as f:
         parseLine(line.strip())
         if (G == 0):
             if (is2D):
-                generatedArray.append([lastX, lastY, 5, F])
-                generatedArray.append([X, Y, 5, F])
+                generatedArray.append([lastX, lastY, 3.5, F])
+                generatedArray.append([X, Y, 3.5, F])
                 generatedArray.append([X, Y, Z, F])
             else:
                 generatedArray.append([X, Y, Z, F])

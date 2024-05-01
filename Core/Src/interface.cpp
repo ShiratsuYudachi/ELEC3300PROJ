@@ -19,7 +19,7 @@ Button resetButton(120, 0, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
-PreviewDisplay3D previewDisplay(0, 170, 120, 120);
+// PreviewDisplay3D previewDisplay(0, 170, 120, 120);
 //TouchPad testTouchPad(0, 120);
 
 
@@ -52,11 +52,6 @@ void printPosition(){
 }
 void myfunc()
 {
-
-  for (int i = 0; i < DMA_BUFFER_SIZE; i++)
-  {
-    PulseDMABuff[i] = 36;
-  }
   
 
   // config: AAC set to max, 1042, max freq 2200

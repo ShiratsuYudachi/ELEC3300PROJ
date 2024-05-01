@@ -23,6 +23,7 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "tuple": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "servo42c_it.h": "c"
     }
 }
