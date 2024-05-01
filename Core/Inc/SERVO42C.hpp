@@ -12,7 +12,7 @@
 #include "main.h"
 #include "tim.h"
 
-#define DMA_BUFFER_SIZE 10240 // max move distance onece is length/100
+#define DMA_BUFFER_SIZE 7000 // max move distance onece is length/100
 
 
 extern uint32_t PulseDMABuff[DMA_BUFFER_SIZE+1];
@@ -169,10 +169,6 @@ protected:
         return getSpeedParamOfRPM(rpm);
     }
 
-    float stepcountToDistance(uint32_t stepCount)
-    {
-        return stepCount / (float)stepDivision * stepAngle / 360 * mmPerLap;
-    }
     float frequencyToSpeed(uint16_t frequency)
     {
         // frequency是每秒脉冲数，speed是每秒毫米数
@@ -187,6 +183,11 @@ protected:
     }
 
 public:
+    float stepcountToDistance(uint32_t stepCount)
+    {
+        return stepCount / (float)stepDivision * stepAngle / 360 * mmPerLap;
+    }
+    
     SERVO42C_Pulse(TIM_HandleTypeDef *pTim, uint32_t timChannel, GPIO_TypeDef *pGPIO, uint16_t GPIO_Pin) : PulseMotor(pTim, timChannel, pGPIO, GPIO_Pin) {}
 
     // position: distance in mm from zero position

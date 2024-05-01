@@ -26,7 +26,7 @@ void UIElement::updateAllElements()
         // if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)
         // {
             sprintf(str, "x=%d, y=%d", touch.x, touch.y);
-            printToLCD(str, 0);
+            // printToLCD(str, 0);
         // }
     // }
 #endif

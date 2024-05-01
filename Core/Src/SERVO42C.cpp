@@ -3,7 +3,7 @@
 // #include "usart.h"
 
 uint32_t PulseDMABuff[DMA_BUFFER_SIZE + 1]; // the max number of steps can be perfomed once
-auto CallbackFunctions[3] = {};
+// auto CallbackFunctions[3] = {};
 
 SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4); // tim, tim channel, dir gpio, dir gpio pin
 SERVO42C_Pulse yPulseMotor(&htim4, TIM_CHANNEL_1, GPIOB, GPIO_PIN_7);
@@ -38,7 +38,10 @@ void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir
     yPulseMotor.step(yDir, yStepCount);
     zPulseMotor.step(zDir, zStepCount);
 
-    HAL_Delay(timeConsumed * 1000 * 1.2 + 10); // 1.2 is a factor to make sure the motor has enough time to finish the movement
+    HAL_Delay(timeConsumed * 1000 * 1.2 + 25);// 1.2 is a factor to make sure the motor has enough time to finish the movement
+    xPulseMotor.setSpeed(originalSpeedX);
+    yPulseMotor.setSpeed(originalSpeedY);
+    zPulseMotor.setSpeed(originalSpeedZ); 
 }
 
 // TODO: add a step_inf3d function based on step_inf

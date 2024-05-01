@@ -7,6 +7,7 @@
 #include "gcode.h"
 
 #include <stdio.h>
+#include "PathPreview.hpp"
 
 // create UI
 Button switchButton(170, 50, "Motor?", 40, 40);
@@ -15,8 +16,12 @@ Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
 Button resetButton(120, 0, "REST", 40, 40);
-Slider testSlider(200, 120, 100);
-TouchPad testTouchPad(0, 120);
+Slider xSlider(180, 120, 100);
+// Slider ySlider(180, 120, 100);
+Slider zSlider(220, 120, 100);
+PreviewDisplay3D previewDisplay(0, 170, 120, 120);
+//TouchPad testTouchPad(0, 120);
+
 
 
 // uint32_t PulseDMABuff[2560];
@@ -132,6 +137,8 @@ void myfunc()
     // zPulseMotor.spinStart();
   };
 
+  
+
 
   
 
@@ -153,8 +160,13 @@ void myfunc()
   
   while (1)
   {
+    int startTick = HAL_GetTick();
+    // map2d();
+    rotateAngleX = xSlider.getValue() * 90;
+    // rotateAngleY = ySlider.getValue() * 90;
+    rotateAngleZ = zSlider.getValue() * 90;
     // yServo.receiveEncoder();
-    printPosition();
+    // printPosition();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -169,8 +181,10 @@ void myfunc()
     // sprintf(str, "%02X", data[0]);
 
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+    
     UIElement::updateAllElements();
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
     // HAL_Delay(500);
+    debugLog(String(HAL_GetTick() - startTick), 7);
   }
 }

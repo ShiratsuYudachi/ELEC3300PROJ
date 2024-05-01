@@ -1,3 +1,5 @@
+#ifndef __EASYUI_HPP__
+#define __EASYUI_HPP__
 extern "C"
 {
 #include "lcdtp.h"
@@ -20,6 +22,14 @@ public:
     virtual void update(uint16_t x, uint16_t y) = 0;
 
     static void updateAllElements();
+
+    bool isInvalidInput(uint16_t x, uint16_t y)
+    {
+        if (y > 500 || y <=32)
+            return true;
+        else
+            return false;
+    }
 
     uint16_t x, y;
     uint16_t width, height;
@@ -163,7 +173,7 @@ public:
 
     uint16_t wrapY(u_int16_t y)
     {
-        if (y > 500 || y==0)
+        if (y > 500 || y <=32)
             return draggerY; // y=2048 if not touched
         if (y < this->y)
             return this->y;
@@ -177,8 +187,11 @@ public:
         bool isDraggerTouched;
         if (isDragging)
         {
+            LCD_OpenWindow(this->x, draggerY, width, draggerRadius);
+            LCD_FillColor(width * draggerRadius, CYAN);
             draggerY = wrapY(y);
-            render();
+            LCD_OpenWindow(this->x, draggerY, width, draggerRadius);
+            LCD_FillColor(width * draggerRadius, RED);
             isDraggerTouched = x >= draggerX - 6 * draggerRadius && x <= draggerX + 6 * draggerRadius && y >= draggerY - 6*draggerRadius && y <= draggerY + 6*draggerRadius;
         }
         else
@@ -300,3 +313,5 @@ public:
         return (float)dotY / height;
     }
 };
+
+#endif
