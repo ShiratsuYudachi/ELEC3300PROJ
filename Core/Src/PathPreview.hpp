@@ -137,7 +137,14 @@ void resetVRAM(){
     for(int i = 0; i < r*r/2; i++)
     {
         ((uint32_t*)vRAM)[i] = color_32;
-        
+        i++;
+        ((uint32_t*)vRAM)[i] = color_32;
+        i++;
+        ((uint32_t*)vRAM)[i] = color_32;
+        i++;
+        ((uint32_t*)vRAM)[i] = color_32;
+        i++;
+        ((uint32_t*)vRAM)[i] = color_32;
     }
 }
 

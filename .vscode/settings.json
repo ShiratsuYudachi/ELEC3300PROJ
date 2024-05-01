@@ -10,6 +10,13 @@
         "image": "cpp",
         "cstring": "cpp",
         "types": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "any": "cpp",
+        "fstream": "cpp",
+        "ios": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "*.ipp": "cpp",
+        "*.tcc": "cpp"
     }
 }
