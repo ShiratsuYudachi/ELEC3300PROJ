@@ -4,6 +4,7 @@
 #include "trigo.h"
 #include "EasyUI.hpp"
 #include <cstdlib>
+#include <cmath>
 
 constexpr uint32_t posX = 60;
 constexpr uint32_t posY = 170;
@@ -48,7 +49,7 @@ void map2d(float speedInterval = -1)
 }
 
 // 实现 sin 函数，考虑周期性和符号
-float sin(int degree){
+float fastsin(int degree){
     degree = (degree % 360 + 360) % 360; // 首先将角度规约到 0-359 度
     if (degree < 90) {
         return sinTable[degree];
@@ -62,8 +63,8 @@ float sin(int degree){
 }
 
 // 实现 cos 函数，使用 sin 函数
-float cos(int degree){
-    return sin(degree + 90);  // 直接利用 sin 函数实现
+float fastcos(int degree){
+    return fastsin(degree + 90);  // 直接利用 sin 函数实现
 }
 
 struct Point3D {
@@ -110,25 +111,64 @@ float rotateAngleZ = 0;
 
 const int r = 110;
 uint8_t vRAM[r*r*2] = {};
-void drawLineToVRAM(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1; 
-    int err = dx + dy, e2; /* error value e_xy */
+void setPixel(int x, int y, uint16_t color, float alpha) {
+    if (x < 0 || x >= r || y < 0 || y >= r) return;
     
-    while (true) {
-        if (x0 >= 0 && x0 < r && y0 >= 0 && y0 < r) {
-            ((uint16_t*)vRAM)[x0+y0*r] = RED; // 绘制像素
+    uint16_t bg_color = ((uint16_t*)vRAM)[x+y*r];
+    uint8_t bg_red   = (bg_color >> 11) & 0x1F;
+    uint8_t bg_green = (bg_color >> 5) & 0x3F;
+    uint8_t bg_blue  = bg_color & 0x1F;
+
+    uint8_t fg_red   = (color >> 11) & 0x1F;
+    uint8_t fg_green = (color >> 5) & 0x3F;
+    uint8_t fg_blue  = color & 0x1F;
+
+    uint8_t red   = (uint8_t)(bg_red * (1 - alpha) + fg_red * alpha);
+    uint8_t green = (uint8_t)(bg_green * (1 - alpha) + fg_green * alpha);
+    uint8_t blue  = (uint8_t)(bg_blue * (1 - alpha) + fg_blue * alpha);
+
+    ((uint16_t*)vRAM)[x+y*r] = (red << 11) | (green << 5) | blue;
+}
+
+void drawLineToVRAM(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
+    bool steep = fabs(y1 - y0) > fabs(x1 - x0);
+    if (steep) {
+        uint16_t temp = x0;
+        x0 = y0;
+        y0 = temp;
+
+        temp = x1;
+        x1 = y1;
+        y1 = temp;
+    }
+    if (x0 > x1) {
+        uint16_t temp = x0;
+        x0 = x1;
+        x1 = temp;
+
+        temp = y0;
+        y0 = y1;
+        y1 = temp;
+    }
+
+    float dx = x1 - x0;
+    float dy = y1 - y0;
+    float gradient = dy / dx;
+    if (dx == 0.0) {
+        gradient = 1;
+    }
+
+    float intery = y0 + gradient; // 初始交点的y坐标
+
+    for (int x = x0 + 1; x <= x1; x++) {
+        if (steep) {
+            setPixel((int)intery, x, color, 1 - (intery - floor(intery)));
+            setPixel((int)intery + 1, x, color, intery - floor(intery));
+        } else {
+            setPixel(x, (int)intery, color, 1 - (intery - floor(intery)));
+            setPixel(x, (int)intery + 1, color, intery - floor(intery));
         }
-        if (x0 == x1 && y0 == y1) break;
-        e2 = 2 * err;
-        if (e2 >= dy) { /* e_xy+e_x > 0 */
-            err += dy;
-            x0 += sx;
-        }
-        if (e2 <= dx) { /* e_xy+e_y < 0 */
-            err += dx;
-            y0 += sy;
-        }
+        intery += gradient;
     }
 }
 void resetVRAM(){
@@ -158,19 +198,19 @@ void map3d(float posX, float posY) {
     int vCenterY = r/2; // vRAM center
 
     // draw circle
-    sinUnderCurrentAngleX = sin(rotateAngleX);
-    cosUnderCurrentAngleX = cos(rotateAngleX);
-    sinUnderCurrentAngleY = sin(rotateAngleY);
-    cosUnderCurrentAngleY = cos(rotateAngleY);
-    sinUnderCurrentAngleZ = sin(rotateAngleZ);
-    cosUnderCurrentAngleZ = cos(rotateAngleZ);
+    sinUnderCurrentAngleX = fastsin(rotateAngleX);
+    cosUnderCurrentAngleX = fastcos(rotateAngleX);
+    sinUnderCurrentAngleY = fastsin(rotateAngleY);
+    cosUnderCurrentAngleY = fastcos(rotateAngleY);
+    sinUnderCurrentAngleZ = fastsin(rotateAngleZ);
+    cosUnderCurrentAngleZ = fastcos(rotateAngleZ);
     
     for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
         Point3D point = {cmd[0] - gcodeCenterOfMass[0], cmd[1] - gcodeCenterOfMass[1], cmd[2] - gcodeCenterOfMass[2]};
         point = rotatePoint(point, X);
         point = rotatePoint(point, Y);
         point = rotatePoint(point, Z);
-        drawLineToVRAM(vCenterX + lastPos.x, vCenterY - lastPos.z, vCenterX + point.x, vCenterY - point.z);
+        drawLineToVRAM(vCenterX + lastPos.x, vCenterY - lastPos.z, vCenterX + point.x, vCenterY - point.z, RED);
         lastPos = point;
     }
     LCD_OpenWindow(posX, posY, r, r);

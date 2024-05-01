@@ -17,6 +17,12 @@
         "sstream": "cpp",
         "streambuf": "cpp",
         "*.ipp": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "optional": "cpp",
+        "shared_mutex": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "tuple": "cpp",
+        "variant": "cpp"
     }
 }
