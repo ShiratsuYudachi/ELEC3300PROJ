@@ -118,6 +118,7 @@ public:
             HAL_Delay((float)pulseNum / getFrequency() * 1000+5); // Problem! This will block the program! Not applicable for multi-motor control!
         }
     }
+    //TODO: add a step_inf3d function
 };
 
 class SERVO42C_Pulse : public PulseMotor

@@ -255,7 +255,7 @@ void EXTI4_IRQHandler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-  HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_1);//Stop the PWM, instead of outputting 0. Now there is bug-if not zero, will still go on, need fixing!
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_tim4_ch1);
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
