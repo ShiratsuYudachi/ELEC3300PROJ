@@ -61,8 +61,8 @@ public:
 
     void pulse(uint16_t pulseNum)
     {
-        PulseDMABuff[pulseNum] = 0;
-        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum+1);
+        // PulseDMABuff[pulseNum] = 0;
+        HAL_TIM_PWM_Start_DMA(pTim, timChannel, (uint32_t *)PulseDMABuff, pulseNum);
     }
 
     void spinStart()
@@ -97,7 +97,7 @@ public:
         pulse(stepNum);
     }
 
-    
+
     void step_wait(uint8_t direction, uint32_t stepNum)
     {
         stepSum += direction ? stepNum : -stepNum;

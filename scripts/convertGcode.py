@@ -3,8 +3,8 @@ import os
 path = os.popen('pwd').read().strip()+'/'
 
 is2D = True if input('Is this a 2D file? (y/n): ') == 'y' else False
-Xscale = 1#10.0
-Yscale = 1#2.0
+Xscale = 0.4#10.0
+Yscale = 0.4#2.0
 Zscale = 1.0
 
 import numpy as np
@@ -66,8 +66,8 @@ with open(path+'scripts/test.gcode', 'r') as f:
         parseLine(line.strip())
         if (G == 0):
             if (is2D):
-                generatedArray.append([lastX, lastY, 10, F])
-                generatedArray.append([X, Y, 10, F])
+                generatedArray.append([lastX, lastY, 3.5, F])
+                generatedArray.append([X, Y, 3.5, F])
                 generatedArray.append([X, Y, Z, F])
             else:
                 generatedArray.append([X, Y, Z, F])
@@ -84,4 +84,4 @@ def prettyPrint(array):
 carr = str(generatedArray).replace('[', '{').replace(']', '}').replace('},', '},\n')
 
 with open('Core/Inc/gcode.h', 'w') as f:
-    f.write(f'int gcodeLegth = {len(generatedArray)};\nfloat gcode[{len(generatedArray)}][4] = {carr};')
+    f.write(f'int gcodeLegth = {len(generatedArray)};\n const float gcode[{len(generatedArray)}][4] = {carr};')
