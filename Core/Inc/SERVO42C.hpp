@@ -108,6 +108,10 @@ public:
     // This function can go any number of steps
     void step_inf(uint8_t direction, uint32_t stepNum)
     {
+        if (stepNum == 0)
+        {
+            return;
+        }
         setDirection(direction);
         while (stepNum > 0)
         {
@@ -115,7 +119,8 @@ public:
             stepSum+= direction ? pulseNum : -pulseNum;
             stepNum -= pulseNum;
             pulse(pulseNum);
-            HAL_Delay((float)pulseNum / getFrequency() * 1000+5); // Problem! This will block the program! Not applicable for multi-motor control!
+            HAL_Delay((float)pulseNum / getFrequency() * 1000+5);
+            // Problem! This will block the program! Not applicable for multi-motor control!
         }
     }
 };

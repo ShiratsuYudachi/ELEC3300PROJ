@@ -9,6 +9,7 @@
         "vector": "cpp",
         "image": "cpp",
         "cstring": "cpp",
-        "types": "cpp"
+        "types": "cpp",
+        "cmath": "cpp"
     }
 }

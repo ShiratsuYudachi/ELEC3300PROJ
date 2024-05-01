@@ -119,7 +119,7 @@ void myfunc()
     // setPosition3d(25, 0, 0, speed);
     // setPosition3d(25, -50, 0, speed);
     for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
-      setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0);
+      setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0); // divide by 60 to convert to seconds
       printPosition();
     }
   };
