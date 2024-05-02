@@ -36,7 +36,8 @@ struct RGB
     uint8_t red;
     uint8_t blue;
 
-    RGB(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b) {}
+    RGB(uint8_t r, uint8_t g, uint8_t b) : red(r ), green(g ), blue(b ) {}
+    RGB(uint8_t r, uint8_t g, uint8_t b, float luminance) : red(r * luminance), green(g * luminance), blue(b * luminance) {}
 
     void toBitSequence(uint32_t *bitSequence) const;
 };

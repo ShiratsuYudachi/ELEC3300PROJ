@@ -11,7 +11,7 @@
 #include "PathPreview.hpp"
 
 #include "WS2812.hpp"
-#include "LightControler.hpp"
+#include "LightController.hpp"
 
 
 // create UI
@@ -20,7 +20,7 @@ Button switchButton(170, 50, "Motor?", 40, 40);
 Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(160, 0, "REST", 40, 40);
+Button resetButton(65, 90, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
@@ -63,9 +63,9 @@ void myfunc()
   playStartAnimation();
 
   // config: AAC set to max, 1042, max freq 2200
-  // xPulseMotor.setFrequency(1000);
-  // yPulseMotor.setFrequency(1000);
-  // zPulseMotor.setFrequency(1000);
+  xPulseMotor.setFrequency(1000);
+  yPulseMotor.setFrequency(1000);
+  zPulseMotor.setFrequency(1000);
   printTargetMotor();
 
   CWButton.onPressed = [](){
@@ -125,12 +125,16 @@ void myfunc()
     // setPosition3d(25, 0, 10, speed);
     // setPosition3d(25, 0, 0, speed);
     // setPosition3d(25, -50, 0, speed);
+    lightStatus = OPERATING;
     for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
       setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0); // divide by 60 to convert to seconds
       printPosition();
     }
+    lightStatus = STANDBY;
+    playCompleteAnimation();
   };
   resetButton.onPressed = [](){
+    lightStatus = RESETTING;
     xPulseMotor.setDirection(0);
     xPulseMotor.spinStart();
     yPulseMotor.setDirection(0);
@@ -151,7 +155,7 @@ void myfunc()
   blankAll();
   while (1)
   {
-    updateStandbyAnimation();
+    updateLightEffect();
     
     // HAL_Delay(100);
     // for (int i = 0; i < 84; i++) {

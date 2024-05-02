@@ -1,0 +1,16 @@
+../Core/Inc/WS2812.hpp:39:5:RGB::RGB(uint8_t, uint8_t, uint8_t)	16	static
+../Core/Inc/WS2812.hpp:40:5:RGB::RGB(uint8_t, uint8_t, uint8_t, float)	16	static
+../Core/Src/LightController.cpp:15:16:playStartAnimation()::<lambda(int, int)>	24	static
+../Core/Src/LightController.cpp:16:16:playStartAnimation()::<lambda(int, int)>	24	static
+../Core/Src/LightController.cpp:2:6:void playStartAnimation()	40	static
+../Core/Src/LightController.cpp:35:6:void playCompleteAnimation()	4	static
+../Core/Src/LightController.cpp:40:6:void updateBreathAnimation(int, RGB)	64	static
+../Core/Src/LightController.cpp:60:6:void updateStandbyAnimation()	16	static
+../Core/Src/LightController.cpp:64:6:void updateOperatingAnimation()	16	static
+../Core/Src/LightController.cpp:81:16:updateLightStream(int, int, bool, int&, int&)::<lambda(int, int)>	24	static
+../Core/Src/LightController.cpp:82:16:updateLightStream(int, int, bool, int&, int&)::<lambda(int, int)>	24	static
+../Core/Src/LightController.cpp:75:6:void updateLightStream(int, int, bool, int&, int&)	40	static
+../Core/Src/LightController.cpp:124:6:void updateResettingAnimation()	16	static
+../Core/Src/LightController.cpp:136:6:void updateLightEffect()	8	static
+../Core/Src/LightController.cpp:155:2:void __static_initialization_and_destruction_0(int, int)	24	static
+../Core/Src/LightController.cpp:155:2:cpp)	8	static
