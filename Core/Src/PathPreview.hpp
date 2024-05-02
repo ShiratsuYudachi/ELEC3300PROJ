@@ -253,8 +253,8 @@ private:
     uint16_t color;
 
 public:
-    PreviewDisplay3D(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color = CYAN)
-        : UIElement(x, y, width, height)
+    PreviewDisplay3D(Screen *screen, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color = CYAN)
+        : UIElement(screen, x, y, width, height)
     {
         this->x = x;
         this->y = y;

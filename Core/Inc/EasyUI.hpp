@@ -12,71 +12,30 @@ extern "C"
 #define TEXT_CHAR_NUM 16
 #define MAX_UI_ELEMENTS 32
 
+class UIElement;
+
+extern Screen *allScreens[MAX_UI_ELEMENTS];
+extern uint8_t screenNum;
+
 class Screen
 {
     // This class is used to manage the UI elements. Each screen contains a list of UI elements, and the screen will render and update all the elements inside it.
     // When one screen is active, it will render and update all the elements inside it.
     // When the screen is not active, it will not render or update the elements inside it.
-private:
-    UIElement *elements[MAX_UI_ELEMENTS];
-    uint8_t elementNum;
-
 public:
-    static Screen *allScreens[MAX_UI_ELEMENTS];
-    static uint8_t screenNum;
+    UIElement *elements[MAX_UI_ELEMENTS];
+    uint8_t elementNum = 0;
+
 
     Screen()
     {
         allScreens[screenNum++] = this;
         elementNum = 0;
     }
-
-    void render()
-    {
-        LCD_Clear(WHITE);
-
-        for (int i = 0; i < elementNum; i++)
-        {
-            elements[i]->render();
-        }
-    }
-
-    void update() // this replace the original updateAllElements function
-    {
-        static bool firstCall = true;
-        if (firstCall)
-        {
-            render();
-            // printToLCD("x=   , y=   ", 0);
-            firstCall = false;
-        }
-        strType_XPT2046_Coordinate touch;
-        XPT2046_Get_TouchedPoint(&touch, &strXPT2046_TouchPara);
-#if SHOW_LOCATION
-        char str[STRING_LEN];
-        // Refresh the coordinate only when touched
-        // if ((touch.x < 230 || touch.y < 300) && (touch.x > 0 && touch.y > 0))
-        // {
-        // if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)
-        // {
-        sprintf(str, "x=%d, y=%d", touch.x, touch.y);
-        // printToLCD(str, 0);
-        // }
-        // }
-#endif
-        for (int i = 0; i < elementNum; i++)
-        {
-            elements[i]->update(touch.x, touch.y);
-        }
-        touch.x = 0;
-        touch.y = 0;
-    }
-
-    void addElement(UIElement *element)
-    {
-        elements[elementNum++] = element;
-    }
+    void render(); // See the implementation below
+    void update(); // See the implementation in EasyUI.cpp
 };
+
 
 class UIElement
 {
@@ -101,7 +60,7 @@ public:
     uint16_t width, height;
 
 protected:
-    UIElement(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Screen *screen)
+    UIElement(Screen *screen, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
     {
         this->x = x;
         this->y = y;
@@ -131,8 +90,8 @@ public:
     void (*whilePressing)() = nullptr;
     void (*onReleased)() = nullptr;
 
-    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK, Screen *screen)
-        : UIElement(x, y, width, height, screen)
+    Button(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
+        : UIElement(screen, x, y, width, height)
     {
         this->initialColor = color;
         this->color = color;
@@ -215,13 +174,13 @@ private:
 
 public:
     Slider(
+        Screen *screen, 
         uint16_t x,
         uint16_t y,
         uint16_t maxValue = 0,
         uint16_t width = 10,
         uint16_t height = 130,
-        uint16_t barColor = CYAN,
-        Screen *screen) : UIElement(x, y, width, height, screen)
+        uint16_t barColor = CYAN) : UIElement(screen, x, y, width, height)
     {
         this->maxValue = maxValue;
         this->barColor = barColor;
@@ -289,8 +248,8 @@ public:
     uint16_t lastDotY = 0;
     void (*onPressed)(TouchPad *, int, int) = nullptr;
 
-    TouchPad(uint16_t x, uint16_t y, void (*onPressed)(TouchPad *, int, int) = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN, Screen *screen)
-        : UIElement(x, y, width, height, screen)
+    TouchPad(Screen *screen, uint16_t x, uint16_t y, void (*onPressed)(TouchPad *, int, int) = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+        : UIElement(screen, x, y, width, height)
     {
         this->x = x;
         this->y = y;
@@ -381,5 +340,15 @@ public:
         return (float)dotY / height;
     }
 };
+
+void Screen::render()
+    {
+        LCD_Clear(0, 0, 240, 320);
+
+        for (int i = 0; i < elementNum; i++)
+        {
+            elements[i]->render();
+        }
+    }
 
 #endif

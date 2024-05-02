@@ -10,17 +10,22 @@
 #include "PathPreview.hpp"
 
 // create UI
-Button switchButton(170, 50, "Motor?", 40, 40);
-Button test2Button(170, 0, "SetPos", 40, 40);
-Button CCWButton(10, 50, "YCCW", 40, 40);
-Button CWButton(65, 50, "YCW", 40, 40);
-Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(120, 0, "REST", 40, 40);
-Slider xSlider(180, 120, 100);
-// Slider ySlider(180, 120, 100);
-Slider zSlider(220, 120, 100);
+Screen *allScreens[MAX_UI_ELEMENTS];
+uint8_t screenNum;
 
 Screen mainScreen;
+
+Button switchButton(&mainScreen, 170, 50, "Motor?", 40, 40);
+Button test2Button(&mainScreen, 170, 0, "SetPos", 40, 40);
+Button CCWButton(&mainScreen, 10, 50, "YCCW", 40, 40);
+Button CWButton(&mainScreen, 65, 50, "YCW", 40, 40);
+Button test3Button(&mainScreen, 120, 50, "START", 40, 40);
+Button resetButton(&mainScreen, 120, 0, "REST", 40, 40);
+Slider xSlider(&mainScreen, 180, 120, 100);
+// Slider ySlider(180, 120, 100);
+Slider zSlider(&mainScreen, 220, 120, 100);
+
+
 
 // PreviewDisplay3D previewDisplay(0, 170, 120, 120);
 // TouchPad testTouchPad(0, 120);
@@ -153,16 +158,6 @@ void myfunc()
 
   while (1)
   {
-    mainScreen.addElement(&switchButton);
-    mainScreen.addElement(&test2Button);
-    mainScreen.addElement(&CCWButton);
-    mainScreen.addElement(&CWButton);
-    mainScreen.addElement(&test3Button);
-    mainScreen.addElement(&resetButton);
-    mainScreen.addElement(&xSlider);
-    // mainScreen.addElement(&ySlider);
-    mainScreen.addElement(&zSlider);
-
     int startTick = HAL_GetTick();
     // map2d();
     rotateAngleX = xSlider.getValue() * 90;
