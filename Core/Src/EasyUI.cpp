@@ -1,20 +1,21 @@
 #include "EasyUI.hpp"
 #include "utils.hpp"
-#define SHOW_LOCATION 1
+#define SHOW_LOCATION 0
+
 UIElement *UIElement::allElements[MAX_UI_ELEMENTS] = {};
 uint8_t UIElement::elementNum = 0;
 
 void UIElement::updateAllElements()
 {
-    static bool firstCall = false;
-    if (!firstCall)
+    static bool firstCall = true;
+    if (firstCall)
     {
         for (int i = 0; i < elementNum; i++)
         {
             allElements[i]->render();
         }
-        printToLCD("x=   , y=   ", 0);
-        firstCall = true;
+        //printToLCD("x=   , y=   ", 0);
+        firstCall = false;
     }
     strType_XPT2046_Coordinate touch;
     XPT2046_Get_TouchedPoint(&touch, &strXPT2046_TouchPara);

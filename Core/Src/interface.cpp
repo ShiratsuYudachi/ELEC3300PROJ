@@ -19,16 +19,17 @@ Button resetButton(120, 0, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
+
+Screen mainScreen;
+
 // PreviewDisplay3D previewDisplay(0, 170, 120, 120);
-//TouchPad testTouchPad(0, 120);
-
-
+// TouchPad testTouchPad(0, 120);
 
 // uint32_t PulseDMABuff[2560];
 
-
-SERVO42C_Pulse* pTargetMotor = &xPulseMotor;
-void printTargetMotor(){
+SERVO42C_Pulse *pTargetMotor = &xPulseMotor;
+void printTargetMotor()
+{
   char str[32];
   if (pTargetMotor == &xPulseMotor)
   {
@@ -43,16 +44,16 @@ void printTargetMotor(){
     sprintf(str, "Target: Z");
   }
   printToLCD(str, 2);
-
 }
-void printPosition(){
+
+void printPosition()
+{
   char str[32];
-    sprintf(str, "x=%.1f y=%.1f z=%.1f",xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
-    printToLCD(str, 1);
+  sprintf(str, "x=%.1f y=%.1f z=%.1f", xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
+  printToLCD(str, 1);
 }
 void myfunc()
 {
-  
 
   // config: AAC set to max, 1042, max freq 2200
   xPulseMotor.setFrequency(1000);
@@ -60,25 +61,27 @@ void myfunc()
   zPulseMotor.setFrequency(1000);
   printTargetMotor();
 
-  
-
-  CWButton.onPressed = [](){
+  CWButton.onPressed = []()
+  {
     pTargetMotor->setDirection(0);
     pTargetMotor->spinStart();
   };
-  CWButton.onReleased = [](){
+  CWButton.onReleased = []()
+  {
     pTargetMotor->spinStop();
   };
-  CCWButton.onPressed = [](){
+  CCWButton.onPressed = []()
+  {
     pTargetMotor->setDirection(1);
     pTargetMotor->spinStart();
-    
   };
-  CCWButton.onReleased = [](){
+  CCWButton.onReleased = []()
+  {
     pTargetMotor->spinStop();
   };
-  
-  switchButton.onPressed = [](){
+
+  switchButton.onPressed = []()
+  {
     if (pTargetMotor == &xPulseMotor)
     {
       pTargetMotor = &yPulseMotor;
@@ -93,13 +96,13 @@ void myfunc()
     }
     printTargetMotor();
   };
-  test2Button.onPressed = [](){
-    
+  test2Button.onPressed = []()
+  {
     // setPosition3d(testTouchPad.getXRatio()*100, testTouchPad.getYRatio()*100, testSlider.getValue()*100);
-    xPulseMotor.step_inf(1,15000);
-    
+    xPulseMotor.step_inf(1, 15000);
   };
-  test3Button.onPressed = [](){
+  test3Button.onPressed = []()
+  {
     // 奇怪沙漏
     // setPosition3d(0, 0, 0, speed);
     // setPosition3d(50, 50, 0, speed);
@@ -118,12 +121,14 @@ void myfunc()
     // setPosition3d(25, 0, 10, speed);
     // setPosition3d(25, 0, 0, speed);
     // setPosition3d(25, -50, 0, speed);
-    for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
-      setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0); // divide by 60 to convert to seconds
+    for (float *cmd = (float *)gcode; cmd < (float *)gcode + gcodeLegth * 4; cmd += 4)
+    {
+      setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3] / 60.0); // divide by 60 to convert to seconds
       printPosition();
     }
   };
-  resetButton.onPressed = [](){
+  resetButton.onPressed = []()
+  {
     xPulseMotor.setDirection(0);
     xPulseMotor.spinStart();
     yPulseMotor.setDirection(0);
@@ -132,14 +137,9 @@ void myfunc()
     // zPulseMotor.spinStart();
   };
 
-  
-
-
-  
-
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World 1", 1);
-  
+
   // xServo.stop();
 
   // xServo.spinCounterClockwise(100);
@@ -150,11 +150,19 @@ void myfunc()
   // yServo.alignAbsolutePosition(0);
   // printToLCD("Aligning Motor Z", 1);
   // zServo.alignAbsolutePosition(0);
-  
-  
-  
+
   while (1)
   {
+    mainScreen.addElement(&switchButton);
+    mainScreen.addElement(&test2Button);
+    mainScreen.addElement(&CCWButton);
+    mainScreen.addElement(&CWButton);
+    mainScreen.addElement(&test3Button);
+    mainScreen.addElement(&resetButton);
+    mainScreen.addElement(&xSlider);
+    // mainScreen.addElement(&ySlider);
+    mainScreen.addElement(&zSlider);
+
     int startTick = HAL_GetTick();
     // map2d();
     rotateAngleX = xSlider.getValue() * 90;
@@ -176,8 +184,9 @@ void myfunc()
     // sprintf(str, "%02X", data[0]);
 
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    
-    UIElement::updateAllElements();
+
+    // UIElement::updateAllElements(); // TODO: change to updateScreen
+    mainScreen.update();
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
     // HAL_Delay(500);
     debugLog(String(HAL_GetTick() - startTick), 7);
