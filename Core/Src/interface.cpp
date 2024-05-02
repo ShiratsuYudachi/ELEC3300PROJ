@@ -20,7 +20,7 @@ Button switchButton(170, 50, "Motor?", 40, 40);
 Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(120, 0, "REST", 40, 40);
+Button resetButton(160, 0, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
@@ -69,13 +69,12 @@ void myfunc()
   printTargetMotor();
 
   CWButton.onPressed = [](){
-    pTargetMotor->setFrequency(500);
+    pTargetMotor->setFrequency(1000);
     pTargetMotor->setDirection(0);
     pTargetMotor->spinStart();
   };
   CWButton.onReleased = [](){
     pTargetMotor->spinStop();
-    pTargetMotor->spinReset();
   };
   CCWButton.onPressed = [](){
     pTargetMotor->setDirection(1);
@@ -147,30 +146,7 @@ void myfunc()
 
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World 1", 1);
-
-  xPulseMotor.spinReset();
-  yPulseMotor.spinReset();
-  zPulseMotor.spinReset();
-  // HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, PulseDMABuff, 2560);
-  for (int i = 0; i < 84; i++)
-  {
-    // setColor(i, r, g, b);
-  }
-  // HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_1);
   
-  // xServo.stop();
-
-  // xServo.spinCounterClockwise(100);
-
-  // printToLCD("Aligning Motor X", 1);
-  // xServo.alignAbsolutePosition(0);
-  // printToLCD("Aligning Motor Y", 1);
-  // yServo.alignAbsolutePosition(0);
-  // printToLCD("Aligning Motor Z", 1);
-  // zServo.alignAbsolutePosition(0);
-  
-  
-  // loop();
 
   blankAll();
   while (1)
