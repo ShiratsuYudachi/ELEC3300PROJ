@@ -24,6 +24,10 @@
         "thread": "cpp",
         "tuple": "cpp",
         "variant": "cpp",
-        "servo42c_it.h": "c"
+        "servo42c_it.h": "c",
+        "limits": "cpp",
+        "algorithm": "cpp",
+        "chrono": "cpp",
+        "random": "cpp"
     }
 }

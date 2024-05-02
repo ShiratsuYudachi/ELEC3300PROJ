@@ -7,11 +7,16 @@
 #include "gcode.h"
 
 #include <stdio.h>
+#include <cmath>
 #include "PathPreview.hpp"
+
+#include "WS2812.hpp"
+#include "LightControler.hpp"
+
 
 // create UI
 Button switchButton(170, 50, "Motor?", 40, 40);
-Button test2Button(170, 0, "SetPos", 40, 40);
+// Button test2Button(170, 0, "SetPos", 40, 40);
 Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
@@ -50,17 +55,18 @@ void printPosition(){
     sprintf(str, "x=%.1f y=%.1f z=%.1f",xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
     printToLCD(str, 1);
 }
+
 void myfunc()
 {
-  
+  blankAll();
+  HAL_Delay(500);
+  playStartAnimation();
 
   // config: AAC set to max, 1042, max freq 2200
   xPulseMotor.setFrequency(1000);
   yPulseMotor.setFrequency(1000);
   zPulseMotor.setFrequency(1000);
   printTargetMotor();
-
-  
 
   CWButton.onPressed = [](){
     pTargetMotor->setDirection(0);
@@ -93,12 +99,12 @@ void myfunc()
     }
     printTargetMotor();
   };
-  test2Button.onPressed = [](){
+  // test2Button.onPressed = [](){
     
-    // setPosition3d(testTouchPad.getXRatio()*100, testTouchPad.getYRatio()*100, testSlider.getValue()*100);
-    xPulseMotor.step_inf(1,15000);
+  //   // setPosition3d(testTouchPad.getXRatio()*100, testTouchPad.getYRatio()*100, testSlider.getValue()*100);
+  //   xPulseMotor.step_inf(1,15000);
     
-  };
+  // };
   test3Button.onPressed = [](){
     // 奇怪沙漏
     // setPosition3d(0, 0, 0, speed);
@@ -139,6 +145,12 @@ void myfunc()
 
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World 1", 1);
+  // HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, PulseDMABuff, 2560);
+  for (int i = 0; i < 84; i++)
+  {
+    // setColor(i, r, g, b);
+  }
+  // HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_1);
   
   // xServo.stop();
 
@@ -152,9 +164,18 @@ void myfunc()
   // zServo.alignAbsolutePosition(0);
   
   
-  
+  // loop();
+
+  blankAll();
   while (1)
   {
+    updateStandbyAnimation();
+    
+    // HAL_Delay(100);
+    // for (int i = 0; i < 84; i++) {
+    //   setColor(i, 255, 255, 255);      // 设置颜色
+    // }
+    
     int startTick = HAL_GetTick();
     // map2d();
     rotateAngleX = xSlider.getValue() * 90;

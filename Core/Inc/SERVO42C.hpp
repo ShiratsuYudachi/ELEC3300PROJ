@@ -49,6 +49,11 @@ public:
     // pulse sending frequency
     void setFrequency(uint16_t frequency)
     {
+        if (frequency == 0)
+        {
+            prescaler = 0;
+            return;
+        }
         prescaler = inputFrequency / (CounterPeriod + 1) / frequency - 1;
         __HAL_TIM_SET_PRESCALER(pTim, prescaler);
     }
@@ -73,6 +78,12 @@ public:
     void spinStop()
     {
         HAL_TIM_PWM_Stop(pTim, timChannel);
+    }
+    void spinReset()
+    {
+        setFrequency(0);
+        // __HAL_TIM_SET_COMPARE(pTim, timChannel, 0);
+        // HAL_TIM_PWM_Start(pTim, timChannel);
     }
 
     void pulse_wait(uint16_t pulseNum)

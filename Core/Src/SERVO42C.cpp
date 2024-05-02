@@ -8,7 +8,7 @@ const uint32_t PulseDMABuff[DMA_BUFFER_SIZE] = {36, 36, 36, 36, 36, 36, 36, 36, 
 
 SERVO42C_Pulse xPulseMotor(&htim3, TIM_CHANNEL_1, GPIOA, GPIO_PIN_4); // tim, tim channel, dir gpio, dir gpio pin
 SERVO42C_Pulse yPulseMotor(&htim4, TIM_CHANNEL_1, GPIOB, GPIO_PIN_7);
-SERVO42C_Pulse zPulseMotor(&htim8, TIM_CHANNEL_1, GPIOA, GPIO_PIN_7);
+SERVO42C_Pulse zPulseMotor(&htim1, TIM_CHANNEL_1, GPIOA, GPIO_PIN_7);
 
 // speed: mm/s
 // WARNING: max stepCount = DMA_BUFFER_SIZE for each axis!!!!
@@ -49,7 +49,7 @@ void step3d(uint32_t xStepCount, uint8_t xDir, uint32_t yStepCount, uint8_t yDir
         
     }
 
-    HAL_Delay(5 + (xStepCount + yStepCount + zStepCount) * 0.05);
+    HAL_Delay(5 + (xStepCount + yStepCount + zStepCount) * 0.02);
 
     // HAL_Delay(timeConsumed * 1000 * 1.2 + 25);// 1.2 is a factor to make sure the motor has enough time to 
     xPulseMotor.setSpeed(originalSpeedX);
