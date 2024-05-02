@@ -63,17 +63,19 @@ void myfunc()
   playStartAnimation();
 
   // config: AAC set to max, 1042, max freq 2200
-  xPulseMotor.setFrequency(1000);
-  yPulseMotor.setFrequency(1000);
-  zPulseMotor.setFrequency(1000);
+  // xPulseMotor.setFrequency(1000);
+  // yPulseMotor.setFrequency(1000);
+  // zPulseMotor.setFrequency(1000);
   printTargetMotor();
 
   CWButton.onPressed = [](){
+    pTargetMotor->setFrequency(500);
     pTargetMotor->setDirection(0);
     pTargetMotor->spinStart();
   };
   CWButton.onReleased = [](){
     pTargetMotor->spinStop();
+    pTargetMotor->spinReset();
   };
   CCWButton.onPressed = [](){
     pTargetMotor->setDirection(1);
@@ -145,6 +147,10 @@ void myfunc()
 
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World 1", 1);
+
+  xPulseMotor.spinReset();
+  yPulseMotor.spinReset();
+  zPulseMotor.spinReset();
   // HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, PulseDMABuff, 2560);
   for (int i = 0; i < 84; i++)
   {
