@@ -20,7 +20,7 @@ Button switchButton(170, 50, "Motor?", 40, 40);
 Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(65, 270, "REST", 40, 40);
+Button resetButton(200, 270, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
