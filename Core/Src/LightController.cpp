@@ -1,4 +1,7 @@
 #include "LightController.hpp"
+extern "C"{
+  #include "main.h"
+}
 void playStartAnimation(){
   // LightStream stream1(0, 84, 3, 3, RGB(10, 0, 0));
   // stream1.start();
@@ -58,6 +61,8 @@ void updateBreathAnimation(int period, RGB color){
     }
 }
 
+
+
 void updateStandbyAnimation(){
     updateBreathAnimation(3000, RGB(0, 255, 0));
 }
@@ -111,6 +116,20 @@ void updateLightStream(int start, int end, bool isDisIncresingIndex, int& count,
     }
 }
 
+
+bool atResetLimit_X(){
+    return HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_5) == GPIO_PIN_RESET;
+}
+
+bool atResetLimit_Y(){
+
+}
+
+bool atResetLimit_Z(){
+
+}
+
+
 int count_l = 0;
 int current_l = 0 -1;
 int count_l_2 = 0;
@@ -127,17 +146,41 @@ int count_r_2 = 0;
 int current_r_2 = 72 + length;
 
 void updateResettingAnimation(){
+    if (atResetLimit_X()){
+      for (int i = 30; i < 54; i++){
+        setColor(i, 0, 255, 0);
+      }
+    }else{
+      updateLightStream(30 - length, 54 + length, 0, count_mid, current_mid);
+      updateLightStream(30- length, 54 + length, 0, count_mid, current_mid_2);
+    }
+    if (atResetLimit_Y()){
+      for (int i = 0; i < 30; i++){
+        setColor(i, 0, 255, 0);
+      }
+      for (int i = 54; i < LED_NUM; i++){
+        setColor(i, 0, 255, 0);
+      }
+    }else{
+      updateLightStream(0 - length, 30, 1, count_l, current_l);// 实现从0冒出来，而不是直接0～5生成一整条
+      updateLightStream(0 - length, 30, 1, count_l, current_l_2);
+      updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r);
+      updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r_2);
+
+    }
+
+    if (atResetLimit_X() && atResetLimit_Y){
+      lightStatus = STANDBY;
+    }
     
-    updateLightStream(0 - length, 30, 1, count_l, current_l);// 实现从0冒出来，而不是直接0～5生成一整条
-    updateLightStream(0 - length, 30, 1, count_l, current_l_2);
-    updateLightStream(30 - length, 54 + length, 0, count_mid, current_mid);
-    updateLightStream(30- length, 54 + length, 0, count_mid, current_mid_2);
-    updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r);
-    updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r_2);
+    
+
 }
 
 
 STATUS lightStatus = STANDBY;
+
+
 
 
 void updateLightEffect(){
