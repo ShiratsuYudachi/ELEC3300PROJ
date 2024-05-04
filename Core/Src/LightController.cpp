@@ -35,10 +35,6 @@ void playStartAnimation(){
   }
 }
 
-void playCompleteAnimation(){
-
-};
-
 
 void updateBreathAnimation(int period, RGB color){
     // period = 3s
@@ -62,18 +58,6 @@ void updateBreathAnimation(int period, RGB color){
 }
 
 
-
-void updateStandbyAnimation(){
-    updateBreathAnimation(3000, RGB(0, 255, 0));
-}
-
-void updateOperatingAnimation(){
-    updateBreathAnimation(1500, RGB(0, 80, 128));
-}
-
-void updateFatalAnimation(){
-    updateBreathAnimation(500, RGB(255, 0, 0));
-}
 
 
 
@@ -180,29 +164,58 @@ void updateResettingAnimation(){
 }
 
 
-STATUS lightStatus = STANDBY;
+STATUS lightStatus = COMPLETE;
+
+bool isResetComplete_X = false;
+bool isResetComplete_Y = false;
 
 
 
+struct Counter{
+  bool enable = false;
+  int count = 0;
+};
 
+
+Counter completeCounter;
 void updateLightEffect(){
     
     switch (lightStatus){
         case STANDBY:
-            updateStandbyAnimation();
+            updateBreathAnimation(3000, RGB(0, 255, 0));
             break;
         case OPERATING:
-            updateOperatingAnimation();
+            updateBreathAnimation(1500, RGB(0, 80, 128));
             break;
         case WARNING:
-        break;
+          break;
         case FATAL:
-          updateFatalAnimation();
-        break;
+          updateBreathAnimation(500, RGB(255, 0, 0));
+          break;
 
         case RESETTING:
-            // blankAll();
-            updateResettingAnimation();
-            break;
+          // blankAll();
+          updateResettingAnimation();
+          break;
+        case COMPLETE:
+          const int blinkCount = 3;
+          if (completeCounter.enable == false){
+            completeCounter.enable = true;
+            completeCounter.count = 0;
+          }
+          if (completeCounter.count < 100){
+            completeCounter.count++;
+          }else{
+            completeCounter.enable = false;
+            lightStatus = STANDBY;
+          }
+          for (int i = 0; i < LED_NUM; i++){
+            if (completeCounter.count % 20 < 10){
+              setColor(i, 0, 80, 0);
+            }else{
+              setColor(i, 0, 0, 0);
+            }
+          }
+          break;
     }
 };
