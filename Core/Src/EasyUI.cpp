@@ -45,6 +45,7 @@ void Screen::update() // this replace the original updateAllElements function
     static bool firstCall = true;
     if (firstCall)
     {
+        LCD_Clear_Color(0, 0, 240, 320, WHITE);
         render();
         // printToLCD("x=   , y=   ", 0);
         firstCall = false;
@@ -70,3 +71,11 @@ void Screen::update() // this replace the original updateAllElements function
     touch.x = 0;
     touch.y = 0;
 }
+
+void Screen::render()
+    {
+        for (int i = 0; i < elementNum; i++)
+        {
+            elements[i]->render();
+        }
+    }

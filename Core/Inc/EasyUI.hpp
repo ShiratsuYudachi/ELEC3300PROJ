@@ -13,6 +13,7 @@ extern "C"
 #define MAX_UI_ELEMENTS 32
 
 class UIElement;
+class Screen;
 
 extern Screen *allScreens[MAX_UI_ELEMENTS];
 extern uint8_t screenNum;
@@ -35,6 +36,7 @@ public:
     void render(); // See the implementation below
     void update(); // See the implementation in EasyUI.cpp
 };
+
 
 
 class UIElement
@@ -341,14 +343,6 @@ public:
     }
 };
 
-void Screen::render()
-    {
-        LCD_Clear(0, 0, 240, 320);
 
-        for (int i = 0; i < elementNum; i++)
-        {
-            elements[i]->render();
-        }
-    }
 
 #endif

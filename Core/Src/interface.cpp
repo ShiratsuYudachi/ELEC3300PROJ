@@ -14,13 +14,14 @@ Screen *allScreens[MAX_UI_ELEMENTS];
 uint8_t screenNum;
 
 Screen mainScreen;
+Screen operationScreen;
 
-Button switchButton(&mainScreen, 170, 50, "Motor?", 40, 40);
-Button test2Button(&mainScreen, 170, 0, "SetPos", 40, 40);
-Button CCWButton(&mainScreen, 10, 50, "YCCW", 40, 40);
-Button CWButton(&mainScreen, 65, 50, "YCW", 40, 40);
-Button test3Button(&mainScreen, 120, 50, "START", 40, 40);
-Button resetButton(&mainScreen, 120, 0, "REST", 40, 40);
+Button switchButton(&operationScreen, 170, 50, "Motor?", 40, 40);
+Button test2Button(&operationScreen, 170, 0, "SetPos", 40, 40);
+Button CCWButton(&operationScreen, 10, 50, "YCCW", 40, 40);
+Button CWButton(&operationScreen, 65, 50, "YCW", 40, 40);
+Button test3Button(&operationScreen, 120, 50, "START", 40, 40);
+Button resetButton(&operationScreen, 120, 0, "REST", 40, 40);
 Slider xSlider(&mainScreen, 180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(&mainScreen, 220, 120, 100);
@@ -181,7 +182,14 @@ void myfunc()
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 
     // UIElement::updateAllElements(); // TODO: change to updateScreen
-    mainScreen.update();
+    if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET)
+    {
+      mainScreen.update();
+    }
+    else
+    {
+      operationScreen.update();
+    }
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
     // HAL_Delay(500);
     debugLog(String(HAL_GetTick() - startTick), 7);
