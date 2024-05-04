@@ -1,0 +1,23 @@
+../Core/Inc/utils.hpp:16:5:String::String()	16	static
+../Core/Inc/utils.hpp:27:5:String::String(int)	16	static
+../Core/Inc/utils.hpp:32:5:String::String(uint32_t)	16	static
+../Core/Inc/utils.hpp:38:5:String::String(uint8_t*, int)	32	static
+../Core/Inc/utils.hpp:61:12:String String::operator+(const char*)	32	static
+../Core/Inc/utils.hpp:68:12:String String::operator+(const String&)	24	static
+../Core/Inc/SERVO42C.hpp:96:20:static uint8_t SERVO42C::getCRC(uint8_t*, uint8_t)	24	static
+../Core/Inc/SERVO42C.hpp:105:14:uint8_t* SERVO42C::receiveUART(uint8_t)	32	static
+../Core/Inc/SERVO42C.hpp:135:14:uint8_t* SERVO42C::receiveUART(uint8_t, uint16_t)	24	static
+../Core/Inc/SERVO42C.hpp:151:11:float SERVO42C::getRPMof(uint8_t)	32	static
+../Core/Inc/SERVO42C.hpp:155:11:float SERVO42C::getSpeedParamOfRPM(float)	32	static
+../Core/Inc/SERVO42C.hpp:160:11:float SERVO42C::getLinearSpeedOf(uint8_t)	16	static
+../Core/Inc/SERVO42C.hpp:164:13:uint8_t SERVO42C::getSpeedParamOfLinearSpeed(float)	24	static
+../Core/Inc/SERVO42C.hpp:169:11:float SERVO42C::getDistanceOf(uint32_t)	24	static
+../Core/Inc/SERVO42C.hpp:173:14:uint32_t SERVO42C::getStepCountFromTargetPosition(float, uint8_t&)	48	static
+../Core/Inc/SERVO42C.hpp:184:5:SERVO42C::SERVO42C(uint8_t, UART_HandleTypeDef*, bool)	24	static
+../Core/Inc/SERVO42C.hpp:231:11:float SERVO42C::getPosition()	32	static
+../Core/Inc/SERVO42C.hpp:255:10:void SERVO42C::step_UART(uint8_t, uint8_t, uint32_t)	320	static
+../Core/Inc/SERVO42C.hpp:332:10:bool SERVO42C::receiveEncoder(int)	24	static
+../Core/Src/SERVO42C.cpp:10:6:void step3d(uint32_t, uint8_t, uint32_t, uint8_t, uint32_t, uint8_t)	72	static
+../Core/Src/SERVO42C.cpp:36:6:void setPosition3d(float, float, float)	48	static
+../Core/Src/SERVO42C.cpp:46:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/Src/SERVO42C.cpp:46:1:cpp)	8	static
