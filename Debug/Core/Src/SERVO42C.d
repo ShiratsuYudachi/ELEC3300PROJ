@@ -28,7 +28,7 @@ Core/Src/SERVO42C.o: ../Core/Src/SERVO42C.cpp ../Core/Inc/SERVO42C.hpp \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/utils.hpp ../Core/Inc/tim.h ../Core/Inc/usart.h
+ ../Core/Inc/utils.hpp ../Core/Inc/tim.h ../Core/Inc/SERVO42C_IT.h
 ../Core/Inc/SERVO42C.hpp:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -62,4 +62,4 @@ Core/Src/SERVO42C.o: ../Core/Src/SERVO42C.cpp ../Core/Inc/SERVO42C.hpp \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 ../Core/Inc/utils.hpp:
 ../Core/Inc/tim.h:
-../Core/Inc/usart.h:
+../Core/Inc/SERVO42C_IT.h:

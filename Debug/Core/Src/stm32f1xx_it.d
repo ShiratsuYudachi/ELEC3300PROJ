@@ -30,7 +30,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  ../Core/Inc/stm32f1xx_it.h ../Core/Inc/dht11.h ../Core/Inc/printf.h \
  ../Core/Inc/xpt2046.h ../Core/Inc/bsp_usart.h ../Core/Inc/rtc.h \
- ../Core/Inc/main.h ../Core/Inc/tim.h
+ ../Core/Inc/main.h ../Core/Inc/tim.h ../Core/Inc/SERVO42C_IT.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -69,3 +69,4 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
 ../Core/Inc/rtc.h:
 ../Core/Inc/main.h:
 ../Core/Inc/tim.h:
+../Core/Inc/SERVO42C_IT.h:

@@ -1,59 +1,60 @@
-../Core/Inc/utils.hpp:16:5:String::String()	16	static
 ../Core/Inc/utils.hpp:19:5:String::String(const char*)	16	static
 ../Core/Inc/utils.hpp:27:5:String::String(int)	16	static
 ../Core/Inc/utils.hpp:32:5:String::String(uint32_t)	16	static
-../Core/Inc/utils.hpp:38:5:String::String(uint8_t*, int)	32	static
-../Core/Inc/utils.hpp:61:12:String String::operator+(const char*)	32	static
-../Core/Inc/utils.hpp:68:12:String String::operator+(const String&)	24	static
-../Core/Inc/SERVO42C.hpp:96:20:static uint8_t SERVO42C::getCRC(uint8_t*, uint8_t)	24	static
-../Core/Inc/SERVO42C.hpp:105:14:uint8_t* SERVO42C::receiveUART(uint8_t)	32	static
-../Core/Inc/SERVO42C.hpp:135:14:uint8_t* SERVO42C::receiveUART(uint8_t, uint16_t)	24	static
-../Core/Inc/SERVO42C.hpp:231:11:float SERVO42C::getPosition()	32	static
-../Core/Inc/SERVO42C.hpp:255:10:void SERVO42C::step_UART(uint8_t, uint8_t, uint32_t)	320	static
-../Core/Inc/SERVO42C.hpp:297:10:void SERVO42C::spin(uint8_t, uint8_t)	24	static
-../Core/Inc/SERVO42C.hpp:305:10:void SERVO42C::spinClockwise(uint8_t)	16	static
-../Core/Inc/SERVO42C.hpp:308:10:void SERVO42C::spinCounterClockwise(uint8_t)	16	static
-../Core/Inc/SERVO42C.hpp:332:10:bool SERVO42C::receiveEncoder(int)	24	static
-../Core/Inc/EasyUI.hpp:28:5:UIElement::UIElement(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-../Core/Inc/EasyUI.hpp:36:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
-../Core/Inc/EasyUI.hpp:57:5:Button::Button(uint16_t, uint16_t, char*, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
-../Core/Inc/EasyUI.hpp:81:10:virtual void Button::render()	32	static
-../Core/Inc/EasyUI.hpp:95:10:virtual void Button::update(u_int16_t, u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:139:5:Slider::Slider(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	40	static
-../Core/Inc/EasyUI.hpp:153:10:virtual void Slider::render()	16	static
-../Core/Inc/EasyUI.hpp:164:14:uint16_t Slider::wrapY(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:175:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
-../Core/Inc/EasyUI.hpp:210:5:TouchPad::TouchPad(uint16_t, uint16_t, void (*)(TouchPad*, int, int), uint16_t, uint16_t, uint16_t)	40	static
-../Core/Inc/EasyUI.hpp:223:10:virtual void TouchPad::render()	16	static
-../Core/Inc/EasyUI.hpp:233:10:void TouchPad::clearDot()	16	static
-../Core/Inc/EasyUI.hpp:239:10:void TouchPad::renderDot()	16	static
-../Core/Inc/EasyUI.hpp:245:14:uint16_t TouchPad::wrapX(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:256:15:u_int16_t TouchPad::wrapY(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:267:10:virtual void TouchPad::update(u_int16_t, u_int16_t)	24	static
-../Core/Inc/EasyUI.hpp:293:11:float TouchPad::getXRatio()	24	static
-../Core/Inc/EasyUI.hpp:298:11:float TouchPad::getYRatio()	24	static
-../Core/Src/interface.cpp:24:6:void MoveXY(TouchPad*, int, int)	40	static
-../Core/Src/interface.cpp:49:24:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:49:24:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:49:24:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:50:25:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:50:25:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:50:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:51:25:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:51:25:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:51:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:52:26:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:52:26:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:52:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:53:26:myfunc()::<lambda()>	16	static
-../Core/Src/interface.cpp:53:26:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:53:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:61:27:myfunc()::<lambda()>	24	static
-../Core/Src/interface.cpp:61:27:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:61:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:71:27:myfunc()::<lambda()>	104	static
-../Core/Src/interface.cpp:71:27:static void myfunc()::<lambda()>::_FUN()	8	static
-../Core/Src/interface.cpp:71:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
-../Core/Src/interface.cpp:42:6:void myfunc()	112	static
-../Core/Src/interface.cpp:118:1:void __static_initialization_and_destruction_0(int, int)	32	static
-../Core/Src/interface.cpp:118:1:cpp)	8	static
+../Core/Inc/SERVO42C.hpp:44:14:uint16_t PulseMotor::getFrequency()	16	static
+../Core/Inc/SERVO42C.hpp:50:10:void PulseMotor::setFrequency(uint16_t)	16	static
+../Core/Inc/SERVO42C.hpp:57:10:void PulseMotor::setDirection(uint8_t)	16	static
+../Core/Inc/SERVO42C.hpp:62:10:void PulseMotor::pulse(uint16_t)	16	static
+../Core/Inc/SERVO42C.hpp:68:10:void PulseMotor::spinStart()	16	static
+../Core/Inc/SERVO42C.hpp:73:10:void PulseMotor::spinStop()	16	static
+../Core/Inc/SERVO42C.hpp:109:10:void PulseMotor::step_inf(uint8_t, uint32_t)	40	static
+../Core/Inc/SERVO42C.hpp:196:11:float SERVO42C_Pulse::getPosition()	24	static
+../Core/Inc/EasyUI.hpp:31:5:Screen::Screen()	16	static
+../Core/Inc/EasyUI.hpp:65:5:UIElement::UIElement(Screen*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+../Core/Inc/EasyUI.hpp:74:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
+../Core/Inc/EasyUI.hpp:95:5:Button::Button(Screen*, uint16_t, uint16_t, char*, uint16_t, uint16_t, uint16_t, uint16_t)	32	static
+../Core/Inc/EasyUI.hpp:119:10:virtual void Button::render()	32	static
+../Core/Inc/EasyUI.hpp:133:10:virtual void Button::update(u_int16_t, u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:178:5:Slider::Slider(Screen*, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	32	static
+../Core/Inc/EasyUI.hpp:193:10:virtual void Slider::render()	16	static
+../Core/Inc/EasyUI.hpp:204:14:uint16_t Slider::wrapY(u_int16_t)	16	static
+../Core/Inc/EasyUI.hpp:215:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
+../Core/Inc/EasyUI.hpp:234:11:float Slider::getValue()	24	static
+../Core/Src/PathPreview.hpp:14:6:void transformPosition(uint32_t, uint32_t)	16	static
+../Core/Src/PathPreview.hpp:20:6:void map2d(float)	80	static
+../Core/Src/PathPreview.hpp:52:7:float fastsin(int)	16	static
+../Core/Src/PathPreview.hpp:66:7:float fastcos(int)	16	static
+../Core/Src/PathPreview.hpp:85:9:Point3D rotatePoint(const Point3D&, Axis)	32	static
+../Core/Src/PathPreview.hpp:114:6:void setPixel(int, int, uint16_t, float)	48	static
+../Core/Src/PathPreview.hpp:133:6:void drawLineToVRAM(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	72	static
+../Core/Src/PathPreview.hpp:174:6:void resetVRAM()	16	static
+../Core/Src/PathPreview.hpp:191:6:void map3d(float, float)	104	static
+../Core/Src/interface.cpp:37:6:void printTargetMotor()	112	static
+../Core/Src/interface.cpp:55:6:void printPosition()	144	static
+../Core/Src/interface.cpp:70:24:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:70:24:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:70:24:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:75:25:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:75:25:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:75:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:79:25:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:79:25:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:79:25:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:84:26:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:84:26:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:84:26:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:89:28:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:89:28:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:89:28:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:105:27:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:105:27:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:105:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:110:27:myfunc()::<lambda()>	40	static
+../Core/Src/interface.cpp:110:27:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:110:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:136:27:myfunc()::<lambda()>	16	static
+../Core/Src/interface.cpp:136:27:static void myfunc()::<lambda()>::_FUN()	8	static
+../Core/Src/interface.cpp:136:27:myfunc()::<lambda()>::operator void (*)()() const	16	static
+../Core/Src/interface.cpp:61:6:void myfunc()	184	static
+../Core/Src/interface.cpp:197:1:void __static_initialization_and_destruction_0(int, int)	40	static
+../Core/Src/interface.cpp:197:1:cpp)	8	static
