@@ -55,6 +55,17 @@ void printPosition(){
     printToLCD(str, 1);
 }
 
+
+bool isMotorStuck_X(){
+  return HAL_GPIO_ReadPin(SWITCH_X_0_GPIO_Port, SWITCH_X_0_Pin) == GPIO_PIN_RESET;
+}
+bool isMotorStuck_Y(){
+  return HAL_GPIO_ReadPin(SWITCH_Y_0_GPIO_Port, SWITCH_Y_0_Pin) == GPIO_PIN_RESET;
+}
+bool isMotorStuck_Z(){
+  return HAL_GPIO_ReadPin(SWITCH_Z_0_GPIO_Port, SWITCH_Z_0_Pin) == GPIO_PIN_RESET;
+}
+
 void myfunc()
 {
   blankAll();
@@ -129,8 +140,7 @@ void myfunc()
       setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0); // divide by 60 to convert to seconds
       printPosition();
     }
-    lightStatus = STANDBY;
-    playCompleteAnimation();
+    lightStatus = COMPLETE;
   };
   resetButton.onPressed = [](){
     lightStatus = RESETTING;
@@ -149,7 +159,7 @@ void myfunc()
     debugLog(str, 19);
     xPulseMotor.step(xRatio < 0 ? 0 : 1,abs(xRatio*300));
     float yRatio = testJoystick.get_dY();
-    yPulseMotor.step(yRatio < 0 ? 1 : 0,abs(yRatio*300));
+    yPulseMotor.step(yRatio < 0 ? 0 : 1,abs(yRatio*300));
   };
 
   strType_XPT2046_Coordinate touch;
@@ -158,16 +168,32 @@ void myfunc()
   blankAll();
   while (1)
   {
-    // if (xServo.isShaftProtected())
-      // lightStatus = FATAL;
-    if (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_5) == GPIO_PIN_RESET)
-    {
-      if (lightStatus != FATAL)
-        xPulseMotor.emergencyStop();
-      lightStatus = FATAL;
-    }
     
+    switch (lightStatus){
+      case OPERATING:
+        if ( isMotorStuck_X()){
+          xPulseMotor.emergencyStop();
+          lightStatus = FATAL;
+        }else if ( isMotorStuck_Y()){
+          yPulseMotor.emergencyStop();
+          lightStatus = FATAL;
+        }else if ( isMotorStuck_Z()){
+          zPulseMotor.emergencyStop();
+          lightStatus = FATAL;
+        }
+        break;
+      case RESETTING:
+        if (isResetComplete_X && isResetComplete_Y){
+          lightStatus = STANDBY;
+        }
+        break;
+    }
     updateLightEffect();
+    
+    
+    
+    
+    
     
     // HAL_Delay(100);
     // for (int i = 0; i < 84; i++) {
