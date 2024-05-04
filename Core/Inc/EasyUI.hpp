@@ -313,5 +313,160 @@ public:
         return (float)dotY / height;
     }
 };
+ 
+class Joystick : public UIElement
+{
+private:
+    uint16_t color;
+    uint16_t dotRadius = 20;
+    int sideLength = 60;
+    bool isDragging = false;
+
+
+public:
+    uint16_t dotX;
+    uint16_t dotY;
+    uint16_t lastDotX = 0;
+    uint16_t lastDotY = 0;
+    void (*whilePressing)() = nullptr;
+
+    Joystick(uint16_t x, uint16_t y, void (*whilePressing)() = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+        : UIElement(x, y, width, height)
+    {
+        this->x = x;
+        this->y = y;
+        this->width = width;
+        this->height = height;
+        this->color = color;
+        dotX = getInitialDotX();
+        dotY = getInitialDotY();
+        this->whilePressing = whilePressing;
+    }
+
+    void render() override
+    {
+        // render background
+        LCD_OpenWindow(x, y, width, height);
+        LCD_FillColor(width * height, color);
+
+        // render dot
+        renderDot();
+
+        renderDeadZone();
+    }
+
+    void clearDot()
+    {
+        LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
+        LCD_FillColor(dotRadius * dotRadius, color);
+    }
+
+    void renderDot()
+    {
+        LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
+        LCD_FillColor(dotRadius * dotRadius, RED);
+    }
+    void renderDeadZone()
+    {
+        int centerX = getInitialDotX() + dotRadius/2;
+        int centerY = getInitialDotY() + dotRadius/2;
+        LCD_DrawLine(x + centerX - sideLength/2, y + centerY - sideLength/2, x + centerX + sideLength/2, y + centerY - sideLength/2, RED);
+        LCD_DrawLine(x + centerX - sideLength/2, y + centerY - sideLength/2, x + centerX - sideLength/2, y + centerY + sideLength/2, RED);
+        LCD_DrawLine(x + centerX + sideLength/2, y + centerY + sideLength/2, x + centerX - sideLength/2, y + centerY + sideLength/2, RED);
+        LCD_DrawLine(x + centerX + sideLength/2, y + centerY + sideLength/2, x + centerX + sideLength/2, y + centerY - sideLength/2, RED);
+    }
+    bool insideDeadZone_X(){
+        return dotX > getInitialDotX() - sideLength/2 && dotX < getInitialDotX() + sideLength/2;
+    }
+    bool insideDeadZone_Y(){
+        return dotY > getInitialDotY() - sideLength/2 && dotY < getInitialDotY() + sideLength/2;
+    }
+
+    uint16_t wrapX(u_int16_t x)
+    {
+        if (x > 500)
+            return dotX; // x=2048 if not touched
+        if (x < this->x)
+            return this->x;
+        if (x > this->x + width - dotRadius)
+            return this->x + width - dotRadius;
+        return x;
+    }
+
+    u_int16_t wrapY(u_int16_t y)
+    {
+        if (y > 500)
+            return dotY; // y=2048 if not touched
+        if (y < this->y)
+            return this->y;
+        if (y > this->y + height - dotRadius)
+            return this->y + height - dotRadius;
+        return y;
+    }
+
+    uint16_t getInitialDotX()
+    {
+        return width / 2 - dotRadius/2;
+    }
+
+    uint16_t getInitialDotY()
+    {
+        return height / 2 - dotRadius/2;
+    }
+
+
+    void update(u_int16_t x, u_int16_t y) override
+    {
+        // if the touchpad is not touched, do nothing
+        if (isDragging && isInvalidInput(x, y)){
+            clearDot();
+            dotX = getInitialDotX();
+            dotY = getInitialDotY();
+            renderDot();
+            renderDeadZone();
+            isDragging = false;
+            return;
+        }
+            
+        if (x < this->x || x > this->x + width || y < this->y || y > this->y + height){
+            return;
+        }
+        
+        isDragging = true;
+        renderDeadZone();
+        
+        int _dotX = wrapX(x) - this->x;
+        int _dotY = wrapY(y) - this->y;
+        if (lastDotX != _dotX || lastDotY != _dotY)
+        {
+            clearDot();
+            dotX = _dotX;
+            dotY = _dotY;
+            renderDot();
+            lastDotX = dotX;
+            lastDotY = dotY;
+        } // render only when the coordinate changes
+
+        // execute the function
+        if (whilePressing)
+            whilePressing();
+    }
+
+    float get_dX()
+    {
+        if (insideDeadZone_X())
+            return 0;
+        return (float)dotX / width - 0.5;
+    }
+
+    float get_dY()
+    {
+        if (insideDeadZone_Y())
+            return 0;
+        return (float)dotY / height - 0.5;
+    }
+};
+
+
 
 #endif

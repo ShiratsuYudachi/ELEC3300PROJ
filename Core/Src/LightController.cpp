@@ -118,11 +118,12 @@ void updateLightStream(int start, int end, bool isDisIncresingIndex, int& count,
 
 
 bool atResetLimit_X(){
-    return HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_5) == GPIO_PIN_RESET;
+    // return HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_5) == GPIO_PIN_RESET;
+    return false;
 }
 
 bool atResetLimit_Y(){
-
+    return false;
 }
 
 bool atResetLimit_Z(){
@@ -154,6 +155,7 @@ void updateResettingAnimation(){
       updateLightStream(30 - length, 54 + length, 0, count_mid, current_mid);
       updateLightStream(30- length, 54 + length, 0, count_mid, current_mid_2);
     }
+
     if (atResetLimit_Y()){
       for (int i = 0; i < 30; i++){
         setColor(i, 0, 255, 0);

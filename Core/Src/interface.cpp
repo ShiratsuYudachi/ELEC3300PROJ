@@ -20,13 +20,12 @@ Button switchButton(170, 50, "Motor?", 40, 40);
 Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(65, 250, "REST", 40, 40);
+Button resetButton(65, 270, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
 // PreviewDisplay3D previewDisplay(0, 170, 120, 120);
-//TouchPad testTouchPad(0, 120);
-
+Joystick testJoystick(0, 120);
 
 
 // uint32_t PulseDMABuff[2560];
@@ -141,6 +140,16 @@ void myfunc()
     yPulseMotor.spinStart();
     // zPulseMotor.setDirection(0);
     // zPulseMotor.spinStart();
+  };
+
+  testJoystick.whilePressing = [](){
+    float xRatio = testJoystick.get_dX();
+    char str[10];
+    sprintf(str, "%.2f", xRatio);
+    debugLog(str, 19);
+    xPulseMotor.step(xRatio < 0 ? 0 : 1,abs(xRatio*300));
+    float yRatio = testJoystick.get_dY();
+    yPulseMotor.step(yRatio < 0 ? 1 : 0,abs(yRatio*300));
   };
 
   strType_XPT2046_Coordinate touch;
