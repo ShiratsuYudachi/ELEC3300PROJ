@@ -46,6 +46,7 @@ void updateBreathAnimation(int period, RGB color){
     }
     int tick = HAL_GetTick();
     float progress = (tick - startTick)%period / (float)period;
+    progress = progress < 0.01 ? 0.01 : progress;
     for (int i = 0; i < LED_NUM; i++){
       if (progress < 0.5){
         
@@ -63,6 +64,10 @@ void updateStandbyAnimation(){
 
 void updateOperatingAnimation(){
     updateBreathAnimation(1500, RGB(0, 80, 128));
+}
+
+void updateFatalAnimation(){
+    updateBreathAnimation(500, RGB(255, 0, 0));
 }
 
 
@@ -127,11 +132,13 @@ void updateResettingAnimation(){
     updateLightStream(0 - length, 30, 1, count_l, current_l_2);
     updateLightStream(30 - length, 54 + length, 0, count_mid, current_mid);
     updateLightStream(30- length, 54 + length, 0, count_mid, current_mid_2);
-    updateLightStream(54, LED_NUM+length-1, 0, count_r, current_r);
-    updateLightStream(54, LED_NUM+length-1, 0, count_r, current_r_2);
+    updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r);
+    updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r_2);
 }
 
+
 STATUS lightStatus = STANDBY;
+
 
 void updateLightEffect(){
     
@@ -145,6 +152,7 @@ void updateLightEffect(){
         case WARNING:
         break;
         case FATAL:
+          updateFatalAnimation();
         break;
 
         case RESETTING:

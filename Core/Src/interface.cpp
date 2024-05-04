@@ -20,7 +20,7 @@ Button switchButton(170, 50, "Motor?", 40, 40);
 Button CCWButton(10, 50, "YCCW", 40, 40);
 Button CWButton(65, 50, "YCW", 40, 40);
 Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(65, 90, "REST", 40, 40);
+Button resetButton(65, 250, "REST", 40, 40);
 Slider xSlider(180, 120, 100);
 // Slider ySlider(180, 120, 100);
 Slider zSlider(220, 120, 100);
@@ -143,18 +143,21 @@ void myfunc()
     // zPulseMotor.spinStart();
   };
 
-  
-
-
-  
-
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World 1", 1);
   
-
   blankAll();
   while (1)
   {
+    // if (xServo.isShaftProtected())
+      // lightStatus = FATAL;
+    if (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_5) == GPIO_PIN_RESET)
+    {
+      if (lightStatus != FATAL)
+        xPulseMotor.emergencyStop();
+      lightStatus = FATAL;
+    }
+    
     updateLightEffect();
     
     // HAL_Delay(100);
