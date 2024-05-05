@@ -213,7 +213,7 @@ void setupUI(){
 
       pos[0]*= previewDisplay.previewScale;
       pos[1]*= previewDisplay.previewScale;
-      pos[2]*= 2;
+      // pos[2]*= 2;
       // pos[2]*= previewDisplay.previewScale;
 
       pos[0]+=previewDisplay.xOffset;
