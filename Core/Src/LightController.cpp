@@ -36,6 +36,12 @@ void playStartAnimation(){
 }
 
 
+struct Counter{
+  bool enable = false;
+  int count = 0;
+};
+
+
 void updateBreathAnimation(int period, RGB color){
     // period = 3s
     static int startTick = 0;
@@ -58,23 +64,18 @@ void updateBreathAnimation(int period, RGB color){
 }
 
 
-
-
-
 // dir: 1 for increasing index, 0 for decreasing index
-int length = 7;
-int interval = 10;
 RGB bodyRGB = RGB(255, 0, 0, 0.3);
 RGB headRGB = RGB(255, 140, 0, 0.3);
-void updateLightStream(int start, int end, bool isDisIncresingIndex, int& count, int& current){
-    if (count < interval){
-        count++;
-        return;
-    }
-    count = 0;
+void updateLightStream(int start, int end, bool isDirIncresingIndex, int& current, int length){
+    // if (count < interval){
+    //     count++;
+    //     return;
+    // }
+    // count = 0;
     auto max = [](int a, int b){return a > b ? a : b;};
     auto min = [](int a, int b){return a < b ? a : b;};
-    if (isDisIncresingIndex){
+    if (isDirIncresingIndex){
         for (int i = current; i < min(current + length, end); i++){
             if (i>=0 && i < LED_NUM)
             setColor(i, i==min(current + length, end)-1 ? headRGB : bodyRGB);
@@ -101,46 +102,18 @@ void updateLightStream(int start, int end, bool isDisIncresingIndex, int& count,
 }
 
 
-bool atResetLimit_X(){
-    // return HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_5) == GPIO_PIN_RESET;
-    return false;
-}
-
-bool atResetLimit_Y(){
-    return false;
-}
-
-bool atResetLimit_Z(){
-
-}
-
-
-int count_l = 0;
-int current_l = 0 -1;
-int count_l_2 = 0;
+int current_l = 0 - 1;
 int current_l_2 = 18 -1;
 
-int count_mid = 0;
 int current_mid = 30;
-int count_mid_2 = 0;
-int current_mid_2 = 42;
+int current_mid_2 = 48;
 
-int count_r = 0;
 int current_r = 54 + length ;
-int count_r_2 = 0;
 int current_r_2 = 72 + length;
 
 void updateResettingAnimation(){
-    if (atResetLimit_X()){
-      for (int i = 30; i < 54; i++){
-        setColor(i, 0, 255, 0);
-      }
-    }else{
-      updateLightStream(30 - length, 54 + length, 0, count_mid, current_mid);
-      updateLightStream(30- length, 54 + length, 0, count_mid, current_mid_2);
-    }
-
-    if (atResetLimit_Y()){
+    HAL_Delay(50);
+    if (isResetComplete_Y){
       for (int i = 0; i < 30; i++){
         setColor(i, 0, 255, 0);
       }
@@ -148,38 +121,32 @@ void updateResettingAnimation(){
         setColor(i, 0, 255, 0);
       }
     }else{
-      updateLightStream(0 - length, 30, 1, count_l, current_l);// 实现从0冒出来，而不是直接0～5生成一整条
-      updateLightStream(0 - length, 30, 1, count_l, current_l_2);
-      updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r);
-      updateLightStream(54-1, LED_NUM+length-1, 0, count_r, current_r_2);
-
+      updateLightStream(0 - length, 30, 1, current_l);// 实现从0冒出来，而不是直接0～5生成一整条
+      updateLightStream(0 - length, 30, 1, current_l_2);
+      updateLightStream(54-1, LED_NUM+length-1, 0, current_r);
+      updateLightStream(54-1, LED_NUM+length-1, 0, current_r_2);
     }
 
-    if (atResetLimit_X() && atResetLimit_Y){
-      lightStatus = STANDBY;
+    if (isResetComplete_X){
+      for (int i = 30; i < 54; i++){
+        setColor(i, 0, 255, 0);
+      }
+      
+    }else{
+      updateLightStream(30 - length, 54 + length, 0, current_mid);
+      updateLightStream(30- length, 54 + length, 0, current_mid_2);
+      
     }
-    
-    
 
 }
 
-
 STATUS lightStatus = COMPLETE;
-
 bool isResetComplete_X = false;
 bool isResetComplete_Y = false;
 
 
-
-struct Counter{
-  bool enable = false;
-  int count = 0;
-};
-
-
 Counter completeCounter;
 void updateLightEffect(){
-    
     switch (lightStatus){
         case STANDBY:
             updateBreathAnimation(3000, RGB(0, 255, 0));

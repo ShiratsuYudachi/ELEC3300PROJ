@@ -145,9 +145,29 @@ void myfunc()
   resetButton.onPressed = [](){
     lightStatus = RESETTING;
     xPulseMotor.setDirection(0);
-    xPulseMotor.spinStart();
     yPulseMotor.setDirection(0);
-    yPulseMotor.spinStart();
+    
+    isResetComplete_X = isMotorStuck_X();
+    if (!isResetComplete_X){
+      xPulseMotor.spinStart();
+    }
+    isResetComplete_Y = isMotorStuck_Y();
+    if (!isResetComplete_Y){
+      yPulseMotor.spinStart();
+    }
+    blankAll();
+    while (!isResetComplete_X || !isResetComplete_Y){
+      if (isMotorStuck_X()){
+        xPulseMotor.spinStop();
+        isResetComplete_X = true;
+      }
+      if (isMotorStuck_Y()){
+        yPulseMotor.spinStop();
+        isResetComplete_Y = true;
+      }
+      updateLightEffect();
+    }
+    lightStatus = COMPLETE;
     // zPulseMotor.setDirection(0);
     // zPulseMotor.spinStart();
   };
@@ -180,11 +200,6 @@ void myfunc()
         }else if ( isMotorStuck_Z()){
           zPulseMotor.emergencyStop();
           lightStatus = FATAL;
-        }
-        break;
-      case RESETTING:
-        if (isResetComplete_X && isResetComplete_Y){
-          lightStatus = STANDBY;
         }
         break;
     }
