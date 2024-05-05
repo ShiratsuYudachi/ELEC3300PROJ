@@ -1,3 +1,2 @@
-../Core/Src/EasyUI.cpp:8:6:static void UIElement::updateAllElements()	24	static
-../Core/Src/EasyUI.cpp:43:6:void Screen::update()	32	static
-../Core/Src/EasyUI.cpp:75:6:void Screen::render()	24	static
+../Core/Inc/utils.hpp:19:5:String::String(const char*)	16	static
+../Core/Src/EasyUI.cpp:7:6:static void UIElement::updateAllElements()	224	static

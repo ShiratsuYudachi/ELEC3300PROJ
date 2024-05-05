@@ -31,8 +31,7 @@ Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
  ../Core/Inc/utils.hpp ../Core/Inc/tim.h ../Core/Inc/interface.hpp \
  ../Core/Inc/usart.h ../Core/Inc/EasyUI.hpp ../Core/Inc/lcdtp.h \
  ../Core/Inc/dht11.h ../Core/Inc/printf.h ../Core/Inc/xpt2046.h \
- ../Core/Inc/utils.hpp ../Core/Inc/main.h ../Core/Inc/gcode.h \
- ../Core/Src/PathPreview.hpp ../Core/Inc/lcdtp.h ../Core/Inc/trigo.h
+ ../Core/Inc/utils.hpp ../Core/Inc/main.h
 ../Core/Inc/SERVO42C.hpp:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -75,7 +74,3 @@ Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
 ../Core/Inc/xpt2046.h:
 ../Core/Inc/utils.hpp:
 ../Core/Inc/main.h:
-../Core/Inc/gcode.h:
-../Core/Src/PathPreview.hpp:
-../Core/Inc/lcdtp.h:
-../Core/Inc/trigo.h:
