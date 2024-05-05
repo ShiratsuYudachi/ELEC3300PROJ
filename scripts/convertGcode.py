@@ -71,8 +71,8 @@ with open(path+'scripts/test.gcode', 'r') as f:
         parseLine(line.strip())
         if (G == 0):
             if (is2D):
-                generatedArray.append([lastX, lastY, 3.5, F])
-                generatedArray.append([X, Y, 3.5, F])
+                generatedArray.append([lastX, lastY, 5, F])
+                generatedArray.append([X, Y, 5, F])
                 generatedArray.append([X, Y, Z, F])
             else:
                 generatedArray.append([X, Y, Z, F])
