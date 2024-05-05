@@ -13,7 +13,7 @@ void UIElement::updateAllElements()
     {
         if (Screen::activeScreen != nullptr)
         {
-            Screen::activeScreen->render();
+            Screen::activeScreen->renderAll();
         }
         firstCall = false;
     }
@@ -33,20 +33,20 @@ void UIElement::updateAllElements()
 #endif
     if (Screen::activeScreen != nullptr)
     {
-        Screen::activeScreen->update();
+        Screen::activeScreen->updateAll();
     }
     touch.x = 0;
     touch.y = 0;
     // Update all UI elements
 }
 
-void Screen::update() // this replace the original updateAllElements function
+void Screen::updateAll() // this replace the original updateAllElements function
 {
     static bool firstCall = true;
     if (firstCall)
     {
         LCD_Clear_Color(0, 0, 240, 320, WHITE);
-        render();
+        renderAll();
         // printToLCD("x=   , y=   ", 0);
         firstCall = false;
     }
@@ -70,9 +70,14 @@ void Screen::update() // this replace the original updateAllElements function
     }
     touch.x = 0;
     touch.y = 0;
+    if (activeScreen->onUpdate != nullptr)
+    {
+        activeScreen->onUpdate();
+    }
+    
 }
 
-void Screen::render()
+void Screen::renderAll()
     {
         for (int i = 0; i < elementNum; i++)
         {

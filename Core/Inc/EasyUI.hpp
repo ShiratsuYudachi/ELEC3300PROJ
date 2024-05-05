@@ -29,18 +29,21 @@ public:
     UIElement *elements[MAX_UI_ELEMENTS];
     uint8_t elementNum = 0;
 
+    void (*onUpdate)() = nullptr;
 
-    Screen()
+
+    Screen(void (*onUpdate)() = nullptr) : onUpdate(onUpdate)
     {
         allScreens[screenNum++] = this;
         elementNum = 0;
     }
-    void render(); // See the implementation below
-    void update(); // See the implementation in EasyUI.cpp
+    
+    void renderAll(); // See the implementation below
+    void updateAll(); // See the implementation in EasyUI.cpp
     void setActive(){
         LCD_Clear(0,0,240,320);
         activeScreen = this;
-        this->render();
+        this->renderAll();
     }
 };
 

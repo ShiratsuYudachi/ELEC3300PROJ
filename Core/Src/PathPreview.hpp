@@ -1,13 +1,9 @@
 #include <cstdint>
 #include "lcdtp.h"
-#include "gcode.h"
 #include "trigo.h"
 #include "EasyUI.hpp"
 #include <cstdlib>
 #include <cmath>
-
-constexpr uint32_t posX = 60;
-constexpr uint32_t posY = 170;
 
 float scale = 1.5f;
 
@@ -17,7 +13,7 @@ void transformPosition(uint32_t x, uint32_t y)
     y = y * scale;
 }
 
-void map2d(float speedInterval = -1)
+void map2d(float posX, float posY, float speedInterval = -1)
 {
     bool enableDrawing = false;
     float lastPos[4] = {0, 0, 0};
@@ -26,7 +22,7 @@ void map2d(float speedInterval = -1)
     LCD_DrawLine(posX ,posY, posX+ 100,posY+0,BLACK);
     LCD_DrawLine(posX + 0,posY+ -100, posX+ 0,posY+100,BLACK);
     if (speedInterval<0){
-        for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
+        for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
             enableDrawing = cmd[2] <= 0.001;
             if (enableDrawing)
                 LCD_DrawLine(posX + lastPos[0], posY - lastPos[1], posX + cmd[0], posY - cmd[1], RED);
@@ -36,7 +32,7 @@ void map2d(float speedInterval = -1)
             }
         }
     }else{
-         for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
+         for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
             enableDrawing = cmd[2] <= 0.001;
             if (enableDrawing)
                 LCD_DrawLine(posX + lastPos[0], posY - lastPos[1], posX + cmd[0], posY - cmd[1], RED);
@@ -205,8 +201,8 @@ void map3d(float posX, float posY) {
     sinUnderCurrentAngleZ = fastsin(rotateAngleZ);
     cosUnderCurrentAngleZ = fastcos(rotateAngleZ);
     
-    for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
-        Point3D point = {cmd[0] - gcodeCenterOfMass[0], cmd[1] - gcodeCenterOfMass[1], cmd[2] - gcodeCenterOfMass[2]};
+    for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
+        Point3D point = {cmd[0] - targetGcodeCenterOfMass[0], cmd[1] - targetGcodeCenterOfMass[1], cmd[2] - targetGcodeCenterOfMass[2]};
         point = rotatePoint(point, X);
         point = rotatePoint(point, Y);
         point = rotatePoint(point, Z);
@@ -247,13 +243,15 @@ void map3d(float posX, float posY) {
 int lastX = 0;
 int lastY = 0;
 int lastTick = 0;
-class PreviewDisplay3D : public UIElement
+class PreviewDisplay : public UIElement
 {
 private:
     uint16_t color;
 
 public:
-    PreviewDisplay3D(Screen *screen, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color = CYAN)
+    bool use3d = false;
+
+    PreviewDisplay(Screen *screen, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color = CYAN)
         : UIElement(screen, x, y, width, height)
     {
         this->x = x;
@@ -265,7 +263,10 @@ public:
     
     void render() override
     {
-        map3d(x,y);
+        if (use3d)
+            map3d(x,y);
+        else
+            map2d(x,y);
     }
 
     void update(uint16_t x, uint16_t y) override
@@ -274,18 +275,23 @@ public:
         if (isInvalidInput(x, y)){
             return;
         }
-        if ((lastX == 0 && lastY == 0) || (HAL_GetTick() - lastTick > 100))
-        {
-            lastX = x;
-            lastY = y;
-            lastTick = HAL_GetTick();
-            return;
+
+        if (use3d){
+             if ((lastX == 0 && lastY == 0) || (HAL_GetTick() - lastTick > 100))
+            {
+                lastX = x;
+                lastY = y;
+                lastTick = HAL_GetTick();
+                return;
+            }
+            int dX = x - lastX;
+            int dY = y - lastY;
+            // rotateAngleZ += dX * speedMultiplier;
+            // rotateAngleX -= dY * speedMultiplier;
+            render();
         }
-        int dX = x - lastX;
-        int dY = y - lastY;
-        // rotateAngleZ += dX * speedMultiplier;
-        // rotateAngleX -= dY * speedMultiplier;
-        render();
+        else{
+        }
     }
 
 

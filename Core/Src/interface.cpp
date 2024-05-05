@@ -4,14 +4,17 @@
 #include "EasyUI.hpp"
 #include "utils.hpp"
 #include "main.h"
-#include "gcode.h"
+
 
 #include <stdio.h>
 #include <cmath>
-#include "PathPreview.hpp"
 
+#include "PathPreview.hpp"
 #include "WS2812.hpp"
 #include "LightController.hpp"
+
+#include "gcode.h"
+#include "gcode_inbuilt.h"
 
 
 // create UI
@@ -19,22 +22,30 @@ Screen *allScreens[MAX_UI_ELEMENTS];
 uint8_t screenNum;
 
 Screen mainScreen;
+Button switchButton(&mainScreen, 170, 50, "Motor?", 40, 40);
+Button CCWButton(&mainScreen, 10, 50, "YCCW", 40, 40);
+Button CWButton(&mainScreen, 65, 50, "YCW", 40, 40);
+Button startButton(&mainScreen, 120, 50, "START", 40, 40);
+Button resetButton(&mainScreen, 200, 270, "REST", 40, 40);
+Joystick testJoystick(&mainScreen,0, 120);
+
+
 Screen operationScreen;
-
-Button switchButton(&operationScreen, 170, 50, "Motor?", 40, 40);
-// Button test2Button(&operationScreen, 170, 0, "SetPos", 40, 40);
-Button CCWButton(&operationScreen, 10, 50, "YCCW", 40, 40);
-Button CWButton(&operationScreen, 65, 50, "YCW", 40, 40);
-Button test3Button(&operationScreen, 120, 50, "START", 40, 40);
-Button resetButton(&operationScreen, 200, 270, "REST", 40, 40);
-Slider xSlider(&mainScreen, 180, 120, 100);
+Button item1Button(&operationScreen, 10, 40, "item1", 40, 40);
+Button item2Button(&operationScreen, 60, 40, "item2", 40, 40);
+Button item3Button(&operationScreen, 110, 40, "item2", 40, 40);
+Button itemExternalButton(&operationScreen, 160, 40, "EXTRN", 40, 40);
+PreviewDisplay previewDisplay(&operationScreen,0, 170, 120, 120);
+Slider xSlider(&operationScreen, 180, 120, 100);
 // Slider ySlider(180, 120, 100);
-Slider zSlider(&mainScreen, 220, 120, 100);
+Slider zSlider(&operationScreen, 220, 120, 100);
 
 
 
-// PreviewDisplay3D previewDisplay(0, 170, 120, 120);
-Joystick testJoystick(&operationScreen,0, 120);
+
+
+
+
 
 
 // uint32_t PulseDMABuff[2560];
@@ -84,33 +95,70 @@ void setActiveScreen1(){
     operationScreen.setActive();
 }
 
-void myfunc()
-{
-  operationScreen.setActive();
-  blankAll();
-  HAL_Delay(500);
-  playStartAnimation();
+const float (*targetGcode)[4] = nullptr;
+int targetGcodeLength = 0;
+const float* targetGcodeCenterOfMass = nullptr;
 
-  // config: AAC set to max, 1042, max freq 2200
-  xPulseMotor.setFrequency(1000);
-  yPulseMotor.setFrequency(1000);
-  zPulseMotor.setFrequency(1000);
-  printTargetMotor();
+enum GCODE_SOURCE{
+  ENTERPRIZE,
+  HKUST,
+  PYRAMID,
+  GENSHIN,
+  EXTERNAL
+};
+GCODE_SOURCE gcodeSource = ENTERPRIZE;
 
+void setGcodeSource(GCODE_SOURCE target){
+  gcodeSource = target;
+  switch (gcodeSource){
+    case ENTERPRIZE:
+      targetGcode = gcode_ENTERPRIZE;
+      targetGcodeLength = gcodeLength_ENTERPRIZE;
+      targetGcodeCenterOfMass = gcodeCenterOfMass_ENTERPRIZE;
+      break;
+    case HKUST:
+      // targetGcode = gcode_HKUST;
+      // targetGcodeLength = gcodeLength_HKUST;
+      // targetGcodeCenterOfMass = gcodeCenterOfMass_HKUST;
+      break;
+    case PYRAMID:
+      targetGcode = gcode_PYRAMID;
+      targetGcodeLength = gcodeLength_PYRAMID;
+      targetGcodeCenterOfMass = gcodeCenterOfMass_PYRAMID;
+      break;
+    case GENSHIN:
+      targetGcode = gcode_GENSHIN;
+      targetGcodeLength = gcodeLength_GENSHIN;
+      targetGcodeCenterOfMass = gcodeCenterOfMass_GENSHIN;
+      break;
+    case EXTERNAL:
+      targetGcode = gcode;
+      targetGcodeLength = gcodeLength;
+      targetGcodeCenterOfMass = gcodeCenterOfMass;
+      break;
+  }
+}
+
+
+
+void setupUI(){
   CWButton.onPressed = [](){
     pTargetMotor->setFrequency(1000);
     pTargetMotor->setDirection(0);
     pTargetMotor->spinStart();
   };
+
   CWButton.onReleased = []()
   {
     pTargetMotor->spinStop();
   };
+
   CCWButton.onPressed = []()
   {
     pTargetMotor->setDirection(1);
     pTargetMotor->spinStart();
   };
+
   CCWButton.onReleased = []()
   {
     pTargetMotor->spinStop();
@@ -132,13 +180,9 @@ void myfunc()
     }
     printTargetMotor();
   };
-  // test2Button.onPressed = [](){
-    
-  //   // setPosition3d(testTouchPad.getXRatio()*100, testTouchPad.getYRatio()*100, testSlider.getValue()*100);
-  //   xPulseMotor.step_inf(1,15000);
-    
-  // };
-  test3Button.onPressed = [](){
+
+
+  startButton.onPressed = [](){
     // 奇怪沙漏
     // setPosition3d(0, 0, 0, speed);
     // setPosition3d(50, 50, 0, speed);
@@ -158,12 +202,14 @@ void myfunc()
     // setPosition3d(25, 0, 0, speed);
     // setPosition3d(25, -50, 0, speed);
     lightStatus = OPERATING;
-    for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
+
+    for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
       setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0); // divide by 60 to convert to seconds
       printPosition();
     }
     lightStatus = COMPLETE;
   };
+
   resetButton.onPressed = [](){
     lightStatus = RESETTING;
     xPulseMotor.setDirection(0);
@@ -203,6 +249,48 @@ void myfunc()
     float yRatio = testJoystick.get_dY();
     yPulseMotor.step(yRatio < 0 ? 0 : 1,abs(yRatio*300));
   };
+
+  item1Button.onPressed = [](){
+    setGcodeSource(ENTERPRIZE);
+    previewDisplay.render();
+  };
+  item2Button.onPressed = [](){
+    setGcodeSource(HKUST);
+    previewDisplay.render();
+  };
+  item3Button.onPressed = [](){
+    setGcodeSource(PYRAMID);
+    previewDisplay.render();
+  };
+  itemExternalButton.onPressed = [](){
+    setGcodeSource(EXTERNAL);
+    previewDisplay.render();
+  };
+}
+
+void myfunc()
+{
+  mainScreen.setActive();
+  
+  blankAll();
+  HAL_Delay(500);
+  playStartAnimation();
+
+  setupUI();
+
+  // config: AAC set to max, 1042, max freq 2200
+  xPulseMotor.setFrequency(1000);
+  yPulseMotor.setFrequency(1000);
+  zPulseMotor.setFrequency(1000);
+  printTargetMotor();
+
+  
+  // test2Button.onPressed = [](){
+    
+  //   // setPosition3d(testTouchPad.getXRatio()*100, testTouchPad.getYRatio()*100, testSlider.getValue()*100);
+  //   xPulseMotor.step_inf(1,15000);
+    
+  // };
 
   strType_XPT2046_Coordinate touch;
   printToLCD("Hello World 1", 1);

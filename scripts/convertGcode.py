@@ -128,7 +128,7 @@ with open('Core/Inc/gcode.h', 'w') as f:
     f.write(f'''#ifndef __GCODE_H
 #define __GCODE_H 	
 const float gcodeCenterOfMass[3] = {centerOfMassStr};
-const int gcodeLegth = {len(generatedArray)};
+const int gcodeLength = {len(generatedArray)};
 const float gcode[{len(generatedArray)}][4] = {carr};
 #endif''')
     
