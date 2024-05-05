@@ -141,7 +141,7 @@ bool isResetComplete_X = false;
 bool isResetComplete_Y = false;
 
 
-Counter completeCounter;
+
 void updateLightEffect(){
     switch (lightStatus){
         case STANDBY:
