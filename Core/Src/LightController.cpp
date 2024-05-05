@@ -36,6 +36,10 @@ void playStartAnimation(){
 }
 
 
+struct Counter{
+  bool enable = false;
+  int count = 0;
+};
 
 
 void updateBreathAnimation(int period, RGB color){
@@ -61,9 +65,10 @@ void updateBreathAnimation(int period, RGB color){
 
 
 // dir: 1 for increasing index, 0 for decreasing index
+int length = 7;
 RGB bodyRGB = RGB(255, 0, 0, 0.3);
 RGB headRGB = RGB(255, 140, 0, 0.3);
-void updateLightStream(int start, int end, bool isDirIncresingIndex, int& current, int length){
+void updateLightStream(int start, int end, bool isDirIncresingIndex, int& current){
     // if (count < interval){
     //     count++;
     //     return;
@@ -99,7 +104,7 @@ void updateLightStream(int start, int end, bool isDirIncresingIndex, int& curren
 
 
 int current_l = 0 - 1;
-int current_l_2 = 18 -1;
+int current_l_2 = 20 -1;
 
 int current_mid = 30;
 int current_mid_2 = 48;
@@ -141,7 +146,7 @@ bool isResetComplete_X = false;
 bool isResetComplete_Y = false;
 
 
-
+Counter completeCounter;
 void updateLightEffect(){
     switch (lightStatus){
         case STANDBY:
