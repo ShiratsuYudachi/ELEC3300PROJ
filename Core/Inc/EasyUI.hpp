@@ -20,10 +20,12 @@ extern uint8_t screenNum;
 
 class Screen
 {
+private:
     // This class is used to manage the UI elements. Each screen contains a list of UI elements, and the screen will render and update all the elements inside it.
     // When one screen is active, it will render and update all the elements inside it.
     // When the screen is not active, it will not render or update the elements inside it.
 public:
+    static Screen* activeScreen;
     UIElement *elements[MAX_UI_ELEMENTS];
     uint8_t elementNum = 0;
 
@@ -35,6 +37,11 @@ public:
     }
     void render(); // See the implementation below
     void update(); // See the implementation in EasyUI.cpp
+    void setActive(){
+        LCD_Clear(0,0,240,320);
+        activeScreen = this;
+        this->render();
+    }
 };
 
 
@@ -348,7 +355,7 @@ class Joystick : public UIElement
 private:
     uint16_t color;
     uint16_t dotRadius = 20;
-    int sideLength = 60;
+    int sideLength = 40;
     bool isDragging = false;
 
 
@@ -359,8 +366,8 @@ public:
     uint16_t lastDotY = 0;
     void (*whilePressing)() = nullptr;
 
-    Joystick(uint16_t x, uint16_t y, void (*whilePressing)() = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
-        : UIElement(x, y, width, height)
+    Joystick(Screen *screen,uint16_t x, uint16_t y, void (*whilePressing)() = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+        : UIElement(screen, x, y, width, height)
     {
         this->x = x;
         this->y = y;

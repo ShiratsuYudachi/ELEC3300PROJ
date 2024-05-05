@@ -34,7 +34,7 @@ Slider zSlider(&mainScreen, 220, 120, 100);
 
 
 // PreviewDisplay3D previewDisplay(0, 170, 120, 120);
-Joystick testJoystick(0, 120);
+Joystick testJoystick(&operationScreen,0, 120);
 
 
 // uint32_t PulseDMABuff[2560];
@@ -76,8 +76,17 @@ bool isMotorStuck_Z(){
   return HAL_GPIO_ReadPin(SWITCH_Z_0_GPIO_Port, SWITCH_Z_0_Pin) == GPIO_PIN_RESET;
 }
 
+void setActiveScreen0(){
+    mainScreen.setActive();
+}
+
+void setActiveScreen1(){
+    operationScreen.setActive();
+}
+
 void myfunc()
 {
+  operationScreen.setActive();
   blankAll();
   HAL_Delay(500);
   playStartAnimation();
@@ -219,48 +228,26 @@ void myfunc()
     updateLightEffect();
     
     
-    
-    
-    
-    
-    // HAL_Delay(100);
-    // for (int i = 0; i < 84; i++) {
-    //   setColor(i, 255, 255, 255);      // 设置颜色
-    // }
+  
     
     int startTick = HAL_GetTick();
-    // map2d();
     rotateAngleX = xSlider.getValue() * 90;
-    // rotateAngleY = ySlider.getValue() * 90;
     rotateAngleZ = zSlider.getValue() * 90;
-    // yServo.receiveEncoder();
-    // printPosition();
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-    // XPT2046_Get_TouchedPoint(&touch, &strXPT2046_TouchPara);
-
-    // sprintf(str, "x=%d, y=%d", touch.x, touch.y);
-    // LCD_DrawString(0, 0, str);
-
-    // uint8_t data[3] = {};
-    // HAL_UART_Receive(&huart2, data, 3, 500) == HAL_OK;
-    // char str[3] = {};
-    // sprintf(str, "%02X", data[0]);
-
-    // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 
     // UIElement::updateAllElements(); // TODO: change to updateScreen
-    if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET)
-    {
-      mainScreen.update();
-    }
-    else
-    {
-      operationScreen.update();
-    }
+    // if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET)
+    // {
+    //   mainScreen.update();
+    // }
+    // else
+    // {
+    //   operationScreen.update();
+    // }
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
     // HAL_Delay(500);
+    
+
+    UIElement::updateAllElements();
     debugLog(String(HAL_GetTick() - startTick), 7);
   }
 }

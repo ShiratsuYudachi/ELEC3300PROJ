@@ -5,16 +5,16 @@
 UIElement *UIElement::allElements[MAX_UI_ELEMENTS] = {};
 uint8_t UIElement::elementNum = 0;
 
+Screen* Screen::activeScreen = nullptr;
 void UIElement::updateAllElements()
 {
     static bool firstCall = true;
     if (firstCall)
     {
-        for (int i = 0; i < elementNum; i++)
+        if (Screen::activeScreen != nullptr)
         {
-            allElements[i]->render();
+            Screen::activeScreen->render();
         }
-        // printToLCD("x=   , y=   ", 0);
         firstCall = false;
     }
     strType_XPT2046_Coordinate touch;
@@ -31,9 +31,9 @@ void UIElement::updateAllElements()
     // }
     // }
 #endif
-    for (int i = 0; i < elementNum; i++)
+    if (Screen::activeScreen != nullptr)
     {
-        allElements[i]->update(touch.x, touch.y);
+        Screen::activeScreen->update();
     }
     touch.x = 0;
     touch.y = 0;

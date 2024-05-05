@@ -6,6 +6,9 @@ extern "C" {
 
 void myfunc();
 
+void setActiveScreen0();
+void setActiveScreen1();
+
 #ifdef __cplusplus
 }
 #endif
