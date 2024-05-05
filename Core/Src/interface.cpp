@@ -31,20 +31,22 @@ Joystick testJoystick(&mainScreen, 0, 120);
 
 
 Screen operationScreen;
-PreviewDisplay previewDisplay(&operationScreen,0, 0, 120, 120);
+PreviewDisplay previewDisplay(&operationScreen,0, 0);
 Slider scaleSlider(&operationScreen, 180, 20, 100);
-Joystick previewJoystick(&operationScreen, 20 , 160, 100, 100);
+Joystick previewJoystick(&operationScreen, 0 , 155, 150, 120);
 Button selectGcodeButton(&operationScreen, 170, 170, "GCODE", 50, 40);
 Button toggleAntiAliasButton(&operationScreen, 170, 220, "AA:ON", 50, 40);
 Button toggle3D2DButton(&operationScreen, 170, 270, " 2D", 40, 40);
-Button resetPreviewButton(&operationScreen, 110, 270, "RESET", 40, 40);
+Button resetPreviewButton(&operationScreen, 110, 285, "RESET", 30, 50);
+Button autoAlignButton(&operationScreen, 60, 285, "AUTO", 30, 40);
 
 
 Screen gcodeSelectScreen;
 Button item1Button(&gcodeSelectScreen, 10, 40, "ENTRPRZ", 70, 40);
 Button item2Button(&gcodeSelectScreen, 90, 40, "GENSHIN", 70, 40);
 Button item3Button(&gcodeSelectScreen, 170, 40, "PYRAMID", 70, 40);
-Button itemExternalButton(&gcodeSelectScreen, 10, 100, "EXTRN", 70, 40);
+Button item4Button(&gcodeSelectScreen, 10, 100, "HKUST", 60, 40);
+Button itemExternalButton(&gcodeSelectScreen, 100, 100, "EXTRN", 70, 40);
 
 
 
@@ -118,9 +120,9 @@ void setGcodeSource(GCODE_SOURCE target){
       targetGcodeCenterOfMass = gcodeCenterOfMass_ENTERPRIZE;
       break;
     case HKUST:
-      // targetGcode = gcode_HKUST;
-      // targetGcodeLength = gcodeLength_HKUST;
-      // targetGcodeCenterOfMass = gcodeCenterOfMass_HKUST;
+      targetGcode = gcode_HKUST;
+      targetGcodeLength = gcodeLength_HKUST;
+      targetGcodeCenterOfMass = gcodeCenterOfMass_HKUST;
       break;
     case PYRAMID:
       targetGcode = gcode_PYRAMID;
@@ -274,6 +276,8 @@ void setupUI(){
 
   };
   previewJoystick.performanceMode = true;
+  previewJoystick.deadzoneSideLength = 30;
+
   selectGcodeButton.onPressed = [](){
     gcodeSelectScreen.setActive();
   };
@@ -304,6 +308,23 @@ void setupUI(){
     }
   };
 
+  autoAlignButton.onPressed = [](){
+    float xMin = 114514.0;
+    float yMax = -114514.0;
+
+    for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
+      if (xMin == -114514.0 || cmd[0] < xMin){
+        xMin = cmd[0];
+      }
+      if (yMax == -114514.0 || cmd[1] > yMax){
+        yMax = cmd[1];
+      }
+    }
+
+    previewDisplay.xOffset = xMin * previewDisplay.previewScale;
+    previewDisplay.yOffset = yMax * previewDisplay.previewScale;
+  };
+
 
 
 
@@ -318,6 +339,10 @@ void setupUI(){
   };
   item3Button.onPressed = [](){
     setGcodeSource(PYRAMID);
+    operationScreen.setActive();
+  };
+  item4Button.onPressed = [](){
+    setGcodeSource(HKUST);
     operationScreen.setActive();
   };
   itemExternalButton.onPressed = [](){

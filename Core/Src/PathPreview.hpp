@@ -247,8 +247,8 @@ public:
     bool use3d = false;
     bool useAA = true; // anti-aliasing
 
-    PreviewDisplay(Screen *screen, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color = CYAN)
-        : UIElement(screen, x, y, width, height)
+    PreviewDisplay(Screen *screen, uint16_t x, uint16_t y, uint16_t color = CYAN)
+        : UIElement(screen, x, y, width = r, height = r)
     {
         this->x = x;
         this->y = y;
