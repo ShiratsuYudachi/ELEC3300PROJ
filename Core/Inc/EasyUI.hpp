@@ -37,7 +37,7 @@ public:
         allScreens[screenNum++] = this;
         elementNum = 0;
     }
-    
+
     void renderAll(); // See the implementation below
     void updateAll(); // See the implementation in EasyUI.cpp
     void setActive(){
@@ -357,19 +357,22 @@ class Joystick : public UIElement
 {
 private:
     uint16_t color;
-    uint16_t dotRadius = 20;
-    int sideLength = 40;
     bool isDragging = false;
 
-
 public:
+    uint16_t dotRadius = 20;
+    int deadzoneSideLength = 40; 
+
     uint16_t dotX;
     uint16_t dotY;
     uint16_t lastDotX = 0;
     uint16_t lastDotY = 0;
     void (*whilePressing)() = nullptr;
+    void (*onPressed)() = nullptr;
 
-    Joystick(Screen *screen,uint16_t x, uint16_t y, void (*whilePressing)() = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+    uint32_t lastTick = 0;
+
+    Joystick(Screen *screen,uint16_t x, uint16_t y, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN, void (*whilePressing)() = nullptr)
         : UIElement(screen, x, y, width, height)
     {
         this->x = x;
@@ -409,16 +412,16 @@ public:
     {
         int centerX = getInitialDotX() + dotRadius/2;
         int centerY = getInitialDotY() + dotRadius/2;
-        LCD_DrawLine(x + centerX - sideLength/2, y + centerY - sideLength/2, x + centerX + sideLength/2, y + centerY - sideLength/2, RED);
-        LCD_DrawLine(x + centerX - sideLength/2, y + centerY - sideLength/2, x + centerX - sideLength/2, y + centerY + sideLength/2, RED);
-        LCD_DrawLine(x + centerX + sideLength/2, y + centerY + sideLength/2, x + centerX - sideLength/2, y + centerY + sideLength/2, RED);
-        LCD_DrawLine(x + centerX + sideLength/2, y + centerY + sideLength/2, x + centerX + sideLength/2, y + centerY - sideLength/2, RED);
+        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, RED);
+        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, RED);
+        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, RED);
+        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, RED);
     }
     bool insideDeadZone_X(){
-        return dotX > getInitialDotX() - sideLength/2 && dotX < getInitialDotX() + sideLength/2;
+        return dotX > getInitialDotX() - deadzoneSideLength/2 && dotX < getInitialDotX() + deadzoneSideLength/2;
     }
     bool insideDeadZone_Y(){
-        return dotY > getInitialDotY() - sideLength/2 && dotY < getInitialDotY() + sideLength/2;
+        return dotY > getInitialDotY() - deadzoneSideLength/2 && dotY < getInitialDotY() + deadzoneSideLength/2;
     }
 
     uint16_t wrapX(u_int16_t x)
@@ -464,11 +467,16 @@ public:
             renderDot();
             renderDeadZone();
             isDragging = false;
+            lastTick = HAL_GetTick();
             return;
         }
-            
         if (x < this->x || x > this->x + width || y < this->y || y > this->y + height){
+            lastTick = HAL_GetTick();
             return;
+        }
+
+        if (!isDragging){
+            if (onPressed) onPressed();
         }
         
         isDragging = true;
@@ -489,6 +497,7 @@ public:
         // execute the function
         if (whilePressing)
             whilePressing();
+        lastTick = HAL_GetTick();
     }
 
     float get_dX()
@@ -498,11 +507,23 @@ public:
         return (float)dotX / width - 0.5;
     }
 
+    float get_dX_dt()
+    {
+        float dTime = (HAL_GetTick() - lastTick) / 1000.0;
+        return get_dX() * dTime;
+    }
+
     float get_dY()
     {
         if (insideDeadZone_Y())
             return 0;
         return (float)dotY / height - 0.5;
+    }
+
+    float get_dY_dt()
+    {
+        float dTime = (HAL_GetTick() - lastTick) / 1000.0;
+        return get_dY() * dTime;
     }
 };
 

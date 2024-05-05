@@ -12,7 +12,10 @@ void setActiveScreen1();
 #ifdef __cplusplus
 }
 
+#include "EasyUI.hpp"
 extern const float (*targetGcode)[4];
 extern int targetGcodeLength;
 extern const float* targetGcodeCenterOfMass;
+extern Screen operationScreen;
+
 #endif

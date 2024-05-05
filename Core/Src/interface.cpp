@@ -27,23 +27,21 @@ Button CCWButton(&mainScreen, 10, 50, "YCCW", 40, 40);
 Button CWButton(&mainScreen, 65, 50, "YCW", 40, 40);
 Button startButton(&mainScreen, 120, 50, "START", 40, 40);
 Button resetButton(&mainScreen, 200, 270, "REST", 40, 40);
-Joystick testJoystick(&mainScreen,0, 120);
+Joystick testJoystick(&mainScreen, 0, 120);
 
 
 Screen operationScreen;
-Button item1Button(&operationScreen, 10, 40, "item1", 40, 40);
-Button item2Button(&operationScreen, 60, 40, "item2", 40, 40);
-Button item3Button(&operationScreen, 110, 40, "item2", 40, 40);
+PreviewDisplay previewDisplay(&operationScreen,0, 0, 120, 120);
+Slider scaleSlider(&operationScreen, 180, 20, 100);
+Joystick previewJoystick(&operationScreen, 20 , 160, 100, 100);
+Button selectGcodeButton(&operationScreen, 170, 170, "GCODE", 40, 40);
+
+
+Screen gcodeSelectScreen;
+Button item1Button(&gcodeSelectScreen, 10, 40, "ENTRPRZ", 40, 60);
+Button item2Button(&gcodeSelectScreen, 70, 40, "GENSHIN", 40, 60);
+Button item3Button(&gcodeSelectScreen, 130, 40, "PYRAMID", 40, 60);
 Button itemExternalButton(&operationScreen, 160, 40, "EXTRN", 40, 40);
-PreviewDisplay previewDisplay(&operationScreen,0, 170, 120, 120);
-Slider xSlider(&operationScreen, 180, 120, 100);
-// Slider ySlider(180, 120, 100);
-Slider zSlider(&operationScreen, 220, 120, 100);
-
-
-
-
-
 
 
 
@@ -240,6 +238,8 @@ void setupUI(){
     // zPulseMotor.spinStart();
   };
 
+
+
   testJoystick.whilePressing = [](){
     float xRatio = testJoystick.get_dX();
     char str[10];
@@ -250,22 +250,48 @@ void setupUI(){
     yPulseMotor.step(yRatio < 0 ? 0 : 1,abs(yRatio*300));
   };
 
+
+
+  // operation screen
+  operationScreen.onUpdate = [](){
+    previewDisplay.previewScale = scaleSlider.getValue();
+    previewDisplay.render2d();
+  };
+
+  previewJoystick.whilePressing = [](){
+    
+    float xRatio = previewJoystick.get_dX_dt() * 50;
+    previewDisplay.xOffset += xRatio;
+    float yRatio = previewJoystick.get_dY_dt() * 50;
+    previewDisplay.yOffset += yRatio;
+  };
+  selectGcodeButton.onPressed = [](){
+    gcodeSelectScreen.setActive();
+  };
+
+
+  // gcode select screen
   item1Button.onPressed = [](){
     setGcodeSource(ENTERPRIZE);
-    previewDisplay.render();
+    operationScreen.setActive();
   };
   item2Button.onPressed = [](){
-    setGcodeSource(HKUST);
-    previewDisplay.render();
+    setGcodeSource(GENSHIN);
+    operationScreen.setActive();
   };
   item3Button.onPressed = [](){
     setGcodeSource(PYRAMID);
-    previewDisplay.render();
+    operationScreen.setActive();
   };
   itemExternalButton.onPressed = [](){
     setGcodeSource(EXTERNAL);
-    previewDisplay.render();
+    operationScreen.setActive();
   };
+  
+
+
+
+
 }
 
 void myfunc()
@@ -319,8 +345,8 @@ void myfunc()
   
     
     int startTick = HAL_GetTick();
-    rotateAngleX = xSlider.getValue() * 90;
-    rotateAngleZ = zSlider.getValue() * 90;
+    // rotateAngleX = xSlider.getValue() * 90;
+    // rotateAngleZ = zSlider.getValue() * 90;
 
     // UIElement::updateAllElements(); // TODO: change to updateScreen
     // if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET)
@@ -336,6 +362,6 @@ void myfunc()
     
 
     UIElement::updateAllElements();
-    debugLog(String(HAL_GetTick() - startTick), 7);
+    debugLog(String(HAL_GetTick() - startTick), 20);
   }
 }
