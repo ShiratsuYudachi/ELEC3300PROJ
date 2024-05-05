@@ -102,7 +102,7 @@ public:
     void (*whilePressing)() = nullptr;
     void (*onReleased)() = nullptr;
 
-    Button(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLUE)
+    Button(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
         : UIElement(screen, x, y, width, height)
     {
         this->initialColor = color;
@@ -212,7 +212,7 @@ public:
 
         // render dragger
         LCD_OpenWindow(x, draggerY, width, draggerRadius);
-        LCD_FillColor(width * draggerRadius, YELLOW);
+        LCD_FillColor(width * draggerRadius, RED);
     }
 
     uint16_t wrapY(u_int16_t y)
@@ -235,7 +235,7 @@ public:
             LCD_FillColor(width * draggerRadius, CYAN);
             draggerY = wrapY(y);
             LCD_OpenWindow(this->x, draggerY, width, draggerRadius);
-            LCD_FillColor(width * draggerRadius, YELLOW);
+            LCD_FillColor(width * draggerRadius, RED);
             isDraggerTouched = x >= draggerX - 6 * draggerRadius && x <= draggerX + 6 * draggerRadius && y >= draggerY - 6 * draggerRadius && y <= draggerY + 6 * draggerRadius;
         }
         else
@@ -296,7 +296,7 @@ public:
     void renderDot()
     {
         LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
-        LCD_FillColor(dotRadius * dotRadius, YELLOW);
+        LCD_FillColor(dotRadius * dotRadius, RED);
     }
 
     uint16_t wrapX(u_int16_t x)
@@ -412,16 +412,16 @@ public:
     void renderDot()
     {
         LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
-        LCD_FillColor(dotRadius * dotRadius, YELLOW);
+        LCD_FillColor(dotRadius * dotRadius, RED);
     }
     void renderDeadZone()
     {
         int centerX = getInitialDotX() + dotRadius/2;
         int centerY = getInitialDotY() + dotRadius/2;
-        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, YELLOW);
-        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, YELLOW);
-        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, YELLOW);
-        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, YELLOW);
+        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, RED);
+        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, RED);
+        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, RED);
+        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, RED);
     }
     bool insideDeadZone_X(){
         return dotX > getInitialDotX() - deadzoneSideLength/2 && dotX < getInitialDotX() + deadzoneSideLength/2;
