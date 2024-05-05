@@ -240,7 +240,7 @@ private:
     
 
 public:
-    float previewScale = 0.2;
+    float previewScale = 1.0;
     float xOffset = 0;
     float yOffset = 0;
     

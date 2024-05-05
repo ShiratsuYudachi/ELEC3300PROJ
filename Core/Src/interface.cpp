@@ -27,7 +27,9 @@ Button CCWButton(&mainScreen, 10, 50, "YCCW", 40, 40);
 Button CWButton(&mainScreen, 65, 50, "YCW", 40, 40);
 Button startButton(&mainScreen, 120, 50, "START", 40, 40);
 Button resetButton(&mainScreen, 200, 270, "REST", 40, 40);
+Button setZeroButton(&mainScreen, 120, 10, "SET_0", 40, 40);
 Joystick testJoystick(&mainScreen, 0, 120);
+Joystick zJoystick(&mainScreen, 180, 100, 20, 160);
 
 
 Screen operationScreen;
@@ -207,7 +209,21 @@ void setupUI(){
     lightStatus = OPERATING;
 
     for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
-      setPosition3d(cmd[0], cmd[1], cmd[2], cmd[3]/60.0); // divide by 60 to convert to seconds
+      float pos[3] = {cmd[0], cmd[1], cmd[2]};
+
+      pos[0]*= previewDisplay.previewScale;
+      pos[1]*= previewDisplay.previewScale;
+      pos[2]*= 2;
+      // pos[2]*= previewDisplay.previewScale;
+
+      pos[0]+=previewDisplay.xOffset;
+      pos[1]+=previewDisplay.yOffset;
+
+      // __align(8) char str[32];
+      // sprintf(str, "Pos:%.2f %.2f %.2f, O:%.2f,%.2f, S:%.2f", pos[0], pos[1], pos[2], previewDisplay.xOffset, previewDisplay.yOffset, previewDisplay.previewScale);
+      // debugLog(str, 20);
+
+      setPosition3d(pos[0], pos[1], pos[2], cmd[3]/60.0); // divide by 60 to convert to seconds
       printPosition();
     }
     lightStatus = COMPLETE;
@@ -243,8 +259,6 @@ void setupUI(){
     // zPulseMotor.spinStart();
   };
 
-
-
   testJoystick.whilePressing = [](){
     float xRatio = testJoystick.get_dX();
     char str[10];
@@ -254,6 +268,20 @@ void setupUI(){
     float yRatio = testJoystick.get_dY();
     yPulseMotor.step(yRatio < 0 ? 0 : 1,abs(yRatio*300));
   };
+
+  zJoystick.whilePressing = [](){
+    float zRatio = zJoystick.get_dY();
+    zPulseMotor.step(zRatio < 0 ? 1 : 0,abs(zRatio*50));
+  };
+  zJoystick.deadzoneSideLength = 0;
+  
+  setZeroButton.onPressed = [](){
+    xPulseMotor.resetStepSum();
+    yPulseMotor.resetStepSum();
+    zPulseMotor.resetStepSum();
+    printPosition();
+  };
+
 
 
 
@@ -308,6 +336,8 @@ void setupUI(){
     }
   };
 
+  
+
   autoAlignButton.onPressed = [](){
     float xMin = 114514.0;
     float yMax = -114514.0;
@@ -349,8 +379,6 @@ void setupUI(){
     setGcodeSource(EXTERNAL);
     operationScreen.setActive();
   };
-
-
 }
 
 void myfunc()

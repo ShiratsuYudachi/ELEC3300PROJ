@@ -12,7 +12,7 @@
 #include "main.h"
 #include "tim.h"
 
-#define DMA_BUFFER_SIZE 7000 // max move distance onece is length/100
+#define DMA_BUFFER_SIZE 20000 // max move distance onece is length/100
 
 
 
@@ -227,6 +227,9 @@ public:
         if (speed > 0.001)
             setFrequency(speedToFrequency(speed));
     }
+    void resetStepSum(){
+        stepSum = 0;
+    }
 
     // reset zero position by turning the motor CW/CCW(0/1)
     // once the motor stops turnning, it reaches the zero position
@@ -337,6 +340,7 @@ public:
         // }
         // return -1;
     }
+
 
     void setPosition(float position){ // to test
         receiveEncoder();
