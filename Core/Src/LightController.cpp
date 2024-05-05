@@ -36,10 +36,6 @@ void playStartAnimation(){
 }
 
 
-struct Counter{
-  bool enable = false;
-  int count = 0;
-};
 
 
 void updateBreathAnimation(int period, RGB color){
