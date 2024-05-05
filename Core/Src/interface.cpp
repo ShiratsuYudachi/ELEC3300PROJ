@@ -34,14 +34,17 @@ Screen operationScreen;
 PreviewDisplay previewDisplay(&operationScreen,0, 0, 120, 120);
 Slider scaleSlider(&operationScreen, 180, 20, 100);
 Joystick previewJoystick(&operationScreen, 20 , 160, 100, 100);
-Button selectGcodeButton(&operationScreen, 170, 170, "GCODE", 40, 40);
+Button selectGcodeButton(&operationScreen, 170, 170, "GCODE", 50, 40);
+Button toggleAntiAliasButton(&operationScreen, 170, 220, "AA:ON", 50, 40);
+Button toggle3D2DButton(&operationScreen, 170, 270, " 2D", 40, 40);
+Button resetPreviewButton(&operationScreen, 110, 270, "RESET", 40, 40);
 
 
 Screen gcodeSelectScreen;
-Button item1Button(&gcodeSelectScreen, 10, 40, "ENTRPRZ", 40, 60);
-Button item2Button(&gcodeSelectScreen, 70, 40, "GENSHIN", 40, 60);
-Button item3Button(&gcodeSelectScreen, 130, 40, "PYRAMID", 40, 60);
-Button itemExternalButton(&operationScreen, 160, 40, "EXTRN", 40, 40);
+Button item1Button(&gcodeSelectScreen, 10, 40, "ENTRPRZ", 70, 40);
+Button item2Button(&gcodeSelectScreen, 90, 40, "GENSHIN", 70, 40);
+Button item3Button(&gcodeSelectScreen, 170, 40, "PYRAMID", 70, 40);
+Button itemExternalButton(&gcodeSelectScreen, 10, 100, "EXTRN", 70, 40);
 
 
 
@@ -255,19 +258,53 @@ void setupUI(){
   // operation screen
   operationScreen.onUpdate = [](){
     previewDisplay.previewScale = scaleSlider.getValue();
-    previewDisplay.render2d();
+    previewDisplay.render();
   };
 
   previewJoystick.whilePressing = [](){
-    
-    float xRatio = previewJoystick.get_dX_dt() * 50;
-    previewDisplay.xOffset += xRatio;
-    float yRatio = previewJoystick.get_dY_dt() * 50;
-    previewDisplay.yOffset += yRatio;
+    if (previewDisplay.use3d){
+      rotateAngleZ += previewJoystick.get_dX_dt() * 30;
+      rotateAngleX += previewJoystick.get_dY_dt() * 30;
+    }else{
+      float xRatio = previewJoystick.get_dX_dt() * 50;
+      previewDisplay.xOffset += xRatio;
+      float yRatio = previewJoystick.get_dY_dt() * 50;
+      previewDisplay.yOffset += yRatio;
+    }
+
   };
+  previewJoystick.performanceMode = true;
   selectGcodeButton.onPressed = [](){
     gcodeSelectScreen.setActive();
   };
+  toggleAntiAliasButton.onPressed = [](){
+    previewDisplay.useAA = !previewDisplay.useAA;
+    if (previewDisplay.useAA)
+      toggleAntiAliasButton.setText("AA:ON");
+    else
+      toggleAntiAliasButton.setText("AA:OFF");
+    
+  };
+
+  toggle3D2DButton.onPressed = [](){
+    previewDisplay.use3d = !previewDisplay.use3d;
+    if (previewDisplay.use3d)
+      toggle3D2DButton.setText(" 3D");
+    else
+      toggle3D2DButton.setText(" 2D");
+  };
+
+  resetPreviewButton.onPressed = [](){
+    if (previewDisplay.use3d){
+      rotateAngleX = 0;
+      rotateAngleZ = 0;
+    }else{
+      previewDisplay.xOffset = 0;
+      previewDisplay.yOffset = 0;
+    }
+  };
+
+
 
 
   // gcode select screen
@@ -287,9 +324,6 @@ void setupUI(){
     setGcodeSource(EXTERNAL);
     operationScreen.setActive();
   };
-  
-
-
 
 
 }
@@ -324,7 +358,7 @@ void myfunc()
   blankAll();
   while (1)
   {
-    
+    int startTick = HAL_GetTick();
     switch (lightStatus){
       case OPERATING:
         if ( isMotorStuck_X()){
@@ -343,8 +377,6 @@ void myfunc()
     
     
   
-    
-    int startTick = HAL_GetTick();
     // rotateAngleX = xSlider.getValue() * 90;
     // rotateAngleZ = zSlider.getValue() * 90;
 
@@ -362,6 +394,6 @@ void myfunc()
     
 
     UIElement::updateAllElements();
-    debugLog(String(HAL_GetTick() - startTick), 20);
+    // debugLog(String(HAL_GetTick() - startTick), 20);
   }
 }

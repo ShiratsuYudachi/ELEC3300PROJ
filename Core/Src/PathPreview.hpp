@@ -268,6 +268,7 @@ public:
             for (int i = 0; i < 3; i++){
                 pos[i] *= previewScale;
             }
+            pos[1] *= -1;
             pos[0] += xOffset;
             pos[1] += yOffset;
             enableDrawing = pos[2] <= 0.001;
@@ -306,6 +307,9 @@ public:
         
         for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
             Point3D point = {cmd[0] - targetGcodeCenterOfMass[0], cmd[1] - targetGcodeCenterOfMass[1], cmd[2] - targetGcodeCenterOfMass[2]};
+            point.x *= previewScale;
+            point.y *= previewScale;
+            point.z *= previewScale;
             point = rotatePoint(point, X);
             point = rotatePoint(point, Y);
             point = rotatePoint(point, Z);
@@ -321,37 +325,22 @@ public:
     
     void render() override
     {
-        // render seperately
+        if (use3d){
+            map3d(x, y);
+        }
+        else{
+            map2d(x, y);
+        }
     }
-    void render2d() {
-        // LCD_Clear(0,0,240,320);
-        // operationScreen.renderAll();
-        map2d(x, y);
-    }
+    // void render2d() {
+    //     // LCD_Clear(0,0,240,320);
+    //     // operationScreen.renderAll();
+    //     map2d(x, y);
+    // }
 
     void update(uint16_t x, uint16_t y) override
     {
-        const float speedMultiplier = 1;
-        if (isInvalidInput(x, y)){
-            return;
-        }
-
-        if (use3d){
-             if ((lastX == 0 && lastY == 0) || (HAL_GetTick() - lastTick > 100))
-            {
-                lastX = x;
-                lastY = y;
-                lastTick = HAL_GetTick();
-                return;
-            }
-            int dX = x - lastX;
-            int dY = y - lastY;
-            // rotateAngleZ += dX * speedMultiplier;
-            // rotateAngleX -= dY * speedMultiplier;
-            render();
-        }
-        else{
-        }
+        return;   
     }
 
 

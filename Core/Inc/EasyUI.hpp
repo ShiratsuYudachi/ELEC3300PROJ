@@ -41,9 +41,9 @@ public:
     void renderAll(); // See the implementation below
     void updateAll(); // See the implementation in EasyUI.cpp
     void setActive(){
-        LCD_Clear(0,0,240,320);
+        // LCD_Clear(0,0,240,320);
         activeScreen = this;
-        this->renderAll();
+        // this->renderAll();
     }
 };
 
@@ -126,6 +126,10 @@ public:
         this->onReleased = onReleased;
     }
 
+    void setText(const char* text){
+        strcpy(this->text, text);
+    }
+
     void render() override
     {
         // render background
@@ -137,7 +141,7 @@ public:
         LCD_FillColor(width * height, color);
 
         // render text
-        LCD_DrawString_Color(x + width / 3, y + height / 3, text, color, textColor);
+        LCD_DrawString_Color(x + width / 7, y + height / 3, text, color, textColor);
     }
 
     void update(u_int16_t x, u_int16_t y) override
@@ -363,6 +367,8 @@ public:
     uint16_t dotRadius = 20;
     int deadzoneSideLength = 40; 
 
+    bool performanceMode = false; // disable dragging animation
+
     uint16_t dotX;
     uint16_t dotY;
     uint16_t lastDotX = 0;
@@ -477,23 +483,30 @@ public:
 
         if (!isDragging){
             if (onPressed) onPressed();
+            if (performanceMode){
+                clearDot();
+            }
         }
         
         isDragging = true;
-        renderDeadZone();
-        
-        int _dotX = wrapX(x) - this->x;
-        int _dotY = wrapY(y) - this->y;
-        if (lastDotX != _dotX || lastDotY != _dotY)
-        {
-            clearDot();
-            dotX = _dotX;
-            dotY = _dotY;
-            renderDot();
-            lastDotX = dotX;
-            lastDotY = dotY;
-        } // render only when the coordinate changes
 
+        if (performanceMode){
+            dotX = wrapX(x) - this->x;
+            dotY = wrapY(y) - this->y;
+        }else{
+            int _dotX = wrapX(x) - this->x;
+            int _dotY = wrapY(y) - this->y;
+
+            if (lastDotX != _dotX || lastDotY != _dotY)
+            {
+                clearDot();
+                dotX = _dotX;
+                dotY = _dotY;
+                renderDot();
+                lastDotX = dotX;
+                lastDotY = dotY;
+            } // render only when the coordinate changes
+        }
         // execute the function
         if (whilePressing)
             whilePressing();
