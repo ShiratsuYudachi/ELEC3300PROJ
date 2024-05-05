@@ -15,24 +15,33 @@
 
 
 // create UI
-Button switchButton(170, 50, "Motor?", 40, 40);
-// Button test2Button(170, 0, "SetPos", 40, 40);
-Button CCWButton(10, 50, "YCCW", 40, 40);
-Button CWButton(65, 50, "YCW", 40, 40);
-Button test3Button(120, 50, "START", 40, 40);
-Button resetButton(200, 270, "REST", 40, 40);
-Slider xSlider(180, 120, 100);
+Screen *allScreens[MAX_UI_ELEMENTS];
+uint8_t screenNum;
+
+Screen mainScreen;
+Screen operationScreen;
+
+Button switchButton(&operationScreen, 170, 50, "Motor?", 40, 40);
+// Button test2Button(&operationScreen, 170, 0, "SetPos", 40, 40);
+Button CCWButton(&operationScreen, 10, 50, "YCCW", 40, 40);
+Button CWButton(&operationScreen, 65, 50, "YCW", 40, 40);
+Button test3Button(&operationScreen, 120, 50, "START", 40, 40);
+Button resetButton(&operationScreen, 200, 270, "REST", 40, 40);
+Slider xSlider(&mainScreen, 180, 120, 100);
 // Slider ySlider(180, 120, 100);
-Slider zSlider(220, 120, 100);
+Slider zSlider(&mainScreen, 220, 120, 100);
+
+
+
 // PreviewDisplay3D previewDisplay(0, 170, 120, 120);
 Joystick testJoystick(0, 120);
 
 
 // uint32_t PulseDMABuff[2560];
 
-
-SERVO42C_Pulse* pTargetMotor = &xPulseMotor;
-void printTargetMotor(){
+SERVO42C_Pulse *pTargetMotor = &xPulseMotor;
+void printTargetMotor()
+{
   char str[32];
   if (pTargetMotor == &xPulseMotor)
   {
@@ -47,12 +56,13 @@ void printTargetMotor(){
     sprintf(str, "Target: Z");
   }
   printToLCD(str, 2);
-
 }
-void printPosition(){
+
+void printPosition()
+{
   char str[32];
-    sprintf(str, "x=%.1f y=%.1f z=%.1f",xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
-    printToLCD(str, 1);
+  sprintf(str, "x=%.1f y=%.1f z=%.1f", xPulseMotor.getPosition(), yPulseMotor.getPosition(), zPulseMotor.getPosition());
+  printToLCD(str, 1);
 }
 
 
@@ -83,19 +93,22 @@ void myfunc()
     pTargetMotor->setDirection(0);
     pTargetMotor->spinStart();
   };
-  CWButton.onReleased = [](){
+  CWButton.onReleased = []()
+  {
     pTargetMotor->spinStop();
   };
-  CCWButton.onPressed = [](){
+  CCWButton.onPressed = []()
+  {
     pTargetMotor->setDirection(1);
     pTargetMotor->spinStart();
-    
   };
-  CCWButton.onReleased = [](){
+  CCWButton.onReleased = []()
+  {
     pTargetMotor->spinStop();
   };
-  
-  switchButton.onPressed = [](){
+
+  switchButton.onPressed = []()
+  {
     if (pTargetMotor == &xPulseMotor)
     {
       pTargetMotor = &yPulseMotor;
@@ -236,8 +249,16 @@ void myfunc()
     // sprintf(str, "%02X", data[0]);
 
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    
-    UIElement::updateAllElements();
+
+    // UIElement::updateAllElements(); // TODO: change to updateScreen
+    if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET)
+    {
+      mainScreen.update();
+    }
+    else
+    {
+      operationScreen.update();
+    }
     // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
     // HAL_Delay(500);
     debugLog(String(HAL_GetTick() - startTick), 7);
