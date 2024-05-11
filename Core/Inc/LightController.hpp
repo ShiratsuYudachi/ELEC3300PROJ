@@ -14,8 +14,12 @@ extern enum STATUS{
   OPERATING,
   WARNING,
   FATAL,
-  RESETTING
+  RESETTING,
+  COMPLETE,
 } lightStatus;
+
+extern bool isResetComplete_X;
+extern bool isResetComplete_Y;
 void updateLightEffect();
 
 #endif

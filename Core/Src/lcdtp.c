@@ -9,7 +9,7 @@ uint16_t	LCD_Read_PixelData      ( void );
 
 
 void Delay ( __IO uint32_t nCount ){  for ( ; nCount != 0; nCount -- );}
-uint8_t darkmode_toggle = 0;
+uint8_t darkmode_toggle = 1;
 
 
 void LCD_INIT ( void )
@@ -249,7 +249,7 @@ void LCD_FillColor ( uint32_t usPoint, uint16_t usColor )
 void LCD_Clear ( uint16_t usCOLUMN, uint16_t usPAGE, uint16_t usWidth, uint16_t usHeight)
 {
 	//Check Dark Mode Is Toggle
-	uint16_t bg_color = darkmode_toggle?BLACK:WHITE;
+	uint16_t bg_color = darkmode_toggle?VSCODEBLACK:WHITE;
 	LCD_OpenWindow ( usCOLUMN, usPAGE, usWidth, usHeight );
 
 	LCD_FillColor ( usWidth * usHeight, bg_color );

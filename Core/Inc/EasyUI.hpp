@@ -12,6 +12,43 @@ extern "C"
 #define TEXT_CHAR_NUM 16
 #define MAX_UI_ELEMENTS 32
 
+class UIElement;
+class Screen;
+
+extern Screen *allScreens[MAX_UI_ELEMENTS];
+extern uint8_t screenNum;
+
+class Screen
+{
+private:
+    // This class is used to manage the UI elements. Each screen contains a list of UI elements, and the screen will render and update all the elements inside it.
+    // When one screen is active, it will render and update all the elements inside it.
+    // When the screen is not active, it will not render or update the elements inside it.
+public:
+    static Screen* activeScreen;
+    UIElement *elements[MAX_UI_ELEMENTS];
+    uint8_t elementNum = 0;
+
+    void (*onUpdate)() = nullptr;
+
+
+    Screen(void (*onUpdate)() = nullptr) : onUpdate(onUpdate)
+    {
+        allScreens[screenNum++] = this;
+        elementNum = 0;
+    }
+
+    void renderAll(); // See the implementation below
+    void updateAll(); // See the implementation in EasyUI.cpp
+    void setActive(){
+        // LCD_Clear(0,0,240,320);
+        activeScreen = this;
+        // this->renderAll();
+    }
+};
+
+
+
 class UIElement
 {
 public:
@@ -21,11 +58,11 @@ public:
     virtual void render() = 0;
     virtual void update(uint16_t x, uint16_t y) = 0;
 
-    static void updateAllElements();
+    static void updateAllElements(); // DO NOT USE THIS FUNCTION WHEN USING MULTIPLE SCREENS
 
     bool isInvalidInput(uint16_t x, uint16_t y)
     {
-        if (y > 500 || y <=32)
+        if (y > 500 || y <= 32)
             return true;
         else
             return false;
@@ -35,13 +72,14 @@ public:
     uint16_t width, height;
 
 protected:
-    UIElement(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+    UIElement(Screen *screen, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
     {
         this->x = x;
         this->y = y;
         this->width = width;
         this->height = height;
         allElements[elementNum++] = this;
+        screen->elements[screen->elementNum++] = this;
     }
     bool checkTouch(uint16_t x, uint16_t y)
     {
@@ -64,8 +102,8 @@ public:
     void (*whilePressing)() = nullptr;
     void (*onReleased)() = nullptr;
 
-    Button(uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLACK)
-        : UIElement(x, y, width, height)
+    Button(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t width = 85, uint16_t height = 50, uint16_t color = CYAN, uint16_t textColor = BLUE)
+        : UIElement(screen, x, y, width, height)
     {
         this->initialColor = color;
         this->color = color;
@@ -77,7 +115,7 @@ public:
     {
         this->onPressed = onPressed;
     }
-    
+
     void setWhilePressing(void (*whilePressing)())
     {
         this->whilePressing = whilePressing;
@@ -86,6 +124,10 @@ public:
     void setOnReleased(void (*onReleased)())
     {
         this->onReleased = onReleased;
+    }
+
+    void setText(const char* text){
+        strcpy(this->text, text);
     }
 
     void render() override
@@ -99,7 +141,7 @@ public:
         LCD_FillColor(width * height, color);
 
         // render text
-        LCD_DrawString_Color(x + width / 3, y + height / 3, text, color, textColor);
+        LCD_DrawString_Color(x + width / 7, y + height / 3, text, color, textColor);
     }
 
     void update(u_int16_t x, u_int16_t y) override
@@ -121,7 +163,8 @@ public:
         }
         if (last_color != color)
         {
-            if (isPressed && onPressed){
+            if (isPressed && onPressed)
+            {
                 onPressed();
             }
             if (!isPressed && onReleased)
@@ -147,12 +190,13 @@ private:
 
 public:
     Slider(
+        Screen *screen, 
         uint16_t x,
         uint16_t y,
         uint16_t maxValue = 0,
         uint16_t width = 10,
         uint16_t height = 130,
-        uint16_t barColor = CYAN) : UIElement(x, y, width, height)
+        uint16_t barColor = CYAN) : UIElement(screen, x, y, width, height)
     {
         this->maxValue = maxValue;
         this->barColor = barColor;
@@ -168,12 +212,12 @@ public:
 
         // render dragger
         LCD_OpenWindow(x, draggerY, width, draggerRadius);
-        LCD_FillColor(width * draggerRadius, RED);
+        LCD_FillColor(width * draggerRadius, YELLOW);
     }
 
     uint16_t wrapY(u_int16_t y)
     {
-        if (y > 500 || y <=32)
+        if (y > 500 || y <= 32)
             return draggerY; // y=2048 if not touched
         if (y < this->y)
             return this->y;
@@ -191,8 +235,8 @@ public:
             LCD_FillColor(width * draggerRadius, CYAN);
             draggerY = wrapY(y);
             LCD_OpenWindow(this->x, draggerY, width, draggerRadius);
-            LCD_FillColor(width * draggerRadius, RED);
-            isDraggerTouched = x >= draggerX - 6 * draggerRadius && x <= draggerX + 6 * draggerRadius && y >= draggerY - 6*draggerRadius && y <= draggerY + 6*draggerRadius;
+            LCD_FillColor(width * draggerRadius, YELLOW);
+            isDraggerTouched = x >= draggerX - 6 * draggerRadius && x <= draggerX + 6 * draggerRadius && y >= draggerY - 6 * draggerRadius && y <= draggerY + 6 * draggerRadius;
         }
         else
         {
@@ -203,7 +247,7 @@ public:
     }
     float getValue()
     {
-        return value/maxValue;
+        return value / maxValue;
     }
 };
 
@@ -220,8 +264,8 @@ public:
     uint16_t lastDotY = 0;
     void (*onPressed)(TouchPad *, int, int) = nullptr;
 
-    TouchPad(uint16_t x, uint16_t y, void (*onPressed)(TouchPad *, int, int) = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
-        : UIElement(x, y, width, height)
+    TouchPad(Screen *screen, uint16_t x, uint16_t y, void (*onPressed)(TouchPad *, int, int) = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
+        : UIElement(screen, x, y, width, height)
     {
         this->x = x;
         this->y = y;
@@ -252,7 +296,7 @@ public:
     void renderDot()
     {
         LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
-        LCD_FillColor(dotRadius * dotRadius, RED);
+        LCD_FillColor(dotRadius * dotRadius, YELLOW);
     }
 
     uint16_t wrapX(u_int16_t x)
@@ -285,7 +329,6 @@ public:
         if (x < this->x || x > this->x + width || y < this->y || y > this->y + height)
             return;
 
-        
         int _dotX = wrapX(x) - this->x;
         int _dotY = wrapY(y) - this->y;
         if (lastDotX != _dotX || lastDotY != _dotY)
@@ -318,20 +361,25 @@ class Joystick : public UIElement
 {
 private:
     uint16_t color;
-    uint16_t dotRadius = 20;
-    int sideLength = 60;
     bool isDragging = false;
 
-
 public:
+    uint16_t dotRadius = 20;
+    int deadzoneSideLength = 40; 
+
+    bool performanceMode = false; // disable dragging animation
+
     uint16_t dotX;
     uint16_t dotY;
     uint16_t lastDotX = 0;
     uint16_t lastDotY = 0;
     void (*whilePressing)() = nullptr;
+    void (*onPressed)() = nullptr;
 
-    Joystick(uint16_t x, uint16_t y, void (*whilePressing)() = nullptr, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN)
-        : UIElement(x, y, width, height)
+    uint32_t lastTick = 0;
+
+    Joystick(Screen *screen,uint16_t x, uint16_t y, uint16_t width = 150, uint16_t height = 150, uint16_t color = CYAN, void (*whilePressing)() = nullptr)
+        : UIElement(screen, x, y, width, height)
     {
         this->x = x;
         this->y = y;
@@ -364,22 +412,22 @@ public:
     void renderDot()
     {
         LCD_OpenWindow(x + dotX, y + dotY, dotRadius, dotRadius);
-        LCD_FillColor(dotRadius * dotRadius, RED);
+        LCD_FillColor(dotRadius * dotRadius, YELLOW);
     }
     void renderDeadZone()
     {
         int centerX = getInitialDotX() + dotRadius/2;
         int centerY = getInitialDotY() + dotRadius/2;
-        LCD_DrawLine(x + centerX - sideLength/2, y + centerY - sideLength/2, x + centerX + sideLength/2, y + centerY - sideLength/2, RED);
-        LCD_DrawLine(x + centerX - sideLength/2, y + centerY - sideLength/2, x + centerX - sideLength/2, y + centerY + sideLength/2, RED);
-        LCD_DrawLine(x + centerX + sideLength/2, y + centerY + sideLength/2, x + centerX - sideLength/2, y + centerY + sideLength/2, RED);
-        LCD_DrawLine(x + centerX + sideLength/2, y + centerY + sideLength/2, x + centerX + sideLength/2, y + centerY - sideLength/2, RED);
+        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, YELLOW);
+        LCD_DrawLine(x + centerX - deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, YELLOW);
+        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX - deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, YELLOW);
+        LCD_DrawLine(x + centerX + deadzoneSideLength/2, y + centerY + deadzoneSideLength/2, x + centerX + deadzoneSideLength/2, y + centerY - deadzoneSideLength/2, YELLOW);
     }
     bool insideDeadZone_X(){
-        return dotX > getInitialDotX() - sideLength/2 && dotX < getInitialDotX() + sideLength/2;
+        return dotX > getInitialDotX() - deadzoneSideLength/2 && dotX < getInitialDotX() + deadzoneSideLength/2;
     }
     bool insideDeadZone_Y(){
-        return dotY > getInitialDotY() - sideLength/2 && dotY < getInitialDotY() + sideLength/2;
+        return dotY > getInitialDotY() - deadzoneSideLength/2 && dotY < getInitialDotY() + deadzoneSideLength/2;
     }
 
     uint16_t wrapX(u_int16_t x)
@@ -425,31 +473,44 @@ public:
             renderDot();
             renderDeadZone();
             isDragging = false;
+            lastTick = HAL_GetTick();
             return;
         }
-            
         if (x < this->x || x > this->x + width || y < this->y || y > this->y + height){
+            lastTick = HAL_GetTick();
             return;
+        }
+
+        if (!isDragging){
+            if (onPressed) onPressed();
+            if (performanceMode){
+                clearDot();
+            }
         }
         
         isDragging = true;
-        renderDeadZone();
-        
-        int _dotX = wrapX(x) - this->x;
-        int _dotY = wrapY(y) - this->y;
-        if (lastDotX != _dotX || lastDotY != _dotY)
-        {
-            clearDot();
-            dotX = _dotX;
-            dotY = _dotY;
-            renderDot();
-            lastDotX = dotX;
-            lastDotY = dotY;
-        } // render only when the coordinate changes
 
+        if (performanceMode){
+            dotX = wrapX(x) - this->x;
+            dotY = wrapY(y) - this->y;
+        }else{
+            int _dotX = wrapX(x) - this->x;
+            int _dotY = wrapY(y) - this->y;
+
+            if (lastDotX != _dotX || lastDotY != _dotY)
+            {
+                clearDot();
+                dotX = _dotX;
+                dotY = _dotY;
+                renderDot();
+                lastDotX = dotX;
+                lastDotY = dotY;
+            } // render only when the coordinate changes
+        }
         // execute the function
         if (whilePressing)
             whilePressing();
+        lastTick = HAL_GetTick();
     }
 
     float get_dX()
@@ -459,13 +520,27 @@ public:
         return (float)dotX / width - 0.5;
     }
 
+    float get_dX_dt()
+    {
+        float dTime = (HAL_GetTick() - lastTick) / 1000.0;
+        return get_dX() * dTime;
+    }
+
     float get_dY()
     {
         if (insideDeadZone_Y())
             return 0;
         return (float)dotY / height - 0.5;
     }
+
+    float get_dY_dt()
+    {
+        float dTime = (HAL_GetTick() - lastTick) / 1000.0;
+        return get_dY() * dTime;
+    }
 };
+
+
 
 
 

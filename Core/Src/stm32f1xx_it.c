@@ -29,6 +29,7 @@
 #include "rtc.h"
 #include "tim.h"
 #include "SERVO42C_IT.h"
+#include "interface.hpp"
 
 /* USER CODE END Includes */
 
@@ -70,7 +71,6 @@ extern DMA_HandleTypeDef hdma_tim8_ch1;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim5;
 extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -218,13 +218,8 @@ void SysTick_Handler(void)
 void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
-	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET)
-	{
-		extern uint32_t exertimer;
-		// exertimer = RTC_raw() + 3;
-	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
-	HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
-	}
+  setActiveScreen0();
+
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
@@ -348,35 +343,12 @@ void USART1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles USART3 global interrupt.
-  */
-void USART3_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART3_IRQn 0 */
-	extern void Uart_isr (UART_HandleTypeDef *huart);
-	Uart_isr (&huart3);
-	if(0){//Skip URQHANDler
-  /* USER CODE END USART3_IRQn 0 */
-  HAL_UART_IRQHandler(&huart3);
-  /* USER CODE BEGIN USART3_IRQn 1 */
-	}
-  /* USER CODE END USART3_IRQn 1 */
-}
-
-/**
   * @brief This function handles EXTI line[15:10] interrupts.
   */
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_13) != RESET)
-	{
-		// extern void debug_alarm_set();
-		// debug_alarm_set();
-	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_13);
-	HAL_GPIO_EXTI_Callback(GPIO_PIN_13);
-	}
-	/* USER
+  setActiveScreen1();
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */

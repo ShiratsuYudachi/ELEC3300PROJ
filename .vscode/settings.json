@@ -28,6 +28,17 @@
         "limits": "cpp",
         "algorithm": "cpp",
         "chrono": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "interface.hpp": "c",
+        "__availability": "cpp",
+        "__hash_table": "cpp",
+        "semaphore": "cpp",
+        "bufferobject": "cpp",
+        "callback": "cpp",
+        "node": "cpp",
+        "state": "cpp",
+        "stateattribute": "cpp",
+        "stateset": "cpp",
+        "uniform": "cpp"
     }
 }

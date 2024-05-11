@@ -1,52 +1,11 @@
 #include <cstdint>
 #include "lcdtp.h"
-#include "gcode.h"
 #include "trigo.h"
 #include "EasyUI.hpp"
 #include <cstdlib>
 #include <cmath>
 
-constexpr uint32_t posX = 60;
-constexpr uint32_t posY = 170;
 
-float scale = 1.5f;
-
-void transformPosition(uint32_t x, uint32_t y)
-{
-    x = x * scale;
-    y = y * scale;
-}
-
-void map2d(float speedInterval = -1)
-{
-    bool enableDrawing = false;
-    float lastPos[4] = {0, 0, 0};
-    LCD_OpenWindow(posX, posY, 100, 100);
-    LCD_FillColor(100 * 100, WHITE);
-    LCD_DrawLine(posX ,posY, posX+ 100,posY+0,BLACK);
-    LCD_DrawLine(posX + 0,posY+ -100, posX+ 0,posY+100,BLACK);
-    if (speedInterval<0){
-        for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
-            enableDrawing = cmd[2] <= 0.001;
-            if (enableDrawing)
-                LCD_DrawLine(posX + lastPos[0], posY - lastPos[1], posX + cmd[0], posY - cmd[1], RED);
-
-            for (int i = 0; i < 3; i++){
-            lastPos[i] = cmd[i];
-            }
-        }
-    }else{
-         for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
-            enableDrawing = cmd[2] <= 0.001;
-            if (enableDrawing)
-                LCD_DrawLine(posX + lastPos[0], posY - lastPos[1], posX + cmd[0], posY - cmd[1], RED);
-            for (int i = 0; i < 3; i++){
-            lastPos[i] = cmd[i];
-            }
-            HAL_Delay(speedInterval);
-        }
-    }
-}
 
 // 实现 sin 函数，考虑周期性和符号
 float fastsin(int degree){
@@ -109,7 +68,7 @@ float rotateAngleX = 0;
 float rotateAngleY = 0;
 float rotateAngleZ = 0;
 
-const int r = 110;
+const int r = 150;
 uint8_t vRAM[r*r*2] = {};
 void setPixel(int x, int y, uint16_t color, float alpha) {
     if (x < 0 || x >= r || y < 0 || y >= r) return;
@@ -130,7 +89,32 @@ void setPixel(int x, int y, uint16_t color, float alpha) {
     ((uint16_t*)vRAM)[x+y*r] = (red << 11) | (green << 5) | blue;
 }
 
+
 void drawLineToVRAM(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
+    int dx = abs(x1 - x0);
+    int dy = -abs(y1 - y0);
+    int sx = x0 < x1 ? 1 : -1;
+    int sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy;  // error value e_xy
+
+    while (true) {
+        setPixel(x0, y0, color, 1.0);  // Set the pixel with full color intensity
+        if (x0 == x1 && y0 == y1) break;
+        int e2 = 2 * err;
+        if (e2 >= dy) {  // e_xy + e_x > 0
+            err += dy;
+            x0 += sx;
+        }
+        if (e2 <= dx) {  // e_xy + e_y < 0
+            err += dx;
+            y0 += sy;
+        }
+    }
+}
+
+
+// anti-aliased
+void drawLineToVRAM_AA(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
     bool steep = fabs(y1 - y0) > fabs(x1 - x0);
     if (steep) {
         uint16_t temp = x0;
@@ -171,6 +155,7 @@ void drawLineToVRAM(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t
         intery += gradient;
     }
 }
+
 void resetVRAM(){
     //memset(vRAM, 0, sizeof(vRAM));
     uint32_t color_32 = (CYAN << 16) | CYAN;
@@ -188,31 +173,7 @@ void resetVRAM(){
     }
 }
 
-void map3d(float posX, float posY) {
-    resetVRAM();
-    Point3D lastPos = {0, 0, 0};
-
-    int centerPosX = posX + r/2;
-    int centerPosY = posY + r/2;
-    int vCenterX = r/2; // vRAM center
-    int vCenterY = r/2; // vRAM center
-
-    // draw circle
-    sinUnderCurrentAngleX = fastsin(rotateAngleX);
-    cosUnderCurrentAngleX = fastcos(rotateAngleX);
-    sinUnderCurrentAngleY = fastsin(rotateAngleY);
-    cosUnderCurrentAngleY = fastcos(rotateAngleY);
-    sinUnderCurrentAngleZ = fastsin(rotateAngleZ);
-    cosUnderCurrentAngleZ = fastcos(rotateAngleZ);
-    
-    for (float* cmd = (float*)gcode; cmd < (float*)gcode+gcodeLegth*4; cmd+=4){
-        Point3D point = {cmd[0] - gcodeCenterOfMass[0], cmd[1] - gcodeCenterOfMass[1], cmd[2] - gcodeCenterOfMass[2]};
-        point = rotatePoint(point, X);
-        point = rotatePoint(point, Y);
-        point = rotatePoint(point, Z);
-        drawLineToVRAM(vCenterX + lastPos.x, vCenterY - lastPos.z, vCenterX + point.x, vCenterY - point.z, RED);
-        lastPos = point;
-    }
+void renderVRAM(int posX, int posY){
     LCD_OpenWindow(posX, posY, r, r);
     LCD_Write_Cmd ( CMD_SetPixel );	
     // for (int i = 0; i < r; i++) {
@@ -237,24 +198,57 @@ void map3d(float posX, float posY) {
         i++;
         * ( __IO uint16_t * ) ( FSMC_Addr_LCD_DATA ) = ((uint16_t*)vRAM)[i];
     }
-
-    // clear region
-    
-    
-    
 }
+
+
+// const int r_bool = 150;
+// bool VRAM_bool[r][r] = {};
+// void drawLineToVRAM_bool(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2){
+//     void drawLineToVRAM_bool(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2){
+//     int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+//     int dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1; 
+//     int err = dx + dy, e2; /* error value e_xy */
+
+//     while (true) {  // 循环直到到达终点
+//         if (x1 >= 0 && x1 < r && y1 >= 0 && y1 < r) {
+//             VRAM_bool[x1][y1] = true; // 标记当前点
+//         }
+//         if (x1 == x2 && y1 == y2) break;
+//         e2 = 2 * err;
+//         if (e2 >= dy) { err += dy; x1 += sx; } // e_xy+e_x > 0
+//         if (e2 <= dx) { err += dx; y1 += sy; } // e_xy+e_y < 0
+//     }
+// }
+// }
+
+
+void drawReferenceLine(int posX, int posY){
+    LCD_DrawLine(posX-100, posY, posX + 100, posY, RED);
+    LCD_DrawLine(posX, posY, posX, posY + 100, RED);
+    LCD_DrawLine(posX, posY, posX - 100, posY, RED);
+    LCD_DrawLine(posX, posY, posX, posY - 100, RED);
+}
+
 
 int lastX = 0;
 int lastY = 0;
 int lastTick = 0;
-class PreviewDisplay3D : public UIElement
+class PreviewDisplay : public UIElement
 {
 private:
     uint16_t color;
+    
 
 public:
-    PreviewDisplay3D(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color = CYAN)
-        : UIElement(x, y, width, height)
+    float previewScale = 1.0;
+    float xOffset = 0;
+    float yOffset = 0;
+    
+    bool use3d = false;
+    bool useAA = true; // anti-aliasing
+
+    PreviewDisplay(Screen *screen, uint16_t x, uint16_t y, uint16_t color = CYAN)
+        : UIElement(screen, x, y, width = r, height = r)
     {
         this->x = x;
         this->y = y;
@@ -262,30 +256,91 @@ public:
         this->height = height;
         this->color = color;
     }
+
+    void map2d(float posX, float posY, float speedInterval = -1)
+    {
+        bool enableDrawing = false;
+        float lastPos[4] = {0, 0, 0};
+        resetVRAM();
+
+        for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
+            float pos[3] = {cmd[0], cmd[1], cmd[2]};
+            for (int i = 0; i < 3; i++){
+                pos[i] *= previewScale;
+            }
+            pos[1] *= -1;
+            pos[0] += xOffset;
+            pos[1] += yOffset;
+            enableDrawing = pos[2] <= 0.001;
+            if (enableDrawing)
+                if (useAA)
+                    drawLineToVRAM_AA(lastPos[0], lastPos[1], pos[0], pos[1], RED);
+                else
+                    drawLineToVRAM(lastPos[0], lastPos[1], pos[0], pos[1], RED);
+            for (int i = 0; i < 3; i++){
+                lastPos[i] = pos[i];
+            }
+            if (speedInterval > 0){
+                HAL_Delay(speedInterval);
+            }
+        }
+
+        renderVRAM(posX, posY);
+    }
+
+    void map3d(int posX, int posY) {
+        resetVRAM();
+        Point3D lastPos = {0, 0, 0};
+
+        int centerPosX = posX + r/2;
+        int centerPosY = posY + r/2;
+        int vCenterX = r/2; // vRAM center
+        int vCenterY = r/2; // vRAM center
+
+        // draw circle
+        sinUnderCurrentAngleX = fastsin(rotateAngleX);
+        cosUnderCurrentAngleX = fastcos(rotateAngleX);
+        sinUnderCurrentAngleY = fastsin(rotateAngleY);
+        cosUnderCurrentAngleY = fastcos(rotateAngleY);
+        sinUnderCurrentAngleZ = fastsin(rotateAngleZ);
+        cosUnderCurrentAngleZ = fastcos(rotateAngleZ);
+        
+        for (float* cmd = (float*)targetGcode; cmd < (float*)targetGcode+targetGcodeLength*4; cmd+=4){
+            Point3D point = {cmd[0] - targetGcodeCenterOfMass[0], cmd[1] - targetGcodeCenterOfMass[1], cmd[2] - targetGcodeCenterOfMass[2]};
+            point.x *= previewScale;
+            point.y *= previewScale;
+            point.z *= previewScale;
+            point = rotatePoint(point, X);
+            point = rotatePoint(point, Y);
+            point = rotatePoint(point, Z);
+            if (useAA)
+                drawLineToVRAM_AA(vCenterX + lastPos.x, vCenterY - lastPos.z, vCenterX + point.x, vCenterY - point.z, RED);
+            else
+                drawLineToVRAM(vCenterX + lastPos.x, vCenterY - lastPos.z, vCenterX + point.x, vCenterY - point.z, RED);
+            lastPos = point;
+        }
+
+        renderVRAM(posX, posY);
+    }
     
     void render() override
     {
-        map3d(x,y);
+        if (use3d){
+            map3d(x, y);
+        }
+        else{
+            map2d(x, y);
+        }
     }
+    // void render2d() {
+    //     // LCD_Clear(0,0,240,320);
+    //     // operationScreen.renderAll();
+    //     map2d(x, y);
+    // }
 
     void update(uint16_t x, uint16_t y) override
     {
-        const float speedMultiplier = 1;
-        if (isInvalidInput(x, y)){
-            return;
-        }
-        if ((lastX == 0 && lastY == 0) || (HAL_GetTick() - lastTick > 100))
-        {
-            lastX = x;
-            lastY = y;
-            lastTick = HAL_GetTick();
-            return;
-        }
-        int dX = x - lastX;
-        int dY = y - lastY;
-        // rotateAngleZ += dX * speedMultiplier;
-        // rotateAngleX -= dY * speedMultiplier;
-        render();
+        return;   
     }
 
 

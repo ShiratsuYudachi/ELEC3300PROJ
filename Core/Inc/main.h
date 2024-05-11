@@ -61,15 +61,16 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define DHT11_Pin GPIO_PIN_6
 #define DHT11_GPIO_Port GPIOE
-#define K2_Pin GPIO_PIN_13
-#define K2_GPIO_Port GPIOC
-#define K2_EXTI_IRQn EXTI15_10_IRQn
 #define XMOTOR_DIR_PIN_Pin GPIO_PIN_4
 #define XMOTOR_DIR_PIN_GPIO_Port GPIOA
 #define ZMOTOR_DIR_PIN_Pin GPIO_PIN_7
 #define ZMOTOR_DIR_PIN_GPIO_Port GPIOA
-#define SWITCH_X_Pin GPIO_PIN_5
-#define SWITCH_X_GPIO_Port GPIOC
+#define SWITCH_X_0_Pin GPIO_PIN_8
+#define SWITCH_X_0_GPIO_Port GPIOC
+#define SWITCH_Y_0_Pin GPIO_PIN_9
+#define SWITCH_Y_0_GPIO_Port GPIOC
+#define SWITCH_Z_0_Pin GPIO_PIN_10
+#define SWITCH_Z_0_GPIO_Port GPIOC
 #define YMOTOR_DIR_PIN_Pin GPIO_PIN_7
 #define YMOTOR_DIR_PIN_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

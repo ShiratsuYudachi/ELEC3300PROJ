@@ -12,7 +12,8 @@
 #include "main.h"
 #include "tim.h"
 
-#define DMA_BUFFER_SIZE 7000 // max move distance onece is length/100
+#define DMA_BUFFER_SIZE 20000 // max move distance onece is length/100
+
 
 
 extern const uint32_t PulseDMABuff[DMA_BUFFER_SIZE];
@@ -226,17 +227,20 @@ public:
         if (speed > 0.001)
             setFrequency(speedToFrequency(speed));
     }
+    void resetStepSum(){
+        stepSum = 0;
+    }
 
     // reset zero position by turning the motor CW/CCW(0/1)
     // once the motor stops turnning, it reaches the zero position
     // WARN: this will block the program until the motor stops
     void alignAbsolutePosition()
     {
-        if (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin) == GPIO_PIN_SET)
+        if (HAL_GPIO_ReadPin(SWITCH_X_0_GPIO_Port, SWITCH_X_0_Pin) == GPIO_PIN_SET)
         {
             setFrequency(1000);
             printToLCD("Waiting Limit Switch", 0);
-            while (HAL_GPIO_ReadPin(SWITCH_X_GPIO_Port, SWITCH_X_Pin) == GPIO_PIN_SET)
+            while (HAL_GPIO_ReadPin(SWITCH_X_0_GPIO_Port, SWITCH_X_0_Pin) == GPIO_PIN_SET)
             {
                 step_wait(0, 20);
             }
@@ -336,6 +340,7 @@ public:
         // }
         // return -1;
     }
+
 
     void setPosition(float position){ // to test
         receiveEncoder();

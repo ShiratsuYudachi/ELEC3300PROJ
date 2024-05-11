@@ -77,14 +77,6 @@ void SystemClock_Config(void);
 DHT11_datastruct DHT11_data = {0}; // read data by calling -  DHT11_ReadData(&DHT11_data);
 strType_XPT2046_Coordinate Coordinate = {0}; //Coordinate of LCD
 
-uint32_t lastupdate_raw,  lastdrink_raw = 0;
-uint32_t next = 0; //Next drink schedule time
-int tilnext = 0; // time till next drink
-uint32_t exertime = 0;//Time Set By User (Volatile)
-uint32_t exertime_fixed = 0;//Time Set By User (Fixed)
-uint32_t exertimer = 0;//Target time of exercise alarm
-int sec = 0;
-
 
 /*
  * Status Variables
@@ -138,7 +130,6 @@ int main(void)
   MX_TIM5_Init();
   MX_TIM1_Init();
   MX_ADC1_Init();
-  MX_USART3_UART_Init();
   MX_USART2_UART_Init();
   MX_TIM4_Init();
   MX_TIM8_Init();
