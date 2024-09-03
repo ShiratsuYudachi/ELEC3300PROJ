@@ -31,7 +31,6 @@ Button setZeroButton(&mainScreen, 120, 10, "SET_0", 40, 40);
 Joystick testJoystick(&mainScreen, 0, 120);
 Joystick zJoystick(&mainScreen, 180, 100, 20, 160);
 
-
 Screen operationScreen;
 PreviewDisplay previewDisplay(&operationScreen,0, 0);
 Slider scaleSlider(&operationScreen, 180, 20, 100);
@@ -317,7 +316,6 @@ void setupUI(){
       toggleAntiAliasButton.setText("AA:OFF");
     
   };
-
   toggle3D2DButton.onPressed = [](){
     previewDisplay.use3d = !previewDisplay.use3d;
     if (previewDisplay.use3d)

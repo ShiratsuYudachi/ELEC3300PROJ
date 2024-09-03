@@ -29,9 +29,12 @@ Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  ../Core/Inc/utils.hpp ../Core/Inc/tim.h ../Core/Inc/interface.hpp \
- ../Core/Inc/usart.h ../Core/Inc/EasyUI.hpp ../Core/Inc/lcdtp.h \
- ../Core/Inc/dht11.h ../Core/Inc/printf.h ../Core/Inc/xpt2046.h \
- ../Core/Inc/utils.hpp ../Core/Inc/main.h
+ ../Core/Inc/EasyUI.hpp ../Core/Inc/lcdtp.h ../Core/Inc/dht11.h \
+ ../Core/Inc/printf.h ../Core/Inc/xpt2046.h ../Core/Inc/usart.h \
+ ../Core/Inc/EasyUI.hpp ../Core/Inc/utils.hpp ../Core/Inc/main.h \
+ ../Core/Src/PathPreview.hpp ../Core/Inc/lcdtp.h ../Core/Inc/trigo.h \
+ ../Core/Inc/WS2812.hpp ../Core/Inc/LightController.hpp \
+ ../Core/Inc/gcode.h ../Core/Inc/gcode_inbuilt.h
 ../Core/Inc/SERVO42C.hpp:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -66,11 +69,19 @@ Core/Src/interface.o: ../Core/Src/interface.cpp ../Core/Inc/SERVO42C.hpp \
 ../Core/Inc/utils.hpp:
 ../Core/Inc/tim.h:
 ../Core/Inc/interface.hpp:
-../Core/Inc/usart.h:
 ../Core/Inc/EasyUI.hpp:
 ../Core/Inc/lcdtp.h:
 ../Core/Inc/dht11.h:
 ../Core/Inc/printf.h:
 ../Core/Inc/xpt2046.h:
+../Core/Inc/usart.h:
+../Core/Inc/EasyUI.hpp:
 ../Core/Inc/utils.hpp:
 ../Core/Inc/main.h:
+../Core/Src/PathPreview.hpp:
+../Core/Inc/lcdtp.h:
+../Core/Inc/trigo.h:
+../Core/Inc/WS2812.hpp:
+../Core/Inc/LightController.hpp:
+../Core/Inc/gcode.h:
+../Core/Inc/gcode_inbuilt.h:

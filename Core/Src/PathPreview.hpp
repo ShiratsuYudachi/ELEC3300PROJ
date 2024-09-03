@@ -176,16 +176,6 @@ void resetVRAM(){
 void renderVRAM(int posX, int posY){
     LCD_OpenWindow(posX, posY, r, r);
     LCD_Write_Cmd ( CMD_SetPixel );	
-    // for (int i = 0; i < r; i++) {
-    //     // LCD_FillColor(10, BLUE);
-    //     for (int j = 0; j < r; j++) {
-    //         if (vRAM[j][i]) {
-    //             LCD_Write_Data ( RED );
-    //         } else {
-    //             LCD_Write_Data ( CYAN );
-    //         }
-    //     }
-    // }
     for(int i = 0; i < r*r; i++)
     {
         * ( __IO uint16_t * ) ( FSMC_Addr_LCD_DATA ) = ((uint16_t*)vRAM)[i];

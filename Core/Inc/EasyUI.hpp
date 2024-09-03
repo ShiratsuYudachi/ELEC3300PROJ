@@ -58,7 +58,8 @@ public:
     virtual void render() = 0;
     virtual void update(uint16_t x, uint16_t y) = 0;
 
-    static void updateAllElements(); // DO NOT USE THIS FUNCTION WHEN USING MULTIPLE SCREENS
+    static void updateAllElements(); 
+    // DO NOT USE THIS FUNCTION WHEN USING MULTIPLE SCREENS
 
     bool isInvalidInput(uint16_t x, uint16_t y)
     {
@@ -84,6 +85,43 @@ protected:
     bool checkTouch(uint16_t x, uint16_t y)
     {
         return x >= this->x && x <= this->x + width && y >= this->y && y <= this->y + height;
+    }
+};
+
+
+class Text : public UIElement
+{
+private:
+    char text[TEXT_CHAR_NUM];
+
+public:
+    bool isPressed = false;
+    void (*onPressed)() = nullptr;
+    void (*whilePressing)() = nullptr;
+    void (*onReleased)() = nullptr;
+
+    Button(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t color = CYAN, uint16_t textColor = BLACK)
+        : UIElement(screen, x, y, 0, 0)
+    {
+        this->initialColor = color;
+        this->color = color;
+        this->textColor = textColor;
+        strcpy(this->text, text);
+    }
+
+    void setText(const char* text){
+        strcpy(this->text, text);
+    }
+
+    void render() override
+    {
+        // render text
+        LCD_DrawString_Color(x + width / 7, y + height / 3, text, color, textColor);
+    }
+
+    void update(u_int16_t x, u_int16_t y) override
+    {
+        return;
     }
 };
 
