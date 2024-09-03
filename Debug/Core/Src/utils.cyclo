@@ -1,0 +1,5 @@
+../Core/Inc/utils.hpp:16:5:String::String()	1
+../Core/Src/utils.cpp:5:8:String operator+(const char*, const String&)	1
+../Core/Src/utils.cpp:12:6:void printToLCD(const String&, uint16_t)	1
+../Core/Src/utils.cpp:19:6:void printArray(const uint8_t*, int, int)	2
+../Core/Src/utils.cpp:29:6:void debugLog(const String&, uint16_t)	1

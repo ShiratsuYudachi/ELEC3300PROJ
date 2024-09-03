@@ -1,0 +1,6 @@
+../Core/Src/WS2812.cpp:10:6:void RGB::toBitSequence(uint32_t*) const	12	static
+../Core/Src/WS2812.cpp:23:6:void init()	0	static
+../Core/Src/WS2812.cpp:26:6:void setColor(int, unsigned char, unsigned char, unsigned char)	32	static
+../Core/Src/WS2812.cpp:36:6:void setColor(int, RGB)	24	static
+../Core/Src/WS2812.cpp:46:6:void blank(int)	24	static
+../Core/Src/WS2812.cpp:55:6:void blankAll()	8	static

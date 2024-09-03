@@ -10,34 +10,36 @@
 ../Core/Inc/SERVO42C.hpp:230:10:void SERVO42C_Pulse::resetStepSum()	16	static
 ../Core/Inc/EasyUI.hpp:35:5:Screen::Screen(void (*)())	16	static
 ../Core/Inc/EasyUI.hpp:43:10:void Screen::setActive()	16	static
+../Core/Inc/EasyUI.hpp:58:18:virtual void UIElement::render()	16	static
+../Core/Inc/EasyUI.hpp:59:18:virtual void UIElement::update(uint16_t, uint16_t)	16	static
 ../Core/Inc/EasyUI.hpp:64:10:bool UIElement::isInvalidInput(uint16_t, uint16_t)	16	static
 ../Core/Inc/EasyUI.hpp:76:5:UIElement::UIElement(Screen*, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
 ../Core/Inc/EasyUI.hpp:85:10:bool UIElement::checkTouch(uint16_t, uint16_t)	16	static
-../Core/Inc/EasyUI.hpp:106:5:Button::Button(Screen*, uint16_t, uint16_t, char*, uint16_t, uint16_t, uint16_t, uint16_t)	32	static
-../Core/Inc/EasyUI.hpp:130:10:void Button::setText(const char*)	16	static
-../Core/Inc/EasyUI.hpp:134:10:virtual void Button::render()	32	static
-../Core/Inc/EasyUI.hpp:148:10:virtual void Button::update(u_int16_t, u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:193:5:Slider::Slider(Screen*, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	32	static
-../Core/Inc/EasyUI.hpp:208:10:virtual void Slider::render()	16	static
-../Core/Inc/EasyUI.hpp:219:14:uint16_t Slider::wrapY(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:230:10:virtual void Slider::update(u_int16_t, u_int16_t)	24	static
-../Core/Inc/EasyUI.hpp:249:11:float Slider::getValue()	24	static
-../Core/Inc/EasyUI.hpp:382:5:Joystick::Joystick(Screen*, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, void (*)())	32	static
-../Core/Inc/EasyUI.hpp:395:10:virtual void Joystick::render()	16	static
-../Core/Inc/EasyUI.hpp:407:10:void Joystick::clearDot()	16	static
-../Core/Inc/EasyUI.hpp:413:10:void Joystick::renderDot()	16	static
-../Core/Inc/EasyUI.hpp:418:10:void Joystick::renderDeadZone()	40	static
-../Core/Inc/EasyUI.hpp:427:10:bool Joystick::insideDeadZone_X()	24	static
-../Core/Inc/EasyUI.hpp:430:10:bool Joystick::insideDeadZone_Y()	24	static
-../Core/Inc/EasyUI.hpp:434:14:uint16_t Joystick::wrapX(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:445:15:u_int16_t Joystick::wrapY(u_int16_t)	16	static
-../Core/Inc/EasyUI.hpp:456:14:uint16_t Joystick::getInitialDotX()	16	static
-../Core/Inc/EasyUI.hpp:461:14:uint16_t Joystick::getInitialDotY()	16	static
-../Core/Inc/EasyUI.hpp:467:10:virtual void Joystick::update(u_int16_t, u_int16_t)	24	static
-../Core/Inc/EasyUI.hpp:517:11:float Joystick::get_dX()	24	static
-../Core/Inc/EasyUI.hpp:524:11:float Joystick::get_dX_dt()	24	static
-../Core/Inc/EasyUI.hpp:530:11:float Joystick::get_dY()	24	static
-../Core/Inc/EasyUI.hpp:537:11:float Joystick::get_dY_dt()	24	static
+../Core/Inc/EasyUI.hpp:144:5:Button::Button(Screen*, uint16_t, uint16_t, char*, uint16_t, uint16_t, uint16_t, uint16_t)	32	static
+../Core/Inc/EasyUI.hpp:168:10:void Button::setText(const char*)	16	static
+../Core/Inc/EasyUI.hpp:172:10:virtual void Button::render()	32	static
+../Core/Inc/EasyUI.hpp:186:10:virtual void Button::update(uint16_t, uint16_t)	16	static
+../Core/Inc/EasyUI.hpp:231:5:Slider::Slider(Screen*, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	32	static
+../Core/Inc/EasyUI.hpp:246:10:virtual void Slider::render()	16	static
+../Core/Inc/EasyUI.hpp:257:14:uint16_t Slider::wrapY(uint16_t)	16	static
+../Core/Inc/EasyUI.hpp:268:10:virtual void Slider::update(uint16_t, uint16_t)	24	static
+../Core/Inc/EasyUI.hpp:287:11:float Slider::getValue()	24	static
+../Core/Inc/EasyUI.hpp:420:5:Joystick::Joystick(Screen*, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, void (*)())	32	static
+../Core/Inc/EasyUI.hpp:433:10:virtual void Joystick::render()	16	static
+../Core/Inc/EasyUI.hpp:445:10:void Joystick::clearDot()	16	static
+../Core/Inc/EasyUI.hpp:451:10:void Joystick::renderDot()	16	static
+../Core/Inc/EasyUI.hpp:456:10:void Joystick::renderDeadZone()	40	static
+../Core/Inc/EasyUI.hpp:465:10:bool Joystick::insideDeadZone_X()	24	static
+../Core/Inc/EasyUI.hpp:468:10:bool Joystick::insideDeadZone_Y()	24	static
+../Core/Inc/EasyUI.hpp:472:14:uint16_t Joystick::wrapX(uint16_t)	16	static
+../Core/Inc/EasyUI.hpp:483:14:uint16_t Joystick::wrapY(uint16_t)	16	static
+../Core/Inc/EasyUI.hpp:494:14:uint16_t Joystick::getInitialDotX()	16	static
+../Core/Inc/EasyUI.hpp:499:14:uint16_t Joystick::getInitialDotY()	16	static
+../Core/Inc/EasyUI.hpp:505:10:virtual void Joystick::update(uint16_t, uint16_t)	24	static
+../Core/Inc/EasyUI.hpp:555:11:float Joystick::get_dX()	24	static
+../Core/Inc/EasyUI.hpp:562:11:float Joystick::get_dX_dt()	24	static
+../Core/Inc/EasyUI.hpp:568:11:float Joystick::get_dY()	24	static
+../Core/Inc/EasyUI.hpp:575:11:float Joystick::get_dY_dt()	24	static
 ../Core/Src/PathPreview.hpp:11:7:float fastsin(int)	16	static
 ../Core/Src/PathPreview.hpp:25:7:float fastcos(int)	16	static
 ../Core/Src/PathPreview.hpp:44:9:Point3D rotatePoint(const Point3D&, Axis)	32	static

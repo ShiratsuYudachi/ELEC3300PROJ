@@ -55,8 +55,8 @@ public:
     static UIElement *allElements[MAX_UI_ELEMENTS];
     static uint8_t elementNum;
 
-    virtual void render() = 0;
-    virtual void update(uint16_t x, uint16_t y) = 0;
+    virtual void render() {};
+    virtual void update(uint16_t x, uint16_t y) {};
 
     static void updateAllElements(); 
     // DO NOT USE THIS FUNCTION WHEN USING MULTIPLE SCREENS
@@ -92,6 +92,8 @@ protected:
 class Text : public UIElement
 {
 private:
+    uint16_t color;
+    uint16_t textColor;
     char text[TEXT_CHAR_NUM];
 
 public:
@@ -100,10 +102,9 @@ public:
     void (*whilePressing)() = nullptr;
     void (*onReleased)() = nullptr;
 
-    Button(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t color = CYAN, uint16_t textColor = BLACK)
+    Text(Screen *screen, uint16_t x, uint16_t y, char text[TEXT_CHAR_NUM], uint16_t color = CYAN, uint16_t textColor = BLACK)
         : UIElement(screen, x, y, 0, 0)
     {
-        this->initialColor = color;
         this->color = color;
         this->textColor = textColor;
         strcpy(this->text, text);
@@ -119,7 +120,7 @@ public:
         LCD_DrawString_Color(x + width / 7, y + height / 3, text, color, textColor);
     }
 
-    void update(u_int16_t x, u_int16_t y) override
+    void update(uint16_t x, uint16_t y) override
     {
         return;
     }
@@ -182,7 +183,7 @@ public:
         LCD_DrawString_Color(x + width / 7, y + height / 3, text, color, textColor);
     }
 
-    void update(u_int16_t x, u_int16_t y) override
+    void update(uint16_t x, uint16_t y) override
     {
         if (checkTouch(x, y))
         {
@@ -253,7 +254,7 @@ public:
         LCD_FillColor(width * draggerRadius, RED);
     }
 
-    uint16_t wrapY(u_int16_t y)
+    uint16_t wrapY(uint16_t y)
     {
         if (y > 500 || y <= 32)
             return draggerY; // y=2048 if not touched
@@ -264,7 +265,7 @@ public:
         return y;
     }
 
-    void update(u_int16_t x, u_int16_t y) override
+    void update(uint16_t x, uint16_t y) override
     {
         bool isDraggerTouched;
         if (isDragging)
@@ -337,7 +338,7 @@ public:
         LCD_FillColor(dotRadius * dotRadius, RED);
     }
 
-    uint16_t wrapX(u_int16_t x)
+    uint16_t wrapX(uint16_t x)
     {
         if (x > 500)
             return dotX; // x=2048 if not touched
@@ -348,7 +349,7 @@ public:
         return x;
     }
 
-    u_int16_t wrapY(u_int16_t y)
+    uint16_t wrapY(uint16_t y)
     {
         if (y > 500)
             return dotY; // y=2048 if not touched
@@ -359,7 +360,7 @@ public:
         return y;
     }
 
-    void update(u_int16_t x, u_int16_t y) override
+    void update(uint16_t x, uint16_t y) override
     {
         // if the touchpad is not touched, do nothing
         if (x > 500 || y > 500)
@@ -468,7 +469,7 @@ public:
         return dotY > getInitialDotY() - deadzoneSideLength/2 && dotY < getInitialDotY() + deadzoneSideLength/2;
     }
 
-    uint16_t wrapX(u_int16_t x)
+    uint16_t wrapX(uint16_t x)
     {
         if (x > 500)
             return dotX; // x=2048 if not touched
@@ -479,7 +480,7 @@ public:
         return x;
     }
 
-    u_int16_t wrapY(u_int16_t y)
+    uint16_t wrapY(uint16_t y)
     {
         if (y > 500)
             return dotY; // y=2048 if not touched
@@ -501,7 +502,7 @@ public:
     }
 
 
-    void update(u_int16_t x, u_int16_t y) override
+    void update(uint16_t x, uint16_t y) override
     {
         // if the touchpad is not touched, do nothing
         if (isDragging && isInvalidInput(x, y)){

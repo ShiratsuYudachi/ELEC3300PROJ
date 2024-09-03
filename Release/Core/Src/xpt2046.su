@@ -1,0 +1,6 @@
+../Core/Src/xpt2046.c:57:17:XPT2046_ReadCMD	16	static
+../Core/Src/xpt2046.c:36:13:XPT2046_WriteCMD	16	static
+../Core/Src/xpt2046.c:219:16:XPT2046_ReadAdc_Smooth_XY	72	static
+../Core/Src/xpt2046.c:350:9:XPT2046_Touch_Calibrate	128	static
+../Core/Src/xpt2046.c:480:9:XPT2046_Get_TouchedPoint	48	static
+../Core/Src/xpt2046.c:501:6:XPT2046_Reset_TouchPoint	0	static

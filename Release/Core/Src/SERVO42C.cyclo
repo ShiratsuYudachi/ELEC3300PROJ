@@ -1,0 +1,9 @@
+../Core/Inc/SERVO42C.hpp:98:10:void PulseMotor::step(uint8_t, uint32_t)	4
+../Core/Inc/SERVO42C.hpp:154:14:uint32_t SERVO42C_Pulse::getStepCountFromTargetPosition(float, uint8_t&)	2
+../Core/Inc/SERVO42C.hpp:201:11:float SERVO42C_Pulse::stepcountToDistance(uint32_t)	1
+../Core/Inc/SERVO42C.hpp:221:11:float SERVO42C_Pulse::getSpeed()	1
+../Core/Inc/SERVO42C.hpp:225:10:void SERVO42C_Pulse::setSpeed(float)	3
+../Core/Src/SERVO42C.cpp:20:6:void step3d(uint32_t, uint8_t, uint32_t, uint8_t, uint32_t, uint8_t, float)	5
+../Core/Src/SERVO42C.cpp:67:6:void step_inf3d(uint32_t, uint8_t, uint32_t, uint8_t, uint32_t, uint8_t, float)	2
+../Core/Src/SERVO42C.cpp:92:6:void setPosition3d(float, float, float, float)	1
+../Core/Src/SERVO42C.cpp:101:1:cpp)	1

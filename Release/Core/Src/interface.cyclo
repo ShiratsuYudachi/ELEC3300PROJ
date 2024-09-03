@@ -1,0 +1,74 @@
+../Core/Inc/EasyUI.hpp:58:18:virtual void UIElement::render()	1
+../Core/Inc/EasyUI.hpp:59:18:virtual void UIElement::update(uint16_t, uint16_t)	1
+../Core/Src/PathPreview.hpp:331:10:virtual void PreviewDisplay::update(uint16_t, uint16_t)	1
+../Core/Src/interface.cpp:308:33:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Inc/EasyUI.hpp:246:10:virtual void Slider::render()	1
+../Core/Inc/EasyUI.hpp:172:10:virtual void Button::render()	1
+../Core/Inc/EasyUI.hpp:186:10:virtual void Button::update(uint16_t, uint16_t)	11
+../Core/Inc/EasyUI.hpp:268:10:virtual void Slider::update(uint16_t, uint16_t)	11
+../Core/Src/interface.cpp:339:31:static void setupUI()::<lambda()>::_FUN()	6
+../Core/Src/interface.cpp:327:34:static void setupUI()::<lambda()>::_FUN()	2
+../Core/Src/interface.cpp:319:32:static void setupUI()::<lambda()>::_FUN()	2
+../Core/Src/interface.cpp:311:37:static void setupUI()::<lambda()>::_FUN()	2
+../Core/Inc/SERVO42C.hpp:51:10:void PulseMotor::setFrequency(uint16_t)	1
+../Core/Src/interface.cpp:155:25:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:166:26:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Inc/utils.hpp:19:5:String::String(const char*)	1
+../Core/Inc/SERVO42C.hpp:63:10:void PulseMotor::setDirection(uint8_t)	1
+../Core/Inc/SERVO42C.hpp:74:10:void PulseMotor::spinStart()	1
+../Core/Src/interface.cpp:160:25:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:149:24:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Inc/SERVO42C.hpp:84:10:void PulseMotor::emergencyStop()	1
+../Core/Inc/SERVO42C.hpp:98:10:void PulseMotor::step(uint8_t, uint32_t)	4
+../Core/Inc/SERVO42C.hpp:210:11:float SERVO42C_Pulse::getPosition()	1
+../Core/Inc/EasyUI.hpp:35:5:Screen::Screen(void (*)())	1
+../Core/Inc/EasyUI.hpp:76:5:UIElement::UIElement(Screen*, uint16_t, uint16_t, uint16_t, uint16_t)	1
+../Core/Inc/EasyUI.hpp:144:5:Button::Button(Screen*, uint16_t, uint16_t, char*, uint16_t, uint16_t, uint16_t, uint16_t)	1
+../Core/Inc/EasyUI.hpp:420:5:Joystick::Joystick(Screen*, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, void (*)())	1
+../Core/Inc/EasyUI.hpp:445:10:void Joystick::clearDot()	1
+../Core/Inc/EasyUI.hpp:451:10:void Joystick::renderDot()	1
+../Core/Inc/EasyUI.hpp:456:10:void Joystick::renderDeadZone()	1
+../Core/Inc/EasyUI.hpp:433:10:virtual void Joystick::render()	1
+../Core/Inc/EasyUI.hpp:472:14:uint16_t Joystick::wrapX(uint16_t)	4
+../Core/Inc/EasyUI.hpp:483:14:uint16_t Joystick::wrapY(uint16_t)	4
+../Core/Inc/EasyUI.hpp:505:10:virtual void Joystick::update(uint16_t, uint16_t)	14
+../Core/Inc/EasyUI.hpp:555:11:float Joystick::get_dX()	3
+../Core/Inc/EasyUI.hpp:562:11:float Joystick::get_dX_dt()	1
+../Core/Inc/EasyUI.hpp:568:11:float Joystick::get_dY()	3
+../Core/Src/interface.cpp:271:29:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:261:32:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Inc/EasyUI.hpp:575:11:float Joystick::get_dY_dt()	1
+../Core/Src/interface.cpp:293:35:static void setupUI()::<lambda()>::_FUN()	2
+../Core/Src/PathPreview.hpp:11:7:float fastsin(int)	4
+../Core/Src/PathPreview.hpp:25:7:float fastcos(int)	1
+../Core/Src/PathPreview.hpp:44:9:Point3D rotatePoint(const Point3D&, Axis)	4
+../Core/Src/PathPreview.hpp:73:6:void setPixel(int, int, uint16_t, float)	3
+../Core/Src/PathPreview.hpp:93:6:void drawLineToVRAM(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	5
+../Core/Src/PathPreview.hpp:117:6:void drawLineToVRAM_AA(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	6
+../Core/Src/PathPreview.hpp:159:6:void resetVRAM()	2
+../Core/Src/PathPreview.hpp:176:6:void renderVRAM(int, int)	2
+../Core/Src/PathPreview.hpp:215:6:void drawReferenceLine(int, int)	1
+../Core/Src/PathPreview.hpp:250:10:void PreviewDisplay::map2d(float, float, float)	5
+../Core/Src/PathPreview.hpp:281:10:void PreviewDisplay::map3d(int, int)	3
+../Core/Src/PathPreview.hpp:316:10:virtual void PreviewDisplay::render()	2
+../Core/Src/interface.cpp:288:30:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:58:6:void printTargetMotor()	3
+../Core/Src/interface.cpp:171:28:static void setupUI()::<lambda()>::_FUN()	2
+../Core/Src/interface.cpp:76:6:void printPosition()	1
+../Core/Src/interface.cpp:277:29:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:189:27:static void setupUI()::<lambda()>::_FUN()	2
+../Core/Src/interface.cpp:84:6:bool isMotorStuck_X()	1
+../Core/Src/interface.cpp:87:6:bool isMotorStuck_Y()	1
+../Core/Src/interface.cpp:231:27:static void setupUI()::<lambda()>::_FUN()	7
+../Core/Src/interface.cpp:90:6:bool isMotorStuck_Z()	1
+../Core/Src/interface.cpp:94:6:void setActiveScreen0()	1
+../Core/Src/interface.cpp:98:6:void setActiveScreen1()	1
+../Core/Src/interface.cpp:115:6:void setGcodeSource(GCODE_SOURCE)	6
+../Core/Src/interface.cpp:376:34:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:372:27:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:368:27:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:364:27:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:360:27:static void setupUI()::<lambda()>::_FUN()	1
+../Core/Src/interface.cpp:148:6:void setupUI()	1
+../Core/Src/interface.cpp:382:6:void myfunc()	5
+../Core/Src/interface.cpp:450:1:cpp)	1

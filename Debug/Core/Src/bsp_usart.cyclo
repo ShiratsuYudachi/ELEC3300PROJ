@@ -1,0 +1,5 @@
+../Core/Src/bsp_usart.c:9:6:DEBUG_USART_Config	1
+../Core/Src/bsp_usart.c:28:6:WIFI_USART_Config	1
+../Core/Src/bsp_usart.c:108:6:Usart_SendString	2
+C:\ST\STM32CubeIDE_1.16.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623\tools\bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/stdio.h:220:5:fputc	1
+C:\ST\STM32CubeIDE_1.16.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623\tools\bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/stdio.h:218:5:fgetc	1
